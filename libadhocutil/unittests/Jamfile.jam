@@ -17,3 +17,16 @@ run
 	testContext
 	;
 
+run
+	testCurlStream.cpp
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	<library>boost_filesystem
+	<library>boost_system
+	:
+	testCurlStream
+	;
+
