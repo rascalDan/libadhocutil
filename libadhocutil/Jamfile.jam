@@ -26,5 +26,7 @@ lib adhocutil :
 	<include>.
 	;
 
+build-project unittests ;
+
 package.install install : <install-source-root>. : : adhocutil : [ glob *.h ] ;
 
