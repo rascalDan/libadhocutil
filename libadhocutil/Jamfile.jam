@@ -1,0 +1,30 @@
+import package ;
+
+alias glibmm : : : :
+	<cflags>"`pkg-config --cflags glibmm-2.4`"
+	<linkflags>"`pkg-config --libs glibmm-2.4`"
+	;
+lib boost_utf : : <name>boost_unit_test_framework ;
+lib Ice ;
+lib IceUtil ;
+lib pthread ;
+lib curl ;
+alias ice : : : :
+	<library>Ice
+	<library>IceUtil
+	<library>pthread ;
+
+lib adhocutil :
+	[ glob *.cpp *.ice : bin ]
+	:
+	<include>.
+	<library>ice
+	<library>curl
+	<cflags>-fvisibility=hidden
+	<variant>release:<cflags>-flto
+	: :
+	<include>.
+	;
+
+package.install install : <install-source-root>. : : adhocutil : [ glob *.h ] ;
+
