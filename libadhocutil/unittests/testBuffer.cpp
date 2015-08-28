@@ -115,5 +115,10 @@ BOOST_AUTO_TEST_CASE( replacesstringbf )
 {
 	auto str = Buffer().appendbf("something %d", 1234).str();
 	BOOST_REQUIRE_EQUAL("something 1234", str);
+
+	std::string macrostringf = stringf("something %d", 1234);
+	BOOST_REQUIRE_EQUAL("something 1234", macrostringf);
+	std::string macrostringbf = stringbf("something %d", 1234);
+	BOOST_REQUIRE_EQUAL("something 1234", macrostringbf);
 }
 

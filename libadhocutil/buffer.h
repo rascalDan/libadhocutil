@@ -117,5 +117,10 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 };
 Buffer::FragmentBase::~FragmentBase() = default;
 
+// libmisc compat macros
+#define vstringf Buffer().vappendf
+#define stringf Buffer().appendf
+#define stringbf Buffer().appendbf
+
 #endif
 
