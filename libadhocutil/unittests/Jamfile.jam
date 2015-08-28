@@ -5,6 +5,7 @@ path-constant me : . ;
 lib boost_utf : : <name>boost_unit_test_framework ;
 lib boost_filesystem ;
 lib boost_system ;
+lib boost_thread ;
 
 run
 	testContext.cpp
@@ -71,5 +72,17 @@ run
 	<library>boost_utf
 	:
 	testScopeExit
+	;
+
+run
+	testLocks.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	<library>boost_system
+	<library>boost_thread
+	:
+	testLocks
 	;
 
