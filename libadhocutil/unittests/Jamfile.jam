@@ -63,3 +63,13 @@ run
 	testMapFinds
 	;
 
+run
+	testScopeExit.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	:
+	testScopeExit
+	;
+
