@@ -2,52 +2,123 @@
 #include <string.h>
 #include <stdio.h>
 
-Buffer::Fragment::Fragment(const char * b) :
-	len(strlen(b))
+//
+// CString Fragment
+//
+
+Buffer::CStringFragment::CStringFragment(const char * b, CStringHandling h) :
+	len(strlen(b)),
+	buf(b),
+	handling(h)
 {
-	buf = (char*)malloc(len + 1);
-	memcpy(buf, b, len + 1);
-	*(buf + len) = '\0';
 }
 
-Buffer::Fragment::Fragment(const char * b, size_t l) :
-	len(l)
+Buffer::CStringFragment::CStringFragment(const char * b, CStringHandling h, size_t l) :
+	len(l),
+	buf(b),
+	handling(h)
 {
-	buf = (char*)malloc(l + 1);
-	memcpy(buf, b, l + 1);
-	*(buf + len) = '\0';
 }
 
-Buffer::Fragment::Fragment(char * b, size_t l, bool copy) :
-	len(l)
+Buffer::CStringFragment::CStringFragment(char * b, CStringHandling h) :
+	len(strlen(b)),
+	buf(b),
+	handling(h)
 {
-	if (copy) {
-		buf = (char*)malloc(l + 1);
-		memcpy(buf, b, l + 1);
+}
+
+Buffer::CStringFragment::CStringFragment(char * b, CStringHandling h, size_t l) :
+	len(l),
+	buf(b),
+	handling(h)
+{
+}
+
+Buffer::CStringFragment::~CStringFragment()
+{
+	if (handling != Use) { // Copy or Free
+		free(const_cast<char *>(buf));
 	}
-	else {
-		buf = b;
-	}
-	*(buf + len) = '\0';
 }
 
-Buffer::Fragment::~Fragment()
+char
+Buffer::CStringFragment::operator[](size_t x) const
 {
-	free(buf);
+	return buf[x];
 }
+
+size_t
+Buffer::CStringFragment::length() const
+{
+	return len;
+}
+
+const char *
+Buffer::CStringFragment::c_str() const
+{
+	return buf;
+}
+
+std::string
+Buffer::CStringFragment::str() const
+{
+	return buf;
+}
+
+//
+// Std::String Fragment
+//
+
+Buffer::StringFragment::StringFragment(const std::string & str) :
+	buf(str)
+{
+}
+
+size_t
+Buffer::StringFragment::length() const
+{
+	return buf.length();
+}
+
+const char *
+Buffer::StringFragment::c_str() const
+{
+	return buf.c_str();
+}
+
+std::string
+Buffer::StringFragment::str() const
+{
+	return buf;
+}
+
+char
+Buffer::StringFragment::operator[](size_t x) const
+{
+	return buf[x];
+}
+
+//
+// Buffer :)
+//
 
 Buffer::Buffer()
 {
 }
 
-Buffer::Buffer(const char * src)
+Buffer::Buffer(const char * src, CStringHandling h)
 {
-	content.push_back(new Fragment(src));
+	append(src, h);
 }
 
-Buffer::Buffer(char * src, bool copy)
+Buffer::Buffer(char * src, CStringHandling h)
 {
-	content.push_back(new Fragment(src, strlen(src), copy));
+	append(src, h);
+}
+
+Buffer::Buffer(const std::string & str)
+{
+	append(str);
 }
 
 Buffer::~Buffer()
@@ -55,19 +126,29 @@ Buffer::~Buffer()
 }
 
 Buffer &
-Buffer::append(const char * str)
+Buffer::append(const char * str, CStringHandling h)
 {
 	if (str && *str) {
-		content.push_back(new Fragment(str));
+		if (h == Copy) {
+			content.push_back(new StringFragment(str));
+		}
+		else {
+			content.push_back(new CStringFragment(str, h));
+		}
 	}
 	return *this;
 }
 
 Buffer &
-Buffer::append(char * str, bool copy)
+Buffer::append(char * str, CStringHandling h)
 {
 	if (str && *str) {
-		content.push_back(new Fragment(str, strlen(str), copy));
+		if (h == Copy) {
+			content.push_back(new StringFragment(str));
+		}
+		else {
+			content.push_back(new CStringFragment(str, h));
+		}
 	}
 	return *this;
 }
@@ -76,7 +157,7 @@ Buffer &
 Buffer::append(const std::string & str)
 {
 	if (!str.empty()) {
-		content.push_back(new Fragment(str.c_str(), str.length()));
+		content.push_back(new StringFragment(str));
 	}
 	return *this;
 }
@@ -97,7 +178,7 @@ Buffer::vappendf(const char * fmt, va_list args)
 	char * frag;
 	size_t len = vasprintf(&frag, fmt, args);
 	if (len > 0) {
-		content.push_back(new Fragment(frag, len, false));
+		content.push_back(new CStringFragment(frag, Free, len));
 	}
 	else {
 		free(frag);
@@ -129,13 +210,13 @@ void
 Buffer::writeto(char * buf, size_t bufSize, size_t off) const
 {
 	Content::const_iterator f = content.begin();
-	while (f != content.end() && (*f)->len < off) {
-		off -= (*f)->len;
+	while (f != content.end() && (*f)->length() < off) {
+		off -= (*f)->length();
 		++f;
 	}
 	while (f != content.end() && bufSize) {
-		for (size_t c = 0; bufSize && c < (*f)->len; bufSize--) {
-			*buf++ = (*f)->buf[c++];
+		for (size_t c = 0; bufSize && c < (*f)->length(); bufSize--) {
+			*buf++ = (**f)[c++];
 		}
 		++f;
 		off = 0;
@@ -148,13 +229,13 @@ Buffer::operator std::string() const
 	if (content.size() > 1) {
 		std::string res;
 		res.reserve(length());
-		for (const Fragment::Ptr & f : content) {
-			res.append(f->buf, f->len);
+		for (const auto & f : content) {
+			res.append(f->str());
 		}
 		return res;
 	}
 	else if (content.size() == 1) {
-		return std::string(content.front()->buf, content.front()->len);
+		return std::string(content.front()->str());
 	}
 	return std::string();
 }
@@ -165,23 +246,16 @@ Buffer::operator const char *() const
 		return "";
 	}
 	flatten();
-	return content.front()->buf;
+	return content.front()->c_str();
 }
 
 void
 Buffer::flatten() const
 {
 	if (content.size() > 1) {
-		auto len = length();
-		auto buf = (char*)malloc(len + 1);
-		auto f = new Fragment(buf, len, false);
-		for (const Fragment::Ptr & f : content) {
-			memcpy(buf, f->buf, f->len);
-			buf += f->len;
-		}
-		*buf = '\0';
-		content.clear();
-		content.push_back(f);
+		auto f = new StringFragment(str());
+		content.resize(1);
+		content.front() = f;
 	}
 }
 
@@ -196,7 +270,7 @@ Buffer::length() const
 {
 	size_t len = 0;
 	for (const Content::value_type & c : content) {
-		len += c->len;
+		len += c->length();
 	}
 	return len;
 }
@@ -205,7 +279,7 @@ Buffer &
 Buffer::operator=(const char * str)
 {
 	content.resize(1);
-	content[0] = new Fragment(str);
+	content.front() = new StringFragment(str);
 	return *this;
 }
 
@@ -213,7 +287,7 @@ Buffer &
 Buffer::operator=(const std::string & str)
 {
 	content.resize(1);
-	content[0] = new Fragment(str.c_str(), str.length());
+	content.front() = new StringFragment(str);
 	return *this;
 }
 
@@ -239,7 +313,7 @@ std::ostream &
 std::operator<<(std::ostream & os, const Buffer & b)
 {
 	for (const auto & f : b.content) {
-		os.write(f->buf, f->len);
+		os.write(f->c_str(), f->length());
 	}
 	return os;
 }

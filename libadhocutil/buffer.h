@@ -12,17 +12,20 @@
 class DLL_PUBLIC Buffer;
 
 namespace std {
-	DLL_PUBLIC std::ostream & operator<<(std::ostream &, const Buffer &);    	
+	DLL_PUBLIC std::ostream & operator<<(std::ostream &, const Buffer &);
 }
 
 class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 	public:
+		enum CStringHandling { Use, Copy, Free };
+
 		typedef boost::intrusive_ptr<Buffer> Ptr;
 		typedef boost::intrusive_ptr<const Buffer> CPtr;
 
 		Buffer();
-		Buffer(const char * src);
-		Buffer(char * src, bool copy);
+		Buffer(const char * src, CStringHandling);
+		Buffer(char * src, CStringHandling);
+		Buffer(const std::string &);
 		~Buffer();
 
 		Buffer & operator+=(const char * str);
@@ -39,8 +42,8 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 		void writeto(char * buf, size_t bufSize, size_t off) const;
 		friend std::ostream & std::operator<<(std::ostream &, const Buffer &);
 
-		Buffer & append(const char * str);
-		Buffer & append(char * str, bool copy);
+		Buffer & append(const char * str, CStringHandling h);
+		Buffer & append(char * str, CStringHandling h);
 		Buffer & append(const std::string & str);
 		Buffer & appendf(const char * fmt, ...) __attribute__((format (printf, 2, 3)));
 		Buffer & vappendf(const char * fmt, va_list args);
@@ -55,7 +58,6 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 			fmt % param;
 			return appendbf(fmt, params...);
 		}
-		Buffer & appendbf(boost::format & fmt);
 		Buffer & clear();
 
 		size_t length() const;
@@ -64,24 +66,56 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 		static boost::shared_ptr<boost::format> getFormat(const std::string & msgfmt);
 
 	private:
+		Buffer & appendbf(boost::format & fmt);
 		void DLL_PRIVATE flatten() const;
 
-		class DLL_PRIVATE Fragment : public virtual IntrusivePtrBase {
+		class DLL_PRIVATE FragmentBase : public virtual IntrusivePtrBase {
 			public:
-				typedef boost::intrusive_ptr<Fragment> Ptr;
-				typedef boost::intrusive_ptr<const Fragment> CPtr;
+				virtual ~FragmentBase() = 0;
 
-				Fragment(const char *, size_t);
-				Fragment(const char *);
-				Fragment(char *, size_t, bool);
-				~Fragment();
-
-				size_t len; // Excluding NULL term
-				char * buf;
+				virtual size_t length() const = 0;
+				virtual char operator[](size_t) const = 0;
+				virtual const char * c_str() const = 0;
+				virtual std::string str() const = 0;
 		};
-		typedef std::vector<Fragment::Ptr> Content;
+
+		class DLL_PRIVATE CStringFragment : public FragmentBase {
+			public:
+				CStringFragment(const char *, CStringHandling);
+				CStringFragment(const char *, CStringHandling, size_t);
+				CStringFragment(char *, CStringHandling);
+				CStringFragment(char *, CStringHandling, size_t);
+				~CStringFragment();
+
+				size_t length() const;
+				char operator[](size_t) const;
+				const char * c_str() const;
+				std::string str() const;
+
+			private:
+				const size_t len; // Excluding NULL term
+				const char * buf;
+				const CStringHandling handling;
+		};
+
+		class DLL_PRIVATE StringFragment : public FragmentBase {
+			public:
+				StringFragment(const std::string &);
+
+				size_t length() const;
+				char operator[](size_t) const;
+				const char * c_str() const;
+				std::string str() const;
+
+			private:
+				const std::string buf;
+		};
+
+		typedef boost::intrusive_ptr<FragmentBase> FragmentPtr;
+		typedef std::vector<FragmentPtr> Content;
 		mutable Content content;
 };
+Buffer::FragmentBase::~FragmentBase() = default;
 
 #endif
 

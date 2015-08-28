@@ -5,32 +5,32 @@
 
 BOOST_AUTO_TEST_CASE ( create )
 {
-	Buffer a;
-	Buffer b("const");
+	Buffer empty;
+	Buffer copy("const", Buffer::Copy);
 	auto nonconst = (char*)malloc(9);
 	strcpy(nonconst, "nonconst");
-	Buffer c(nonconst, true);
-	Buffer d(nonconst, false);
+	Buffer use(nonconst, Buffer::Use);
+	Buffer fre(nonconst, Buffer::Free);
 
-	BOOST_REQUIRE_EQUAL(false, a);
-	BOOST_REQUIRE_EQUAL(true, !a);
-	BOOST_REQUIRE_EQUAL(0, a.length());
-	BOOST_REQUIRE_EQUAL("", a.str());
+	BOOST_REQUIRE_EQUAL(false, empty);
+	BOOST_REQUIRE_EQUAL(true, !empty);
+	BOOST_REQUIRE_EQUAL(0, empty.length());
+	BOOST_REQUIRE_EQUAL("", empty.str());
 
-	BOOST_REQUIRE_EQUAL(true, b);
-	BOOST_REQUIRE_EQUAL(false, !b);
-	BOOST_REQUIRE_EQUAL(5, b.length());
-	BOOST_REQUIRE_EQUAL("const", b.str());
+	BOOST_REQUIRE_EQUAL(true, copy);
+	BOOST_REQUIRE_EQUAL(false, !copy);
+	BOOST_REQUIRE_EQUAL(5, copy.length());
+	BOOST_REQUIRE_EQUAL("const", copy.str());
 
-	BOOST_REQUIRE_EQUAL(8, c.length());
-	BOOST_REQUIRE_EQUAL("nonconst", c.str());
+	BOOST_REQUIRE_EQUAL(8, use.length());
+	BOOST_REQUIRE_EQUAL("nonconst", use.str());
 
-	BOOST_REQUIRE_EQUAL(8, d.length());
-	BOOST_REQUIRE_EQUAL("nonconst", d.str());
+	BOOST_REQUIRE_EQUAL(8, fre.length());
+	BOOST_REQUIRE_EQUAL("nonconst", fre.str());
 
 	nonconst[0] = 'N';
-	BOOST_REQUIRE_EQUAL("nonconst", c.str());
-	BOOST_REQUIRE_EQUAL("Nonconst", d.str());
+	BOOST_REQUIRE_EQUAL("Nonconst", use.str());
+	BOOST_REQUIRE_EQUAL("Nonconst", fre.str());
 }
 
 BOOST_AUTO_TEST_CASE( writestream )
