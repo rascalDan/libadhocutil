@@ -96,3 +96,13 @@ run
 	testLazyPointer
 	;
 
+run
+	testNvpParse.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	:
+	testNvpParse
+	;
+

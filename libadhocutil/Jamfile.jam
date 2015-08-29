@@ -1,9 +1,6 @@
 import package ;
+import lex ;
 
-alias glibmm : : : :
-	<cflags>"`pkg-config --cflags glibmm-2.4`"
-	<linkflags>"`pkg-config --libs glibmm-2.4`"
-	;
 lib boost_utf : : <name>boost_unit_test_framework ;
 lib Ice ;
 lib IceUtil ;
@@ -15,7 +12,7 @@ alias ice : : : :
 	<library>pthread ;
 
 lib adhocutil :
-	[ glob *.cpp *.ice : bin ]
+	[ glob *.ll *.cpp *.ice : bin ]
 	:
 	<include>.
 	<library>ice
