@@ -86,3 +86,13 @@ run
 	testLocks
 	;
 
+run
+	testLazyPointer.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	:
+	testLazyPointer
+	;
+
