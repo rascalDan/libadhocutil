@@ -19,7 +19,7 @@ run
 	;
 
 run
-	testCurlStream.cpp
+	testCurl.cpp
 	: : :
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK
@@ -27,8 +27,9 @@ run
 	<library>boost_utf
 	<library>boost_filesystem
 	<library>boost_system
+	<implicit-dependency>..//adhocutil
 	:
-	testCurlStream
+	testCurl
 	;
 
 run
