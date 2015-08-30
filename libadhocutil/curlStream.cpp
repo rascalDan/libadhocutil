@@ -16,6 +16,9 @@ CurlStreamSource::read(char * target, std::streamsize targetSize)
 	if (!buflen) {
 		SwapContext();
 		checkCurlCode(res);
+		if (!buflen) {
+			return 0;
+		}
 	}
 	size_t bytes = std::min<size_t>(buflen, targetSize);
 	memcpy(target, buf, bytes);

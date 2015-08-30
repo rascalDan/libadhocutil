@@ -13,6 +13,7 @@ CurlHandle::CurlHandle(const std::string & url) :
 	postS(NULL), postE(NULL)
 {
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
 }
 
 CurlHandle::~CurlHandle()

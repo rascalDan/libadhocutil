@@ -26,7 +26,9 @@ RuntimeContext::SwapContext()
 		swapcontext(&initial, &callback);
 	}
 	else {
-		swapcontext(&callback, &initial);
+		if (stack) {
+			swapcontext(&callback, &initial);
+		}
 	}
 }
 
@@ -34,5 +36,7 @@ void
 RuntimeContext::ccallback(RuntimeContext * rc)
 {
 	rc->Callback();
+	free(rc->stack);
+	rc->stack = nullptr;
 }
 

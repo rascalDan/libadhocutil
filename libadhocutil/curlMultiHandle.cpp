@@ -69,6 +69,8 @@ CurlMultiHandle::performAll()
 			while ((msg = curl_multi_info_read(curlm, &msgs))) {
 				if (msg->msg == CURLMSG_DONE) {
 					curl_multi_remove_handle(curlm, msg->easy_handle);
+					running[msg->easy_handle]->res = msg->data.result;
+					running[msg->easy_handle]->SwapContext();
 					running.erase(msg->easy_handle);
 					if (!curls.empty()) {
 						addRunner(curlm, running, curls);

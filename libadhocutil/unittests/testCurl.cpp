@@ -84,3 +84,24 @@ BOOST_AUTO_TEST_CASE( fetch_multi )
 	BOOST_REQUIRE_EQUAL("Curl", files["testCurl.cpp"]);
 }
 
+BOOST_AUTO_TEST_CASE( fetch_multi_fail )
+{
+	CurlMultiHandle cmh;
+	bool errored = false;
+	bool finished = false;
+	cmh.addCurl("http://sys.randomdan.homeip.net/missing", [&finished, &errored](auto & s) {
+			try {
+				std::string tok;
+				while (!s.eof()) {
+					s >> tok;
+				}
+				finished = true;
+			} catch (...) {
+				errored = true;
+			}
+		});
+	cmh.performAll();
+	BOOST_REQUIRE(!finished);
+	BOOST_REQUIRE(errored);
+}
+
