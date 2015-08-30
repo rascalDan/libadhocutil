@@ -1,7 +1,9 @@
 #define BOOST_TEST_MODULE Curl
 #include <boost/test/unit_test.hpp>
 
+#include <boost/bind.hpp>
 #include "curlHandle.h"
+#include "curlMultiHandle.h"
 #include "curlStream.h"
 #include "definedDirs.h"
 #include "net.h"
@@ -52,5 +54,33 @@ BOOST_AUTO_TEST_CASE( fetch_missing_stream )
 		std::string tok;
 		curlstrm >> tok;
 	}, AdHoc::Net::CurlException);
+}
+
+static
+void
+mapFileToName(std::map<std::string, std::string> & map, const std::string & file, std::istream & curlstrm)
+{
+	std::string tok;
+	curlstrm >> tok; // #define
+	curlstrm >> tok; // BOOST_TEST_MODULE
+	curlstrm >> tok; // name :)
+	map[file] = tok;
+}
+
+BOOST_AUTO_TEST_CASE( fetch_multi )
+{
+	CurlMultiHandle cmh;
+	std::map<std::string, std::string> files;
+	cmh.addCurl("file://" + RootDir.string() + "/testBuffer.cpp",
+			boost::bind(&mapFileToName, boost::ref(files), "testBuffer.cpp", _1));
+	cmh.addCurl("file://" + RootDir.string() + "/testCurl.cpp",
+			boost::bind(&mapFileToName, boost::ref(files), "testCurl.cpp", _1));
+	cmh.addCurl("file://" + RootDir.string() + "/testLocks.cpp",
+			boost::bind(&mapFileToName, boost::ref(files), "testLocks.cpp", _1));
+	cmh.performAll();
+	BOOST_REQUIRE_EQUAL(3, files.size());
+	BOOST_REQUIRE_EQUAL("Locks", files["testLocks.cpp"]);
+	BOOST_REQUIRE_EQUAL("Buffer", files["testBuffer.cpp"]);
+	BOOST_REQUIRE_EQUAL("Curl", files["testCurl.cpp"]);
 }
 

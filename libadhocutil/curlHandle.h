@@ -19,6 +19,8 @@ class DLL_PUBLIC CurlHandle : public virtual IntrusivePtrBase {
 		void appendPost(const char *, const char *);
 		void perform();
 
+		operator CURL *() const;
+
 	protected:
 		void checkCurlCode(CURLcode res) const;
 

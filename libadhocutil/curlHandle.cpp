@@ -56,6 +56,11 @@ CurlHandle::perform()
 	checkCurlCode(curl_easy_perform(curl_handle));
 }
 
+CurlHandle::operator CURL *() const
+{
+	return curl_handle;
+}
+
 void
 CurlHandle::checkCurlCode(CURLcode res) const
 {
