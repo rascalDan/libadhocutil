@@ -65,7 +65,7 @@ class NvpParse : public yyFlexLexer {
 
 	private:
 		NvpParse(std::istream & in, const AssignMap &);
-		~NvpParse() = default;
+		~NvpParse();
 
 		int yylex() override;
 		void LexerError(const char * msg) override;

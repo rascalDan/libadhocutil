@@ -62,6 +62,8 @@ NvpParse::NvpParse(std::istream & in, const AssignMap & v) :
 {
 }
 
+NvpParse::~NvpParse() = default;
+
 void
 NvpParse::process(const std::string & value) const
 {

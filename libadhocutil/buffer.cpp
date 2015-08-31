@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
+Buffer::FragmentBase::~FragmentBase() = default;
+
 //
 // CString Fragment
 //

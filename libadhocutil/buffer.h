@@ -115,7 +115,6 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 		typedef std::vector<FragmentPtr> Content;
 		mutable Content content;
 };
-Buffer::FragmentBase::~FragmentBase() = default;
 
 // libmisc compat macros
 #define vstringf Buffer().vappendf
