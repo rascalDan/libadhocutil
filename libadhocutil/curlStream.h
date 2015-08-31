@@ -16,7 +16,7 @@ class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public Curl
 
 	private:
 		friend class CurlMultiHandle;
-		DLL_PRIVATE void Callback() override;
+		DLL_PRIVATE void callback() override;
 
 		DLL_PRIVATE static size_t recvWrapper(void * data, size_t sz, size_t nm, void * css);
 		DLL_PRIVATE size_t recv(void * data, size_t datalen);

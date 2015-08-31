@@ -75,7 +75,7 @@ NvpParse::LexerError(const char * msg)
 }
 
 void
-NvpParse::Parse(std::istream & in, const AssignMap & m)
+NvpParse::parse(std::istream & in, const AssignMap & m)
 {
 	NvpParse p(in, m);
 	p.yylex();

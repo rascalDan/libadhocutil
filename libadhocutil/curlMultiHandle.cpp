@@ -12,7 +12,7 @@ class RunningCurl : public CurlStreamSource {
 		{
 		}
 
-		void Callback() override
+		void callback() override
 		{
 			typedef boost::reference_wrapper<RunningCurl> rc_ref;
 			boost::iostreams::stream<rc_ref> curlstrm(boost::ref(*this));
@@ -45,7 +45,7 @@ CurlMultiHandle::addRunner(CURLM * curlm, Running & running, CurlMultiHandle::CU
 	auto runner = *curls.begin();
 	curl_multi_add_handle(curlm, *runner);
 	running[*runner] = runner;
-	runner->SwapContext();
+	runner->swapContext();
 	curls.erase(runner);
 }
 
@@ -69,9 +69,10 @@ CurlMultiHandle::performAll()
 			while ((msg = curl_multi_info_read(curlm, &msgs))) {
 				if (msg->msg == CURLMSG_DONE) {
 					curl_multi_remove_handle(curlm, msg->easy_handle);
-					running[msg->easy_handle]->res = msg->data.result;
-					running[msg->easy_handle]->SwapContext();
-					running.erase(msg->easy_handle);
+					auto ri = running.find(msg->easy_handle);
+					ri->second->res = msg->data.result;
+					ri->second->swapContext();
+					running.erase(ri);
 					if (!curls.empty()) {
 						addRunner(curlm, running, curls);
 						act += 1;

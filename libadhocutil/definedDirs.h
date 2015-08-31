@@ -1,5 +1,5 @@
-#ifndef P2_UT_DEFINEDDIRS
-#define P2_UT_DEFINEDDIRS
+#ifndef ADHOCUTIL_DEFINEDDIRS_H
+#define ADHOCUTIL_DEFINEDDIRS_H
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -10,8 +10,9 @@
 
 #define XSTR(s) STR(s)
 #define STR(s) #s
-const auto BinDir = boost::filesystem::canonical("/proc/self/exe").parent_path();
-const boost::filesystem::path RootDir(XSTR(ROOT));
+const auto selfExe = boost::filesystem::canonical("/proc/self/exe");
+const auto binDir = selfExe.parent_path();
+const boost::filesystem::path rootDir(XSTR(ROOT));
 
 #endif
 

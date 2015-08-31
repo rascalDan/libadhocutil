@@ -1,5 +1,5 @@
-#ifndef ADHOC_BUFFER_H
-#define ADHOC_BUFFER_H
+#ifndef ADHOCUTIL_BUFFER_H
+#define ADHOCUTIL_BUFFER_H
 
 #include "intrusivePtrBase.h"
 #include <string>

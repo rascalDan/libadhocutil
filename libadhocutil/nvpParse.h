@@ -52,16 +52,16 @@ class NvpParse : public yyFlexLexer {
 #define NvpValue(c, m) { #m, boost::shared_ptr<NvpParse::Target<c, decltype(c::m)>>(new NvpParse::Target<c, decltype(c::m)>(&c::m)) }
 
 		template <typename T>
-		static void Parse(std::istream & in, const NvpTarget(T) & tm, T & t)
+		static void parse(std::istream & in, const NvpTarget(T) & tm, T & t)
 		{
 			NvpParse::AssignMap am;
 			for (const auto & v : tm) {
 				am[v.first] = v.second->assign(&t);
 			}
-			return Parse(in, am);
+			return parse(in, am);
 		}
 
-		DLL_PUBLIC static void Parse(std::istream & in, const AssignMap & m);
+		DLL_PUBLIC static void parse(std::istream & in, const AssignMap & m);
 
 	private:
 		NvpParse(std::istream & in, const AssignMap &);

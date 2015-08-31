@@ -10,17 +10,17 @@ class DLL_PUBLIC RuntimeContext {
 		RuntimeContext(size_t stacksize = 16384);
 		virtual ~RuntimeContext();
 
-		void SwapContext();
+		void swapContext();
 
 	protected:
-		DLL_PRIVATE virtual void Callback() = 0;
+		DLL_PRIVATE virtual void callback() = 0;
 
 	private:
-		DLL_PRIVATE static void ccallback(RuntimeContext * rc);
+		DLL_PRIVATE static void callbackWrapper(RuntimeContext * rc);
 
 		void * stack;
-		ucontext_t initial;
-		ucontext_t callback;
+		ucontext_t ctxInitial;
+		ucontext_t ctxCallback;
 		bool swapped;
 };
 

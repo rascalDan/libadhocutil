@@ -15,7 +15,7 @@ size_t discard(void *, size_t sz, size_t nm, void *)
 
 BOOST_AUTO_TEST_CASE( fetch_file )
 {
-	auto url = "file://" + RootDir.string() + "/testCurl.cpp";
+	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
 	CurlHandle ch(url);
 	ch.setopt(CURLOPT_WRITEFUNCTION, (void*)&discard);
 	ch.perform();
@@ -23,14 +23,14 @@ BOOST_AUTO_TEST_CASE( fetch_file )
 
 BOOST_AUTO_TEST_CASE( fetch_missing )
 {
-	auto url = "file://" + RootDir.string() + "/nothere";
+	auto url = "file://" + rootDir.string() + "/nothere";
 	CurlHandle ch(url);
 	BOOST_REQUIRE_THROW(ch.perform(), AdHoc::Net::CurlException);
 }
 
 BOOST_AUTO_TEST_CASE( fetch_file_stream )
 {
-	auto url = "file://" + RootDir.string() + "/testCurl.cpp";
+	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
 	CurlStreamSource css(url);
 	boost::iostreams::stream<css_ref> curlstrm(boost::ref(css));
 	std::string tok;
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE( fetch_file_stream )
 
 BOOST_AUTO_TEST_CASE( fetch_missing_stream )
 {
-	auto url = "file://" + RootDir.string() + "/nothere";
+	auto url = "file://" + rootDir.string() + "/nothere";
 	BOOST_REQUIRE_THROW({
 		CurlStreamSource css(url);
 		boost::iostreams::stream<css_ref> curlstrm(boost::ref(css));
@@ -71,11 +71,11 @@ BOOST_AUTO_TEST_CASE( fetch_multi )
 {
 	CurlMultiHandle cmh;
 	std::map<std::string, std::string> files;
-	cmh.addCurl("file://" + RootDir.string() + "/testBuffer.cpp",
+	cmh.addCurl("file://" + rootDir.string() + "/testBuffer.cpp",
 			boost::bind(&mapFileToName, boost::ref(files), "testBuffer.cpp", _1));
-	cmh.addCurl("file://" + RootDir.string() + "/testCurl.cpp",
+	cmh.addCurl("file://" + rootDir.string() + "/testCurl.cpp",
 			boost::bind(&mapFileToName, boost::ref(files), "testCurl.cpp", _1));
-	cmh.addCurl("file://" + RootDir.string() + "/testLocks.cpp",
+	cmh.addCurl("file://" + rootDir.string() + "/testLocks.cpp",
 			boost::bind(&mapFileToName, boost::ref(files), "testLocks.cpp", _1));
 	cmh.performAll();
 	BOOST_REQUIRE_EQUAL(3, files.size());

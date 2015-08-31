@@ -3,23 +3,25 @@
 
 #include "runtimeContext.h"
 
-class testRuntimeContext : RuntimeContext {
+class TestRuntimeContext : RuntimeContext {
 	public:
-		void Run()
+		void run()
 		{
 			log += "a";
-			SwapContext();
+			swapContext();
 			log += "b";
-			SwapContext();
+			swapContext();
 			log += "c";
+			swapContext();
+			log += "d";
 		}
 
-		void Callback() override
+		void callback() override
 		{
-			log += "d";
-			SwapContext();
 			log += "e";
-			SwapContext();
+			swapContext();
+			log += "f";
+			swapContext();
 		}
 
 		std::string log;
@@ -27,8 +29,8 @@ class testRuntimeContext : RuntimeContext {
 
 BOOST_AUTO_TEST_CASE ( basic )
 {
-	testRuntimeContext trc;
-	trc.Run();
-	BOOST_REQUIRE_EQUAL("adbec", trc.log);
+	TestRuntimeContext trc;
+	trc.run();
+	BOOST_REQUIRE_EQUAL("aebfcd", trc.log);
 }
 

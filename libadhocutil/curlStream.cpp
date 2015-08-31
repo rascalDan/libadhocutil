@@ -14,7 +14,7 @@ std::streamsize
 CurlStreamSource::read(char * target, std::streamsize targetSize)
 {
 	if (!buflen) {
-		SwapContext();
+		swapContext();
 		checkCurlCode(res);
 		if (!buflen) {
 			return 0;
@@ -28,7 +28,7 @@ CurlStreamSource::read(char * target, std::streamsize targetSize)
 }
 
 void
-CurlStreamSource::Callback()
+CurlStreamSource::callback()
 {
 	if (curl_headers) {
 		curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, curl_headers);
@@ -47,7 +47,7 @@ CurlStreamSource::recv(void * data, size_t datalen)
 {
 	buf = (char *)data;
 	buflen = datalen;
-	SwapContext();
+	swapContext();
 	return datalen;
 }
 

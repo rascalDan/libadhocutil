@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE ( parse )
 {
 	TestTarget tt;
 	std::stringstream i("a = foo;b=bar; c=3;d=3.14");
-	NvpParse::Parse(i, TestTargetMap, tt);
+	NvpParse::parse(i, TestTargetMap, tt);
 	BOOST_REQUIRE_EQUAL("foo", tt.a);
 	BOOST_REQUIRE_EQUAL("bar", tt.b);
 	BOOST_REQUIRE_EQUAL(3, tt.c);
@@ -42,13 +42,13 @@ BOOST_AUTO_TEST_CASE ( missing )
 {
 	TestTarget tt;
 	std::stringstream i("missing=nothing;");
-	BOOST_REQUIRE_THROW(NvpParse::Parse(i, TestTargetMap, tt), NvpParse::ValueNotFound);
+	BOOST_REQUIRE_THROW(NvpParse::parse(i, TestTargetMap, tt), NvpParse::ValueNotFound);
 }
 
 BOOST_AUTO_TEST_CASE ( bad )
 {
 	TestTarget tt;
 	std::stringstream i("{bad=");
-	BOOST_REQUIRE_THROW(NvpParse::Parse(i, TestTargetMap, tt), std::runtime_error);
+	BOOST_REQUIRE_THROW(NvpParse::parse(i, TestTargetMap, tt), std::runtime_error);
 }
 

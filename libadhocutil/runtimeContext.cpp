@@ -5,12 +5,12 @@ RuntimeContext::RuntimeContext(size_t stacksize) :
 	swapped(false)
 {
 	stack = malloc(stacksize);
-	if (getcontext(&callback) == -1)
+	if (getcontext(&ctxCallback) == -1)
 		throw std::runtime_error("Failed to getcontext");
-	callback.uc_stack.ss_sp = stack;
-	callback.uc_stack.ss_size = stacksize;
-	callback.uc_link = &initial;
-	makecontext(&callback, (void (*)())&RuntimeContext::ccallback, 1, this);
+	ctxCallback.uc_stack.ss_sp = stack;
+	ctxCallback.uc_stack.ss_size = stacksize;
+	ctxCallback.uc_link = &ctxInitial;
+	makecontext(&ctxCallback, (void (*)())&RuntimeContext::callbackWrapper, 1, this);
 }
 
 RuntimeContext::~RuntimeContext()
@@ -19,23 +19,23 @@ RuntimeContext::~RuntimeContext()
 }
 
 void
-RuntimeContext::SwapContext()
+RuntimeContext::swapContext()
 {
 	swapped = !swapped;
 	if (swapped) {
-		swapcontext(&initial, &callback);
+		swapcontext(&ctxInitial, &ctxCallback);
 	}
 	else {
 		if (stack) {
-			swapcontext(&callback, &initial);
+			swapcontext(&ctxCallback, &ctxInitial);
 		}
 	}
 }
 
 void
-RuntimeContext::ccallback(RuntimeContext * rc)
+RuntimeContext::callbackWrapper(RuntimeContext * rc)
 {
-	rc->Callback();
+	rc->callback();
 	free(rc->stack);
 	rc->stack = nullptr;
 }

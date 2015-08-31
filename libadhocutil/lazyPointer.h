@@ -1,5 +1,5 @@
-#ifndef LIBADHOC_LAZYPOINTER_H
-#define LIBADHOC_LAZYPOINTER_H
+#ifndef ADHOCUTIL_LAZYPOINTER_H
+#define ADHOCUTIL_LAZYPOINTER_H
 
 #include <boost/function.hpp>
 #include <boost/variant.hpp>

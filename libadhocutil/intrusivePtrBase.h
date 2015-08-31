@@ -1,5 +1,5 @@
-#ifndef ADHOC_INTRUSIVEPTRBASE_H
-#define ADHOC_INTRUSIVEPTRBASE_H
+#ifndef ADHOCUTIL_INTRUSIVEPTRBASE_H
+#define ADHOCUTIL_INTRUSIVEPTRBASE_H
 
 #include <boost/intrusive_ptr.hpp>
 

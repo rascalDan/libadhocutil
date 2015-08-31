@@ -1,5 +1,5 @@
-#ifndef LIBADHOC_SCOPEEXIT_H
-#define LIBADHOC_SCOPEEXIT_H
+#ifndef ADHOCUTIL_SCOPEEXIT_H
+#define ADHOCUTIL_SCOPEEXIT_H
 
 #include <boost/function.hpp>
 #include "visibility.h"

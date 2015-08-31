@@ -7,7 +7,7 @@
 
 BOOST_AUTO_TEST_CASE ( readfind )
 {
-	ProcessPipes pp({"/usr/bin/find", RootDir.string(), "-maxdepth", "1"}, false, true, true);
+	ProcessPipes pp({"/usr/bin/find", rootDir.string(), "-maxdepth", "1"}, false, true, true);
 	BOOST_REQUIRE_EQUAL(pp.fdIn(), -1);
 	BOOST_REQUIRE(pp.fdOut() != -1);
 	BOOST_REQUIRE(pp.fdError() != -1);

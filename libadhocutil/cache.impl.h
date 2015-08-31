@@ -1,3 +1,6 @@
+#ifndef ADHOCUTIL_CACHE_IMPL_H
+#define ADHOCUTIL_CACHE_IMPL_H
+
 #include "cache.h"
 #include <boost/lambda/lambda.hpp>
 #include "lockHelpers.h"
@@ -124,4 +127,6 @@ Cache<T, K>::prune() const
 		lastPruneTime = now;
 	}
 }
+
+#endif
 

@@ -1,5 +1,5 @@
-#ifndef NETFS_FUSE_CACHE_H
-#define NETFS_FUSE_CACHE_H
+#ifndef ADHOCUTIL_CACHE_H
+#define ADHOCUTIL_CACHE_H
 
 #include <time.h>
 #include <boost/shared_ptr.hpp>
