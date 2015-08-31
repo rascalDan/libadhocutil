@@ -107,3 +107,15 @@ run
 	testNvpParse
 	;
 
+run
+	testCache.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	<library>boost_system
+	<library>boost_thread
+	:
+	testCache
+	;
+
