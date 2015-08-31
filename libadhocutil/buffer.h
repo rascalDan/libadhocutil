@@ -117,9 +117,9 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 };
 
 // libmisc compat macros
-#define vstringf Buffer().vappendf
-#define stringf Buffer().appendf
-#define stringbf Buffer().appendbf
+#define vstringf(...) Buffer().vappendf(__VA_ARGS__).str()
+#define stringf(...) Buffer().appendf(__VA_ARGS__).str()
+#define stringbf(...) Buffer().appendbf(__VA_ARGS__).str()
 
 #endif
 
