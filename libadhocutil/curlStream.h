@@ -26,7 +26,7 @@ class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public Curl
 		CURLcode res;
 };
 
-typedef boost::reference_wrapper<CurlStreamSource> css_ref;
+typedef boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>> CurlStream;
 
 #endif
 

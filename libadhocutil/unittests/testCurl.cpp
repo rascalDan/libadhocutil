@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE( fetch_file_stream )
 {
 	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
 	CurlStreamSource css(url);
-	boost::iostreams::stream<css_ref> curlstrm(boost::ref(css));
+	CurlStream curlstrm(css);
 	std::string tok;
 	curlstrm >> tok;
 	BOOST_REQUIRE_EQUAL("#define", tok);
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE( fetch_missing_stream )
 	auto url = "file://" + rootDir.string() + "/nothere";
 	BOOST_REQUIRE_THROW({
 		CurlStreamSource css(url);
-		boost::iostreams::stream<css_ref> curlstrm(boost::ref(css));
+		CurlStream curlstrm(css);
 		std::string tok;
 		curlstrm >> tok;
 	}, AdHoc::Net::CurlException);
