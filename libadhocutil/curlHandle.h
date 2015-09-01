@@ -13,8 +13,12 @@ class DLL_PUBLIC CurlHandle : public virtual IntrusivePtrBase {
 		CurlHandle(const CurlHandle &) = delete;
 		void operator=(const CurlHandle &) = delete;
 
-		void setopt(CURLoption opt, const void * val);
-		void getinto(CURLoption opt, void * & val);
+		template <typename T>
+		void setopt(CURLoption opt, const T val);
+		void getinfo(CURLINFO info, long & val) const;
+		void getinfo(CURLINFO info, int & val) const;
+		void getinfo(CURLINFO info, double & val) const;
+		void getinfo(CURLINFO info, char * & val) const;
 		void appendHeader(const char *);
 		void appendPost(const char *, const char *);
 		void perform();
@@ -29,6 +33,18 @@ class DLL_PUBLIC CurlHandle : public virtual IntrusivePtrBase {
 		curl_httppost * postS, * postE;
 };
 typedef boost::intrusive_ptr<CurlHandle> CurlHandlePtr;
+
+template <>
+void CurlHandle::setopt(CURLoption opt, const void * val);
+template <>
+void CurlHandle::setopt(CURLoption opt, int val);
+template <>
+void CurlHandle::setopt(CURLoption opt, long val);
+template <typename T>
+void CurlHandle::setopt(CURLoption opt, const T val)
+{
+	setopt(opt, (const void *)val);
+}
 
 #endif
 

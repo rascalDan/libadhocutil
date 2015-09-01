@@ -17,8 +17,32 @@ BOOST_AUTO_TEST_CASE( fetch_file )
 {
 	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
 	CurlHandle ch(url);
-	ch.setopt(CURLOPT_WRITEFUNCTION, (void*)&discard);
+	ch.setopt(CURLOPT_WRITEFUNCTION, discard);
 	ch.perform();
+}
+
+BOOST_AUTO_TEST_CASE( setAndGetOptions )
+{
+	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
+	CurlHandle ch(url);
+	// function
+	ch.setopt(CURLOPT_WRITEFUNCTION, discard);
+	// object
+	ch.setopt(CURLOPT_WRITEDATA, this);
+	// int
+	ch.setopt(CURLOPT_LOCALPORT, 8000);
+	// long
+	ch.setopt(CURLOPT_LOCALPORT, 8000L);
+	ch.perform();
+	// char *
+	char * eurl;
+	ch.getinfo(CURLINFO_EFFECTIVE_URL, eurl);
+	BOOST_REQUIRE_EQUAL(url, eurl);
+	// double
+	double totalTime;
+	ch.getinfo(CURLINFO_TOTAL_TIME, totalTime);
+	BOOST_REQUIRE(totalTime > 0);
+	BOOST_REQUIRE(totalTime < 50);
 }
 
 BOOST_AUTO_TEST_CASE( fetch_missing )

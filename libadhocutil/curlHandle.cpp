@@ -1,5 +1,6 @@
 #include "curlHandle.h"
 #include <net.h>
+#include <boost/numeric/conversion/cast.hpp>
 
 static void cleanup() __attribute__((destructor));
 static void cleanup()
@@ -27,10 +28,51 @@ CurlHandle::~CurlHandle()
 	curl_easy_cleanup(curl_handle);
 }
 
+template <>
 void
 CurlHandle::setopt(CURLoption opt, const void * val)
 {
 	curl_easy_setopt(curl_handle, opt, val);
+}
+
+template <>
+void
+CurlHandle::setopt(CURLoption opt, int val)
+{
+	curl_easy_setopt(curl_handle, opt, val);
+}
+
+template <>
+void
+CurlHandle::setopt(CURLoption opt, long val)
+{
+	curl_easy_setopt(curl_handle, opt, val);
+}
+
+void
+CurlHandle::getinfo(CURLINFO info, long & val) const
+{
+	curl_easy_getinfo(curl_handle, info, &val);
+}
+
+void
+CurlHandle::getinfo(CURLINFO info, int & ival) const
+{
+	long val;
+	curl_easy_getinfo(curl_handle, info, &val);
+	ival = boost::numeric_cast<int>(val);
+}
+
+void
+CurlHandle::getinfo(CURLINFO info, double & val) const
+{
+	curl_easy_getinfo(curl_handle, info, &val);
+}
+
+void
+CurlHandle::getinfo(CURLINFO info, char * & val) const
+{
+	curl_easy_getinfo(curl_handle, info, &val);
 }
 
 void
