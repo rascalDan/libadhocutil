@@ -5,15 +5,27 @@
 #include <ucontext.h>
 #include "visibility.h"
 
+/// Runtime Context
+/**
+ * Create an alternate stack for processing.
+ */
 class DLL_PUBLIC RuntimeContext {
 	public:
+		/**
+		 * Create a new RuntimeContent
+		 * @param stacksize The size in bytes of the new stack.
+		 */
 		RuntimeContext(size_t stacksize = 16384);
-		virtual ~RuntimeContext();
+		virtual ~RuntimeContext() = 0;
 
+		/** Swap to/from the contained stack. */
 		void swapContext();
+
+		/** Has the callback on the contained stack run to completion? */
 		bool hasCompleted() const;
 
 	protected:
+		/** Overridden in a sub-class to implement functionality in the alternate stack */
 		DLL_PRIVATE virtual void callback() = 0;
 
 	private:

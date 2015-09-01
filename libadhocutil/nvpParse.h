@@ -13,8 +13,15 @@
 #endif
 #include <visibility.h>
 
+/// Name=Value parser.
+/**
+ * Parses an input stream of the format Name=Value;Name2=Value2;... into a predefined object
+ * structure.
+ */
 class NvpParse : public yyFlexLexer {
 	public:
+		/// @cond
+		/// Thrown in the event of the input referring to a member that doesn't exist.
 		class ValueNotFound : public std::runtime_error {
 			public:
 				ValueNotFound(const std::string &);
@@ -47,10 +54,16 @@ class NvpParse : public yyFlexLexer {
 			private:
 				V T::*target;
 		};
+		/// @endcond
 
 #define NvpTarget(T) std::map<std::string, boost::shared_ptr<NvpParse::TargetBase<T>>>
 #define NvpValue(c, m) { #m, boost::shared_ptr<NvpParse::Target<c, decltype(c::m)>>(new NvpParse::Target<c, decltype(c::m)>(&c::m)) }
 
+		/** Parse an input stream into the given object.
+		 * @param in The input stream.
+		 * @param tm The Target Map for the object.
+		 * @param t The target instance to populate.
+		 */
 		template <typename T>
 		static void parse(std::istream & in, const NvpTarget(T) & tm, T & t)
 		{
@@ -61,6 +74,9 @@ class NvpParse : public yyFlexLexer {
 			return parse(in, am);
 		}
 
+		/** Don't use this function directly, instead use:
+		 * @code {.cpp} void parse(std::istream & in, const NvpTarget(T) & tm, T & t) @endcode
+		 */
 		DLL_PUBLIC static void parse(std::istream & in, const AssignMap & m);
 
 	private:

@@ -5,6 +5,7 @@
 #include <boost/lambda/lambda.hpp>
 #include "lockHelpers.h"
 
+/// @cond
 template<typename T, typename K>
 Cacheable<T, K>::Cacheable(const K & k, time_t vu) :
 	key(k),
@@ -127,6 +128,7 @@ Cache<T, K>::prune() const
 		lastPruneTime = now;
 	}
 }
+/// @endcond
 
 #endif
 

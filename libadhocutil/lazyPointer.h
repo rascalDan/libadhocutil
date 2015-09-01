@@ -5,36 +5,49 @@
 #include <boost/variant.hpp>
 #include <boost/intrusive_ptr.hpp>
 
+/// Smart pointer that initializes itself only if it has to.
+/**
+ * LazyPointer behaves like a normal smarter for the most part. It's benefit
+ * is that it can be assigned a factory function which is only called on
+ * an attempt to dereference the pointer. All such operations will call
+ * this factory function as required prior to evaluating the pointer's value.
+ */
 template <typename T, typename P = boost::intrusive_ptr<T>>
 class LazyPointer {
 	public:
+		/// @cond
 		typedef T element_type;
 		typedef P pointer_type;
 		typedef boost::function0<P> Factory;
 		typedef boost::variant<P, Factory> Source;
+		/// @endcond
 
-		// Constructors
+		/** Construct pointer with a factory function. */
 		LazyPointer(const Factory & f) :
 			source(f)
 		{
 		}
 
+		/** Construct pointer with an instance value. */
 		LazyPointer(const P & p) :
 			source(p)
 		{
 		}
 
+		/** Construct pointer with an instance value. */
 		LazyPointer(T * p) :
 			source(P(p))
 		{
 		}
 
+		/** Construct pointer with no factory or value. */
 		LazyPointer() :
 			source(P(NULL))
 		{
 		}
 
 		// Getters
+		/// @cond
 		operator P() const
 		{
 			return deref();
@@ -105,7 +118,9 @@ class LazyPointer {
 			source = f;
 			return *this;
 		}
+		/// @endcond
 
+		/** Does the lazy pointer have a value? (as opposed to a factory). */
 		bool hasValue() const
 		{
 			return boost::get<P>(&source);

@@ -1,6 +1,7 @@
 #ifndef ADHOCUTIL_LOCKHELPERS_H
 #define ADHOCUTIL_LOCKHELPERS_H
 
+/// @cond
 template <typename locktype>
 class _LockLoop {
 	public:
@@ -18,6 +19,7 @@ class _LockLoop {
 		locktype lock;
 		bool flag;
 };
+/// @endcond
 
 #define LIBADHOC_LOCK_CONCAT2(a, b) a ## b
 #define LIBADHOC_LOCK_CONCAT(a, b) LIBADHOC_LOCK_CONCAT2(a, b)

@@ -3,8 +3,10 @@
 
 #include <boost/intrusive_ptr.hpp>
 
+/// Base class suitable for use with boost::intrusive_ptr<T>.
 class IntrusivePtrBase {
 	protected:
+		/// @cond
 		inline IntrusivePtrBase() : _refCount(0) { }
 		inline virtual ~IntrusivePtrBase() = 0;
 
@@ -37,6 +39,7 @@ intrusive_ptr_add_ref(const IntrusivePtrBase * p)
 {
 	p->_refCount += 1;
 }
+/// @endcond
 
 #endif
 

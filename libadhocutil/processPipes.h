@@ -5,26 +5,33 @@
 #include <string>
 #include "visibility.h"
 
-/**
- * Spawn a new process, providing access to it's stdin and stdout
- * @param params path and arguments to spawn (copied and passed to execv)
- * @param fds (out) the FDs on the childs stdin(0) and stdout(1)
- * @return the process ID of the child
- */
+/// Spawn a process and attach to its IO handles.
 class DLL_PUBLIC ProcessPipes {
 	public:
+		/**
+		 * Spawn a new process, providing (optional) access to its stdin, stdout and
+		 * stderr file handles.
+		 * @param args path and arguments to spawn (passed to execv)
+		 * @param in Attach to stdin?
+		 * @param out Attach to stdout?
+		 * @param err Attach to stderr?
+		 */
 		ProcessPipes(const std::vector<std::string> & args, bool in, bool out, bool err);
 		~ProcessPipes();
 
-		ProcessPipes(const ProcessPipes &) = delete;
-		void operator=(const ProcessPipes &) = delete;
-
+		/** FD handle to child's stdin. */
 		int fdIn() const;
+		/** FD handle to child's stdout. */
 		int fdOut() const;
+		/** FD handle to child's stderr. */
 		int fdError() const;
+		/** Process id of child. */
 		pid_t pid() const;
 
 	private:
+		ProcessPipes(const ProcessPipes &) = delete;
+		void operator=(const ProcessPipes &) = delete;
+
 		int in, out, error;
 		pid_t child;
 };

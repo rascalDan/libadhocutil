@@ -311,6 +311,12 @@ Buffer::operator!() const
 	return content.empty();
 }
 
+bool
+Buffer::empty() const
+{
+	return content.empty();
+}
+
 std::ostream &
 std::operator<<(std::ostream & os, const Buffer & b)
 {

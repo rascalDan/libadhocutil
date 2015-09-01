@@ -10,6 +10,7 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/variant.hpp>
 
+/// @cond
 template <typename T, typename K>
 class Cacheable {
 	public:
@@ -47,20 +48,46 @@ class CallCacheable : public Cacheable<T, K> {
 
 struct byValidity {};
 struct byKey {};
+/// @endcond
+
+/// In-memory cache of T, keyed by K.
 template <typename T, typename K>
 class Cache {
 	public:
+		/// @cond
 		typedef K Key;
 		typedef T Value;
 		typedef Cacheable<T, K> Item;
 		typedef boost::shared_ptr<Item> Element;
+		/// @endcond
 
+		/** Construct a default empty cache. */
 		Cache();
 
+		/** Add a known item to the cache.
+		 * @param k The key of the cache item.
+		 * @param t The item to cache.
+		 * @param validUntil The absolute time the cache item should expire.
+		 */
 		void add(const K & k, const T & t, time_t validUntil);
+		/** Add a callback item to the cache.
+		 * The callback will be called on first hit of the cache item, at which
+		 * point the return value of the function will be cached.
+		 * @param k The key of the cache item.
+		 * @param tf The callback function to cache.
+		 * @param validUntil The absolute time the cache item should expire.
+		 */
 		void add(const K & k, const boost::function<T()> & tf, time_t validUntil);
+		/** Get an Element from the cache. The element represents the key, item and expiry time.
+		 * Returns null on cache-miss.
+		 * @param k Cache key to get. */
 		Element getItem(const K & k) const;
+		/** Get an Item from the cache. Returns null on cache-miss.
+		 * @param k Cache key to get. */
 		const T * get(const K & k) const;
+		/** Get the size of the cache (number of items). @warning This cannot be reliably used to
+		 * determine or estimate the amount of memory used by items in the cache without further
+		 * knowledge of the items themselves. */
 		size_t size() const;
 
 	private:

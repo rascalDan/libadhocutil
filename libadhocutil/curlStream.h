@@ -8,10 +8,13 @@
 #include "visibility.h"
 #include "curlHandle.h"
 
+/// boost::iostreams::source implementation for CURL downloads.
 class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public CurlHandle, RuntimeContext {
 	public:
+		/** Construct a new stream source for the given URL. */
 		CurlStreamSource(const std::string & url);
 
+		/** Required member function for reading of the stream source by boost::iostreams::stream. */
 		std::streamsize read(char * target, std::streamsize targetSize);
 
 	private:
