@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE( fetch_multi_fail )
 	CurlMultiHandle cmh;
 	bool errored = false;
 	bool finished = false;
-	cmh.addCurl("http://sys.randomdan.homeip.net/missing", [&finished, &errored](auto & s) {
+	cmh.addCurl("http://sys.randomdan.homeip.net/missing", [&finished, &errored](std::istream & s) {
 			try {
 				std::string tok;
 				while (!s.eof()) {

@@ -39,7 +39,7 @@ class NvpParse : public yyFlexLexer {
 
 				AssignFunc assign(T * t) const override
 				{
-					return [t,this](const auto & value) {
+					return [t,this](const std::string & value) {
 						t->*target = boost::lexical_cast<V>(value);
 					};
 				}
