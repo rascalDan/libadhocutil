@@ -4,6 +4,8 @@
 #include "scopeExit.h"
 #include <string>
 
+using namespace AdHoc;
+
 BOOST_AUTO_TEST_CASE ( cleanexit )
 {
 	std::string log;

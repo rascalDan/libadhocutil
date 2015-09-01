@@ -1,6 +1,10 @@
 #ifndef ADHOCUTIL_SAFEMAPFIND_H
 #define ADHOCUTIL_SAFEMAPFIND_H
 
+#include <algorithm>
+
+namespace AdHoc {
+
 /*
  * Find the key and return the iterator to the pair,
  * or throw Ex(key) if not found.
@@ -54,6 +58,8 @@ bool
 containerContains(const Cont & c, const typename Cont::value_type & v)
 {
 	return (std::find(c.begin(), c.end(), v) != c.end());
+}
+
 }
 
 #endif

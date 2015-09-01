@@ -5,6 +5,8 @@
 #include "intrusivePtrBase.h"
 #include "lazyPointer.h"
 
+using namespace AdHoc;
+
 class Test : public IntrusivePtrBase {
 	public:
 		Test(int v) :

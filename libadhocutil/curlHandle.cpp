@@ -2,6 +2,9 @@
 #include <net.h>
 #include <boost/numeric/conversion/cast.hpp>
 
+namespace AdHoc {
+namespace Net {
+
 static void cleanup() __attribute__((destructor));
 static void cleanup()
 {
@@ -115,5 +118,8 @@ CurlHandle::checkCurlCode(CURLcode res) const
 		}
 		throw ce;
 	}
+}
+
+}
 }
 

@@ -3,6 +3,8 @@
 
 #include "nvpParse.h"
 
+using namespace AdHoc;
+
 class TestTarget {
 	public:
 		std::string a;

@@ -5,6 +5,9 @@
 #include "intrusivePtrBase.h"
 #include "visibility.h"
 
+namespace AdHoc {
+namespace Net {
+
 /// libcurl handle wrapper.
 /** Wraps a libcurl CURL * object in a C++ friendly manner. */
 class DLL_PUBLIC CurlHandle : public virtual IntrusivePtrBase {
@@ -61,6 +64,9 @@ void CurlHandle::setopt(CURLoption opt, const T val)
 	setopt(opt, (const void *)val);
 }
 /// @endcond
+
+}
+}
 
 #endif
 

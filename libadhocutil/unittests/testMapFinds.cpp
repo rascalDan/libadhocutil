@@ -7,6 +7,8 @@
 #include <string>
 #include <map>
 
+using namespace AdHoc;
+
 class NotFound : std::runtime_error {
 	public:
 		NotFound(int key) :

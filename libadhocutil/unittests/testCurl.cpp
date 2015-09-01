@@ -8,7 +8,11 @@
 #include "definedDirs.h"
 #include "net.h"
 
-size_t discard(void *, size_t sz, size_t nm, void *)
+using namespace AdHoc::Net;
+
+static
+size_t
+discard(void *, size_t sz, size_t nm, void *)
 {
 	return sz * nm;
 }

@@ -3,7 +3,7 @@
 %option noyywrap
 %option 8bit
 %option stack
-%option yyclass="NvpParse"
+%option yyclass="AdHoc::NvpParse"
 %option prefix="nvpBase"
 
 %{
@@ -51,6 +51,8 @@ semi ";"
 %%
 #include "safeMapFind.h"
 
+namespace AdHoc {
+
 NvpParse::ValueNotFound::ValueNotFound(const std::string & vn) :
 	std::runtime_error("Value not found: " + vn)
 {
@@ -81,5 +83,7 @@ NvpParse::parse(std::istream & in, const AssignMap & m)
 {
 	NvpParse p(in, m);
 	p.yylex();
+}
+
 }
 

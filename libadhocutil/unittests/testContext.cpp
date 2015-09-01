@@ -3,6 +3,8 @@
 
 #include "runtimeContext.h"
 
+using namespace AdHoc::System;
+
 class TestRuntimeContext : public RuntimeContext {
 	public:
 		void run()

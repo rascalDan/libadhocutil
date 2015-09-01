@@ -9,11 +9,15 @@
 #include <boost/shared_ptr.hpp>
 #include "visibility.h"
 
-class DLL_PUBLIC Buffer;
+namespace AdHoc {
+	class DLL_PUBLIC Buffer;
+}
 
 namespace std {
-	DLL_PUBLIC std::ostream & operator<<(std::ostream &, const Buffer &);
+	DLL_PUBLIC std::ostream & operator<<(std::ostream &, const AdHoc::Buffer &);
 }
+
+namespace AdHoc {
 
 /// High-speed text buffer for easy creation of programatically created strings.
 class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
@@ -158,10 +162,12 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 		mutable Content content;
 };
 
+}
+
 // libmisc compat macros
-#define vstringf(...) Buffer().vappendf(__VA_ARGS__).str()
-#define stringf(...) Buffer().appendf(__VA_ARGS__).str()
-#define stringbf(...) Buffer().appendbf(__VA_ARGS__).str()
+#define vstringf(...) AdHoc::Buffer().vappendf(__VA_ARGS__).str()
+#define stringf(...) AdHoc::Buffer().appendf(__VA_ARGS__).str()
+#define stringbf(...) AdHoc::Buffer().appendbf(__VA_ARGS__).str()
 
 #endif
 

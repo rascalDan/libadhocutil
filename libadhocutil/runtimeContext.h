@@ -5,6 +5,9 @@
 #include <ucontext.h>
 #include "visibility.h"
 
+namespace AdHoc {
+namespace System {
+
 /// Runtime Context
 /**
  * Create an alternate stack for processing.
@@ -37,6 +40,9 @@ class DLL_PUBLIC RuntimeContext {
 		bool completed;
 		bool swapped;
 };
+
+}
+}
 
 #endif
 

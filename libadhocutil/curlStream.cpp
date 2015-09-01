@@ -1,5 +1,8 @@
 #include "curlStream.h"
 
+namespace AdHoc {
+namespace Net {
+
 CurlStreamSource::CurlStreamSource(const std::string & url) :
 	CurlHandle(url),
 	buflen(0),
@@ -49,5 +52,8 @@ CurlStreamSource::recv(void * data, size_t datalen)
 	buflen = datalen;
 	swapContext();
 	return datalen;
+}
+
+}
 }
 

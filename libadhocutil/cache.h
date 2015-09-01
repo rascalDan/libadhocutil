@@ -10,6 +10,8 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/variant.hpp>
 
+namespace AdHoc {
+
 /// @cond
 template <typename T, typename K>
 class Cacheable {
@@ -105,6 +107,8 @@ class Cache {
 							> > Cached;
 		mutable Cached cached;
 };
+
+}
 
 #endif
 

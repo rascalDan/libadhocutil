@@ -4,6 +4,8 @@
 #include <boost/function.hpp>
 #include "visibility.h"
 
+namespace AdHoc {
+
 /// Run code at scope exit.
 class DLL_PUBLIC ScopeExit {
 	public:
@@ -28,6 +30,8 @@ class DLL_PUBLIC ScopeExit {
 		const Event onFailure;
 		const Event onExitPost;
 };
+
+}
 
 #endif
 

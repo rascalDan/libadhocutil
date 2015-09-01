@@ -13,6 +13,8 @@
 #endif
 #include <visibility.h>
 
+namespace AdHoc {
+
 /// Name=Value parser.
 /**
  * Parses an input stream of the format Name=Value;Name2=Value2;... into a predefined object
@@ -90,6 +92,8 @@ class NvpParse : public yyFlexLexer {
 		std::string name;
 		const AssignMap values;
 };
+
+}
 
 #endif
 

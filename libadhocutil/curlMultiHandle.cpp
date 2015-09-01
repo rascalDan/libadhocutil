@@ -4,6 +4,9 @@
 #include "runtimeContext.h"
 #include "curlStream.h"
 
+namespace AdHoc {
+namespace Net {
+
 class RunningCurl : public CurlStreamSource {
 	public:
 		RunningCurl(const std::string & url, const boost::function<void(std::istream &)> & c) :
@@ -91,5 +94,8 @@ CurlMultiHandle::performAll()
 		}
 		curl_multi_cleanup(curlm);
 	}
+}
+
+}
 }
 

@@ -5,6 +5,8 @@
 #include <boost/lambda/lambda.hpp>
 #include "lockHelpers.h"
 
+namespace AdHoc {
+
 /// @cond
 template<typename T, typename K>
 Cacheable<T, K>::Cacheable(const K & k, time_t vu) :
@@ -129,6 +131,8 @@ Cache<T, K>::prune() const
 	}
 }
 /// @endcond
+
+}
 
 #endif
 

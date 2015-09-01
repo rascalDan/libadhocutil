@@ -8,8 +8,11 @@
 #include "visibility.h"
 #include "curlHandle.h"
 
+namespace AdHoc {
+namespace Net {
+
 /// boost::iostreams::source implementation for CURL downloads.
-class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public CurlHandle, RuntimeContext {
+class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public CurlHandle, ::AdHoc::System::RuntimeContext {
 	public:
 		/** Construct a new stream source for the given URL. */
 		CurlStreamSource(const std::string & url);
@@ -30,6 +33,9 @@ class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public Curl
 };
 
 typedef boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>> CurlStream;
+
+}
+}
 
 #endif
 

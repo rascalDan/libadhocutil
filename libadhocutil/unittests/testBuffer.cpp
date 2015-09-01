@@ -3,6 +3,8 @@
 
 #include "buffer.h"
 
+using namespace AdHoc;
+
 BOOST_AUTO_TEST_CASE ( create )
 {
 	Buffer empty;

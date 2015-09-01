@@ -5,6 +5,9 @@
 #include <sys/resource.h>
 #include <stdexcept>
 
+namespace AdHoc {
+namespace System {
+
 ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o, bool e) :
 	in(-1),
 	out(-1),
@@ -134,5 +137,8 @@ pid_t
 ProcessPipes::pid() const
 {
 	return child;
+}
+
+}
 }
 

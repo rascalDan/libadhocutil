@@ -1,6 +1,9 @@
 #include "runtimeContext.h"
 #include <stdexcept>
 
+namespace AdHoc {
+namespace System {
+
 RuntimeContext::RuntimeContext(size_t stacksize) :
 	completed(false),
 	swapped(false)
@@ -48,5 +51,8 @@ RuntimeContext::callbackWrapper(RuntimeContext * rc)
 {
 	rc->callback();
 	rc->completed = true;
+}
+
+}
 }
 

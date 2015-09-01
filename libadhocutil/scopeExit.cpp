@@ -1,5 +1,7 @@
 #include "scopeExit.h"
 
+namespace AdHoc {
+
 ScopeExit::ScopeExit(const Event & onexitpre, const Event & onsuccess, const Event & onfailure, const Event & onexitpost) :
 	onExitPre(onexitpre),
 	onSuccess(onsuccess),
@@ -18,5 +20,7 @@ ScopeExit::~ScopeExit()
 		if (onSuccess) onSuccess();
 	}
 	if (onExitPost) onExitPost();
+}
+
 }
 

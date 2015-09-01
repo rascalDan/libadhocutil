@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
+namespace AdHoc {
+
 Buffer::FragmentBase::~FragmentBase() = default;
 
 //
@@ -317,15 +319,6 @@ Buffer::empty() const
 	return content.empty();
 }
 
-std::ostream &
-std::operator<<(std::ostream & os, const Buffer & b)
-{
-	for (const auto & f : b.content) {
-		os.write(f->c_str(), f->length());
-	}
-	return os;
-}
-
 Buffer &
 Buffer::operator+=(const char * str)
 {
@@ -336,5 +329,16 @@ Buffer &
 Buffer::operator+=(const std::string & str)
 {
 	return append(str);
+}
+
+}
+
+std::ostream &
+std::operator<<(std::ostream & os, const AdHoc::Buffer & b)
+{
+	for (const auto & f : b.content) {
+		os.write(f->c_str(), f->length());
+	}
+	return os;
 }
 

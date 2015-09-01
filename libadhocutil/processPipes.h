@@ -5,6 +5,9 @@
 #include <string>
 #include "visibility.h"
 
+namespace AdHoc {
+namespace System {
+
 /// Spawn a process and attach to its IO handles.
 class DLL_PUBLIC ProcessPipes {
 	public:
@@ -35,6 +38,9 @@ class DLL_PUBLIC ProcessPipes {
 		int in, out, error;
 		pid_t child;
 };
+
+}
+}
 
 #endif
 

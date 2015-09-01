@@ -5,6 +5,8 @@
 #include "definedDirs.h"
 #include <sys/wait.h>
 
+using namespace AdHoc::System;
+
 BOOST_AUTO_TEST_CASE ( readfind )
 {
 	ProcessPipes pp({"/usr/bin/find", rootDir.string(), "-maxdepth", "1"}, false, true, true);

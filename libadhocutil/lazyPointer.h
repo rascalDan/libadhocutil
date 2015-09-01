@@ -5,6 +5,8 @@
 #include <boost/variant.hpp>
 #include <boost/intrusive_ptr.hpp>
 
+namespace AdHoc {
+
 /// Smart pointer that initializes itself only if it has to.
 /**
  * LazyPointer behaves like a normal smarter for the most part. It's benefit
@@ -130,9 +132,11 @@ class LazyPointer {
 		mutable Source source;
 };
 
+}
+
 namespace boost {
 	template <typename R, typename T, typename P>
-		R * dynamic_pointer_cast(const LazyPointer<T, P> & p) {
+		R * dynamic_pointer_cast(const AdHoc::LazyPointer<T, P> & p) {
 			return dynamic_cast<R *>(p.get());
 		}
 }

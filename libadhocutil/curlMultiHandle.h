@@ -8,6 +8,9 @@
 #include "visibility.h"
 #include "curlHandle.h"
 
+namespace AdHoc {
+namespace Net {
+
 class RunningCurl;
 typedef boost::intrusive_ptr<RunningCurl> RunningCurlPtr;
 
@@ -34,6 +37,9 @@ class DLL_PUBLIC CurlMultiHandle : public IntrusivePtrBase {
 		CURLs curls;
 };
 typedef boost::intrusive_ptr<CurlMultiHandle> CurlMultiHandlePtr;
+
+}
+}
 
 #endif
 

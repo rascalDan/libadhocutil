@@ -5,18 +5,22 @@
 #include "cache.h"
 #include "cache.impl.h"
 
-typedef Cache<int, std::string> TestCache;
-template class Cache<int, std::string>;
-template class Cacheable<int, std::string>;
-template class ObjectCacheable<int, std::string>;
-template class CallCacheable<int, std::string>;
-
 namespace std {
 	std::ostream & operator<<(std::ostream & s, const std::nullptr_t &)
 	{
-		return s << "(nil)";	
+		return s << "(nil)";
 	}
 }
+
+namespace AdHoc {
+	typedef Cache<int, std::string> TestCache;
+	template class Cache<int, std::string>;
+	template class Cacheable<int, std::string>;
+	template class ObjectCacheable<int, std::string>;
+	template class CallCacheable<int, std::string>;
+}
+
+using namespace AdHoc;
 
 BOOST_AUTO_TEST_CASE( miss )
 {
