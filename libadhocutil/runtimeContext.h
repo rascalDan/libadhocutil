@@ -11,6 +11,7 @@ class DLL_PUBLIC RuntimeContext {
 		virtual ~RuntimeContext();
 
 		void swapContext();
+		bool hasCompleted() const;
 
 	protected:
 		DLL_PRIVATE virtual void callback() = 0;
@@ -21,6 +22,7 @@ class DLL_PUBLIC RuntimeContext {
 		void * stack;
 		ucontext_t ctxInitial;
 		ucontext_t ctxCallback;
+		bool completed;
 		bool swapped;
 };
 

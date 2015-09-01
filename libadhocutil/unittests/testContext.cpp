@@ -3,7 +3,7 @@
 
 #include "runtimeContext.h"
 
-class TestRuntimeContext : RuntimeContext {
+class TestRuntimeContext : public RuntimeContext {
 	public:
 		void run()
 		{
@@ -32,5 +32,6 @@ BOOST_AUTO_TEST_CASE ( basic )
 	TestRuntimeContext trc;
 	trc.run();
 	BOOST_REQUIRE_EQUAL("aebfcd", trc.log);
+	BOOST_REQUIRE(trc.hasCompleted());
 }
 

@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 RuntimeContext::RuntimeContext(size_t stacksize) :
+	completed(false),
 	swapped(false)
 {
 	stack = malloc(stacksize);
@@ -26,17 +27,26 @@ RuntimeContext::swapContext()
 		swapcontext(&ctxInitial, &ctxCallback);
 	}
 	else {
-		if (stack) {
+		if (!completed) {
 			swapcontext(&ctxCallback, &ctxInitial);
+			if (completed) {
+				free(stack);
+				stack = nullptr;
+			}
 		}
 	}
+}
+
+bool
+RuntimeContext::hasCompleted() const
+{
+	return completed;
 }
 
 void
 RuntimeContext::callbackWrapper(RuntimeContext * rc)
 {
 	rc->callback();
-	free(rc->stack);
-	rc->stack = nullptr;
+	rc->completed = true;
 }
 
