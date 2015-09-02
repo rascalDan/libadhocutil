@@ -2,20 +2,16 @@ import package ;
 import lex ;
 
 lib boost_utf : : <name>boost_unit_test_framework ;
-lib Ice ;
+lib Ice : : : : <library>IceUtil <library>pthread ;
 lib IceUtil ;
 lib pthread ;
 lib curl ;
-alias ice : : : :
-	<library>Ice
-	<library>IceUtil
-	<library>pthread ;
 
 lib adhocutil :
 	[ glob *.ll *.cpp *.ice : bin ]
 	:
 	<include>.
-	<library>ice
+	<library>Ice
 	<library>curl
 	<cflags>-fvisibility=hidden
 	<variant>release:<cflags>-flto
