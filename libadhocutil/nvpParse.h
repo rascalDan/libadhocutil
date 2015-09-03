@@ -58,8 +58,8 @@ class NvpParse : public yyFlexLexer {
 		};
 		/// @endcond
 
-#define NvpTarget(T) std::map<std::string, boost::shared_ptr<NvpParse::TargetBase<T>>>
-#define NvpValue(c, m) { #m, boost::shared_ptr<NvpParse::Target<c, decltype(c::m)>>(new NvpParse::Target<c, decltype(c::m)>(&c::m)) }
+#define NvpTarget(T) std::map<std::string, boost::shared_ptr<::AdHoc::NvpParse::TargetBase<T>>>
+#define NvpValue(c, m) { #m, boost::shared_ptr<::AdHoc::NvpParse::Target<c, decltype(c::m)>>(new ::AdHoc::NvpParse::Target<c, decltype(c::m)>(&c::m)) }
 
 		/** Parse an input stream into the given object.
 		 * @param in The input stream.
