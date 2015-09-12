@@ -119,3 +119,13 @@ run
 	testCache
 	;
 
+run
+	testPlugins.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	:
+	testPlugins
+	;
+
