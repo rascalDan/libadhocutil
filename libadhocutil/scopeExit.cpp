@@ -2,24 +2,28 @@
 
 namespace AdHoc {
 
-ScopeExit::ScopeExit(const Event & onexitpre, const Event & onsuccess, const Event & onfailure, const Event & onexitpost) :
-	onExitPre(onexitpre),
-	onSuccess(onsuccess),
-	onFailure(onfailure),
-	onExitPost(onexitpost)
+ScopeExit::ScopeExit()
 {
+}
+
+ScopeExit::ScopeExit(const Event & onexitpre, const Event & onsuccess, const Event & onfailure, const Event & onexitpost)
+{
+	if (onexitpre) onExitPre.push_back(onexitpre);
+	if (onsuccess) onSuccess.push_back(onsuccess);
+	if (onfailure) onFailure.push_back(onfailure);
+	if (onexitpost) onExitPost.push_back(onexitpost);
 }
 
 ScopeExit::~ScopeExit()
 {
-	if (onExitPre) onExitPre();
+	for(const auto & e : onExitPre) e();
 	if (std::uncaught_exception()) {
-		if (onFailure) onFailure();
+		for(const auto & e : onFailure) e();
 	}
 	else {
-		if (onSuccess) onSuccess();
+		for(const auto & e : onSuccess) e();
 	}
-	if (onExitPost) onExitPost();
+	for(const auto & e : onExitPost) e();
 }
 
 }

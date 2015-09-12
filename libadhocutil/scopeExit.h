@@ -2,6 +2,7 @@
 #define ADHOCUTIL_SCOPEEXIT_H
 
 #include <boost/function.hpp>
+#include <vector>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -12,6 +13,10 @@ class DLL_PUBLIC ScopeExit {
 		/** Callback for code to be run. */
 		typedef boost::function<void()> Event;
 
+		/**
+		 * Construct an empty trigger for running code yet to be determined at scope exit
+		 */
+		ScopeExit();
 		/** Construct a trigger for running code at scope exit.
 		 * @param pre Run this code (unconditionally) first.
 		 * @param success Only run this if the scope is exitted cleanly.
@@ -24,11 +29,12 @@ class DLL_PUBLIC ScopeExit {
 		ScopeExit(const ScopeExit &) = delete;
 		void operator=(const ScopeExit &) = delete;
 
-	private:
-		const Event onExitPre;
-		const Event onSuccess;
-		const Event onFailure;
-		const Event onExitPost;
+		/// @cond
+		std::vector<Event> onExitPre;
+		std::vector<Event> onSuccess;
+		std::vector<Event> onFailure;
+		std::vector<Event> onExitPost;
+		/// @endcond
 };
 
 }
