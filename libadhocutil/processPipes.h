@@ -31,6 +31,9 @@ class DLL_PUBLIC ProcessPipes {
 		/** Process id of child. */
 		pid_t pid() const;
 
+		/** Close all open file handles as determined by rlimit and poll. */
+		static void closeAllOpenFiles();
+
 	private:
 		ProcessPipes(const ProcessPipes &) = delete;
 		void operator=(const ProcessPipes &) = delete;
