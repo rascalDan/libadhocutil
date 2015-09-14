@@ -129,3 +129,13 @@ run
 	testPlugins
 	;
 
+run
+	testFactory.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	:
+	testFactory
+	;
+
