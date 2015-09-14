@@ -11,6 +11,7 @@
 #include <set>
 #include <algorithm>
 #include "visibility.h"
+#include "unique.h"
 
 namespace std {
 	DLL_PUBLIC
@@ -146,7 +147,7 @@ namespace AdHoc {
 }
 
 #define NAMEDPLUGIN(Name, Implementation, Base) \
-	namespace { \
+	namespace MAKE_UNIQUE(__plugin__) { \
 		static void InstallPlugin() __attribute__((constructor(102))); \
 		void InstallPlugin() { \
 			::AdHoc::PluginManager::getDefault()->add<Base>(new Implementation(), Name, __FILE__, __LINE__); \
