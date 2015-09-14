@@ -22,7 +22,7 @@ namespace AdHoc {
 	const std::type_info &
 	PluginOf<T>::type() const
 	{
-		return typeid(*impl);
+		return typeid(T);
 	}
 
 	/// Get the implementation of this plugin.
