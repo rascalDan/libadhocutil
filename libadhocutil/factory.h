@@ -2,17 +2,18 @@
 #define ADHOCUTIL_FACTORY_H
 
 #include "plugins.h"
+#include "visibility.h"
 
 namespace AdHoc {
 	template <typename Base, typename ... Params>
-	class Factory {
+	class DLL_PUBLIC Factory {
 		public:
 			virtual ~Factory() = 0;
 
 			virtual Base * create(const Params & ...) const = 0;
 
 			template <typename Impl, typename _ = Factory<Base, Params...>>
-			class For : public _
+			class DLL_PUBLIC For : public _
 			{
 				public:
 					Base * create(const Params & ... p) const override
