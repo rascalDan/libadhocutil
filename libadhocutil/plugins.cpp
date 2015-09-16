@@ -70,7 +70,6 @@ namespace AdHoc {
 	PluginManager::~PluginManager()
 	{
 		delete plugins;
-		fputs(__PRETTY_FUNCTION__, stderr);
 	}
 
 	PluginManager *
