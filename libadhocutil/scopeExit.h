@@ -26,7 +26,9 @@ class DLL_PUBLIC ScopeExit {
 		ScopeExit(const Event & pre, const Event & success = Event(), const Event & failure = Event(), const Event & post = Event());
 		~ScopeExit();
 
+		/// Copying construction is disabled
 		ScopeExit(const ScopeExit &) = delete;
+		/// Assignment is disabled
 		void operator=(const ScopeExit &) = delete;
 
 		/// @cond
