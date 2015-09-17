@@ -6,6 +6,7 @@ lib boost_utf : : <name>boost_unit_test_framework ;
 lib boost_filesystem ;
 lib boost_system ;
 lib boost_thread ;
+lib dl ;
 
 run
 	testContext.cpp
@@ -119,14 +120,38 @@ run
 	testCache
 	;
 
+lib utilTestClasses :
+	utilTestClasses.cpp
+	: :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	;
+
 run
 	testPlugins.cpp
 	: : :
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
+	<library>utilTestClasses
 	:
 	testPlugins
+	;
+
+run
+	testPluginsRuntime.cpp
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	<library>boost_filesystem
+	<library>boost_system
+	<library>dl
+	<dependency>utilTestClasses
+	:
+	testPluginsRuntime
 	;
 
 run

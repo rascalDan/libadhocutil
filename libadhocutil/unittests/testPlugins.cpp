@@ -3,19 +3,9 @@
 
 #include "plugins.h"
 #include "plugins.impl.h"
+#include "utilTestClasses.h"
 
 using namespace AdHoc;
-
-class BaseThing { };
-
-class ImplOfThing : public BaseThing { };
-class OtherImplOfThing : public BaseThing { };
-
-class OtherBase { };
-
-class OtherImpl : public OtherBase { };
-
-PLUGIN(ImplOfThing, BaseThing);
 
 BOOST_AUTO_TEST_CASE( ready )
 {
