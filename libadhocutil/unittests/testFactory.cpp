@@ -11,6 +11,7 @@ using namespace AdHoc;
 class BaseThing {
 	public:
 		BaseThing(int, const std::string &){}
+		virtual ~BaseThing() = default;
 
 		virtual void execute() const = 0;
 };
@@ -30,6 +31,8 @@ typedef AdHoc::Factory<BaseThing, int, std::string> BaseThingFactory;
 
 NAMEDFACTORY("a", ImplOfThing, BaseThingFactory);
 FACTORY(OtherImplOfThing, BaseThingFactory);
+
+INSTANIATEFACTORY(BaseThing, int, std::string);
 
 BOOST_AUTO_TEST_CASE( ready )
 {

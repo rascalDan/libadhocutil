@@ -2,6 +2,7 @@
 #define ADHOCUTIL_FACTORY_IMPL_H
 
 #include "factory.h"
+#include "plugins.impl.h"
 
 namespace AdHoc {
 	template <typename Base, typename ... Params>
@@ -21,5 +22,10 @@ namespace AdHoc {
 		return get(name)->create(p...);
 	}
 }
+
+#define INSTANIATEFACTORY(Base, ...) \
+	template class AdHoc::Factory<Base, __VA_ARGS__>; \
+	INSTANIATEPLUGINOF(Base)
+
 #endif
 

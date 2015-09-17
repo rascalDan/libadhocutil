@@ -75,5 +75,13 @@ namespace AdHoc {
 	}
 }
 
+#define INSTANIATEPLUGINOF(T) \
+	template class AdHoc::PluginOf<T>; \
+	template void AdHoc::PluginManager::add<T>(const T *, const std::string &, const std::string &, int); \
+	template void AdHoc::PluginManager::remove<T>(const std::string &); \
+	template boost::shared_ptr<const AdHoc::PluginOf<T>> AdHoc::PluginManager::get<T>(const std::string &) const; \
+	template const T * AdHoc::PluginManager::getImplementation<T>(const std::string &) const; \
+	template std::set<boost::shared_ptr<const AdHoc::PluginOf<T>>> AdHoc::PluginManager::getAll<T>() const; \
+
 #endif
 
