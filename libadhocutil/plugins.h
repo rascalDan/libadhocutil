@@ -2,6 +2,8 @@
 #define ADHOCUTIL_PLUGINS_H
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+#include <boost/optional.hpp>
 #include <boost/multi_index_container_fwd.hpp>
 #include <boost/multi_index/ordered_index_fwd.hpp>
 #include <boost/multi_index/member.hpp>
@@ -9,6 +11,7 @@
 #include <boost/multi_index/composite_key.hpp>
 #include <typeinfo>
 #include <set>
+#include <map>
 #include <algorithm>
 #include "visibility.h"
 #include "unique.h"
@@ -53,6 +56,13 @@ namespace AdHoc {
 			DuplicatePluginException(PluginPtr p1, PluginPtr p2);
 	};
 
+	/// Thrown when a resolver function is added a second time.
+	class DuplicateResolverException : public std::runtime_error {
+		public:
+			/// Constuctor taking resolver type.
+			DuplicateResolverException(const std::type_info &);
+	};
+
 	template <typename T>
 	/// Typed plugin and handle to implementation.
 	class DLL_PUBLIC PluginOf : public Plugin {
@@ -73,6 +83,8 @@ namespace AdHoc {
 	/// Container for loaded plugins.
 	class DLL_PUBLIC PluginManager {
 		public:
+			typedef boost::function<boost::optional<std::string> (const std::type_info &, const std::string &)> PluginResolver;
+
 			PluginManager();
 			virtual ~PluginManager();
 
@@ -125,6 +137,35 @@ namespace AdHoc {
 			size_t count() const;
 
 			/**
+			 * Add a type plugin resolver function.
+			 * @param t The resolver type.
+			 * @param f The resolver function.
+			 */
+			void addResolver(const std::type_info & t, const PluginResolver & f);
+
+			/**
+			 * Add a type plugin resolver function.
+			 * @param f The resolver function.
+			 */
+			template<typename T> void addResolver(const PluginResolver & f);
+
+			/**
+			 * Remove a type plugin resolver function.
+			 * @param f The resolver type.
+			 */
+			void removeResolver(const std::type_info & t);
+
+			/**
+			 * Remove a type plugin resolver function.
+			 */
+			template<typename T> void removeResolver();
+
+			/**
+			 * The number of installed plugins.
+			 */
+			size_t countResolvers() const;
+
+			/**
 			 * Get the default plugin manager instance.
 			 */
 			static PluginManager * getDefault();
@@ -142,7 +183,10 @@ namespace AdHoc {
 										>>
 								>> PluginStore;
 
+			typedef std::map<size_t, PluginResolver> TypePluginResolvers;
+
 			PluginStore * plugins;
+			TypePluginResolvers * resolvers;
 	};
 }
 

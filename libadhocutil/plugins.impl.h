@@ -73,6 +73,20 @@ namespace AdHoc {
 		}
 		return all;
 	}
+
+	template<typename T>
+	void
+	PluginManager::addResolver(const PluginResolver & f)
+	{
+		addResolver(typeid(T), f);
+	}
+
+	template<typename T>
+	void
+	PluginManager::removeResolver()
+	{
+		removeResolver(typeid(T));
+	}
 }
 
 #define INSTANIATEPLUGINOF(T) \
@@ -82,6 +96,8 @@ namespace AdHoc {
 	template boost::shared_ptr<const AdHoc::PluginOf<T>> AdHoc::PluginManager::get<T>(const std::string &) const; \
 	template const T * AdHoc::PluginManager::getImplementation<T>(const std::string &) const; \
 	template std::set<boost::shared_ptr<const AdHoc::PluginOf<T>>> AdHoc::PluginManager::getAll<T>() const; \
+	template void AdHoc::PluginManager::addResolver<T>(const AdHoc::PluginManager::PluginResolver & f); \
+	template void AdHoc::PluginManager::removeResolver<T>(); \
 
 #endif
 

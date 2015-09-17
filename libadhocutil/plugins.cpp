@@ -11,6 +11,12 @@ namespace std {
 		return a.hash_code() < b.hash_code();
 	}
 
+	bool
+	operator<(const AdHoc::PluginManager::PluginResolver & a, const AdHoc::PluginManager::PluginResolver & b)
+	{
+		return a.boost::function_base::get_vtable() < b.boost::function_base::get_vtable();
+	}
+
 	std::ostream &
 	operator<<(std::ostream & s, const std::type_info & t)
 	{
@@ -62,13 +68,20 @@ namespace AdHoc {
 	{
 	}
 
+	DuplicateResolverException::DuplicateResolverException(const std::type_info & t) :
+		std::runtime_error(stringbf("Duplicate resolver function for type %s", t))
+	{
+	}
+
 	PluginManager::PluginManager() :
-		plugins(new PluginStore())
+		plugins(new PluginStore()),
+		resolvers(new TypePluginResolvers())
 	{
 	}
 
 	PluginManager::~PluginManager()
 	{
+		delete resolvers;
 		delete plugins;
 	}
 
@@ -125,6 +138,27 @@ namespace AdHoc {
 	PluginManager::count() const
 	{
 		return plugins->size();
+	}
+
+	void
+	PluginManager::addResolver(const std::type_info & t, const PluginResolver & f)
+	{
+		auto prev = resolvers->insert(TypePluginResolvers::value_type(t.hash_code(), f));
+		if (!prev.second) {
+			throw DuplicateResolverException(t);
+		}
+	}
+
+	void
+	PluginManager::removeResolver(const std::type_info & t)
+	{
+		resolvers->erase(t.hash_code());
+	}
+
+	size_t
+	PluginManager::countResolvers() const
+	{
+		return resolvers->size();
 	}
 }
 
