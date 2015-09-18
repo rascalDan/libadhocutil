@@ -63,6 +63,13 @@ namespace AdHoc {
 			DuplicateResolverException(const std::type_info &);
 	};
 
+	/// Thrown when an attempt to load a library fails.
+	class LoadLibraryException : public std::runtime_error {
+		public:
+			/// Constuctor taking syscall error details.
+			LoadLibraryException(const std::string & f, const char * msg);
+	};
+
 	template <typename T>
 	/// Typed plugin and handle to implementation.
 	class DLL_PUBLIC PluginOf : public Plugin {
@@ -171,6 +178,8 @@ namespace AdHoc {
 			static PluginManager * getDefault();
 
 		private:
+			static void loadLibrary(const std::string &);
+
 			typedef boost::multi_index_container<PluginPtr,
 							boost::multi_index::indexed_by<
 								boost::multi_index::ordered_non_unique<boost::multi_index::member<Plugin, const std::string, &Plugin::name>>,

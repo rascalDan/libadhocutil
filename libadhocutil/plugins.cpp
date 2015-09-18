@@ -1,5 +1,6 @@
 #include "plugins.h"
 #include <string.h>
+#include <dlfcn.h>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include "buffer.h"
@@ -73,6 +74,11 @@ namespace AdHoc {
 	{
 	}
 
+	LoadLibraryException::LoadLibraryException(const std::string & f, const char * msg) :
+		std::runtime_error(stringbf("Failed to load library [%s]; %s", f, msg))
+	{
+	}
+
 	PluginManager::PluginManager() :
 		plugins(new PluginStore()),
 		resolvers(new TypePluginResolvers())
@@ -111,10 +117,28 @@ namespace AdHoc {
 	PluginManager::get(const std::string & n, const std::type_info & t) const
 	{
 		auto r = plugins->get<2>().equal_range(boost::make_tuple(n, std::cref(t)));
+		if (r.first == r.second) {
+			auto tr = resolvers->find(t.hash_code());
+			if (tr != resolvers->end()) {
+				if (auto lib = tr->second(t, n)) {
+					loadLibrary(*lib);
+				}
+			}
+			r = plugins->get<2>().equal_range(boost::make_tuple(n, std::cref(t)));
+		}
 		if (r.first != r.second) {
 			return (*r.first);
 		}
 		throw NoSuchPluginException(n, t);
+	}
+
+	void
+	PluginManager::loadLibrary(const std::string & f)
+	{
+		void * handle = dlopen(f.c_str(), RTLD_NOW);
+		if (!handle) {
+			throw LoadLibraryException(f, dlerror());
+		}
 	}
 
 	std::set<PluginPtr>

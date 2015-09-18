@@ -6,6 +6,7 @@ lib Ice : ;
 lib IceUtil ;
 lib pthread ;
 lib curl ;
+lib dl ;
 
 alias iceall : : : : <library>Ice <library>IceUtil <library>pthread ;
 
@@ -15,6 +16,7 @@ lib adhocutil :
 	<include>.
 	<library>iceall
 	<library>curl
+	<library>dl
 	<cflags>-fvisibility=hidden
 	<variant>release:<cflags>-flto
 	: :
