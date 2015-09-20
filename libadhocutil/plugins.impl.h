@@ -99,5 +99,17 @@ namespace AdHoc {
 	template void AdHoc::PluginManager::addResolver<T>(const AdHoc::PluginManager::PluginResolver & f); \
 	template void AdHoc::PluginManager::removeResolver<T>(); \
 
+#define PLUGINRESOLVER(T, F) \
+	namespace MAKE_UNIQUE(__plugin__) { \
+		static void InstallResolver() __attribute__((constructor(102))); \
+		void InstallResolver() { \
+			::AdHoc::PluginManager::getDefault()->addResolver<T>(F); \
+		} \
+		static void UninstallResolver() __attribute__((destructor(102))); \
+		void UninstallResolver() { \
+			::AdHoc::PluginManager::getDefault()->removeResolver<T>(); \
+		} \
+	}
+
 #endif
 
