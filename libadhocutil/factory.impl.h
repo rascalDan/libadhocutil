@@ -25,7 +25,8 @@ namespace AdHoc {
 
 #define INSTANIATEFACTORY(Base, ...) \
 	template class AdHoc::Factory<Base, __VA_ARGS__>; \
-	INSTANIATEPLUGINOF(Base)
+	typedef AdHoc::Factory<Base, __VA_ARGS__> FactoryType; \
+	INSTANIATEPLUGINOF(FactoryType)
 
 #endif
 
