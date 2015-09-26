@@ -46,7 +46,7 @@ namespace AdHoc {
 			 * @param name The name of the implementation.
 			 * @param p The parameters to pass to the constructor.
 			 */
-			static Base * create(const std::string & name, const Params & ... p);
+			static Base * createNew(const std::string & name, const Params & ... p);
 	};
 }
 

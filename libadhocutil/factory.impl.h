@@ -17,7 +17,7 @@ namespace AdHoc {
 
 	template <typename Base, typename ... Params>
 	Base *
-	Factory<Base, Params...>::create(const std::string & name, const Params & ... p)
+	Factory<Base, Params...>::createNew(const std::string & name, const Params & ... p)
 	{
 		return get(name)->create(p...);
 	}
