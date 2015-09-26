@@ -32,7 +32,7 @@ typedef AdHoc::Factory<BaseThing, int, std::string> BaseThingFactory;
 NAMEDFACTORY("a", ImplOfThing, BaseThingFactory);
 FACTORY(OtherImplOfThing, BaseThingFactory);
 
-INSTANIATEFACTORY(BaseThing, int, std::string);
+INSTANTIATEFACTORY(BaseThing, int, std::string);
 
 BOOST_AUTO_TEST_CASE( ready )
 {

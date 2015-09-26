@@ -89,7 +89,7 @@ namespace AdHoc {
 	}
 }
 
-#define INSTANIATEPLUGINOF(T) \
+#define INSTANTIATEPLUGINOF(T) \
 	template class AdHoc::PluginOf<T>; \
 	template void AdHoc::PluginManager::add<T>(const T *, const std::string &, const std::string &, int); \
 	template void AdHoc::PluginManager::remove<T>(const std::string &); \
