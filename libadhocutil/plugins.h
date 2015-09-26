@@ -90,6 +90,8 @@ namespace AdHoc {
 	/// Container for loaded plugins.
 	class DLL_PUBLIC PluginManager {
 		public:
+			/// Callback definition to resolve a plugin type and name to a potential library
+			/// containing an implementation.
 			typedef boost::function<boost::optional<std::string> (const std::type_info &, const std::string &)> PluginResolver;
 
 			PluginManager();
@@ -158,7 +160,7 @@ namespace AdHoc {
 
 			/**
 			 * Remove a type plugin resolver function.
-			 * @param f The resolver type.
+			 * @param t The resolver type.
 			 */
 			void removeResolver(const std::type_info & t);
 
