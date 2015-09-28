@@ -23,7 +23,6 @@ BOOST_AUTO_TEST_CASE( get )
 	BOOST_REQUIRE(implOfThingPlugin != nullptr);
 	auto implOfThing = implOfThingPlugin->implementation();
 	BOOST_REQUIRE(implOfThing != nullptr);
-	BOOST_REQUIRE_EQUAL(typeid(BaseThing), typeid(*implOfThing));
 	auto implOfThingDirect = PluginManager::getDefault()->getImplementation<BaseThing>("ImplOfThing");
 	BOOST_REQUIRE_EQUAL(implOfThing, implOfThingDirect);
 }
@@ -32,6 +31,10 @@ BOOST_AUTO_TEST_CASE( getAll )
 {
 	auto all = PluginManager::getDefault()->getAll();
 	BOOST_REQUIRE_EQUAL(1, all.size());
+	auto base = (*all.begin())->implementation();
+	BOOST_REQUIRE(base);
+	BOOST_REQUIRE(dynamic_cast<const BaseThing *>(base));
+	BOOST_REQUIRE(dynamic_cast<const ImplOfThing *>(base));
 	auto allOf = PluginManager::getDefault()->getAll<BaseThing>();
 	BOOST_REQUIRE_EQUAL(1, allOf.size());
 }

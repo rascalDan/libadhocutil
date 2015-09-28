@@ -30,6 +30,12 @@ namespace AdHoc {
 			NoSuchPluginException(const std::string &, const std::type_info &);
 	};
 
+	/// Base class for all plugin implementations.
+	class DLL_PUBLIC AbstractPluginImplementation {
+		public:
+			virtual ~AbstractPluginImplementation() = 0;
+	};
+
 	/// Base class for untyped plugins.
 	class DLL_PUBLIC Plugin {
 		public:
@@ -39,6 +45,9 @@ namespace AdHoc {
 
 			/// Get the plugin type from the subclass.
 			virtual const std::type_info & type() const = 0;
+
+			/// Get the abstract base plugin implementation.
+			virtual const AbstractPluginImplementation * implementation() const = 0;
 
 			/// The name the plugin was installed with.
 			const std::string name;
@@ -81,7 +90,7 @@ namespace AdHoc {
 			/// Get the type of this plugin.
 			const std::type_info & type() const override;
 			/// Get the implementation of this plugin.
-			const T * implementation() const;
+			const T * implementation() const override;
 
 		private:
 			const T * impl;

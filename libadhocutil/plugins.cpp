@@ -49,6 +49,8 @@ namespace AdHoc {
 		defaultPluginManager = nullptr;
 	}
 
+	AbstractPluginImplementation::~AbstractPluginImplementation() = default;
+
 	Plugin::Plugin(const std::string & n, const std::string & f, int l) :
 		name(n),
 		filename(f),
