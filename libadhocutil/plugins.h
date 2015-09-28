@@ -47,7 +47,7 @@ namespace AdHoc {
 			virtual const std::type_info & type() const = 0;
 
 			/// Get the abstract base plugin implementation.
-			virtual const AbstractPluginImplementation * implementation() const = 0;
+			virtual AbstractPluginImplementation * implementation() const = 0;
 
 			/// The name the plugin was installed with.
 			const std::string name;
@@ -84,16 +84,16 @@ namespace AdHoc {
 	class DLL_PUBLIC PluginOf : public Plugin {
 		public:
 			/// Constructor taking an instance and name, filename and line of install for Plugin.
-			PluginOf(const T * t, const std::string & n, const std::string & f, int l);
+			PluginOf(T * t, const std::string & n, const std::string & f, int l);
 			~PluginOf();
 
 			/// Get the type of this plugin.
 			const std::type_info & type() const override;
 			/// Get the implementation of this plugin.
-			const T * implementation() const override;
+			T * implementation() const override;
 
 		private:
-			const T * impl;
+			T * impl;
 	};
 
 	/// Container for loaded plugins.
@@ -124,7 +124,7 @@ namespace AdHoc {
 			 * @param f Filename of plugin.
 			 * @param l Line number.
 			 */
-			template<typename T> void add(const T * i, const std::string & n, const std::string & f, int l);
+			template<typename T> void add(T * i, const std::string & n, const std::string & f, int l);
 
 			/**
 			 * Uninstall a plugin.
@@ -142,7 +142,7 @@ namespace AdHoc {
 			 * Get the implementation from specific plugin.
 			 * @param n Name of plugin.
 			 */
-			template<typename T> const T * getImplementation(const std::string & n) const;
+			template<typename T> T * getImplementation(const std::string & n) const;
 
 			/**
 			 * Get all plugins of a given time.

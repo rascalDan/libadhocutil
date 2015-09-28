@@ -5,7 +5,7 @@
 
 namespace AdHoc {
 	template <typename T>
-	PluginOf<T>::PluginOf(const T * t, const std::string & n, const std::string & f, int l) :
+	PluginOf<T>::PluginOf(T * t, const std::string & n, const std::string & f, int l) :
 		Plugin(n, f, l),
 		impl(t)
 	{
@@ -27,7 +27,7 @@ namespace AdHoc {
 
 	/// Get the implementation of this plugin.
 	template <typename T>
-	const T *
+	T *
 	PluginOf<T>::implementation() const
 	{
 		return impl;
@@ -35,7 +35,7 @@ namespace AdHoc {
 
 	template <typename T>
 	void
-	PluginManager::add(const T * i, const std::string & n, const std::string & f, int l)
+	PluginManager::add(T * i, const std::string & n, const std::string & f, int l)
 	{
 		add(PluginPtr(new PluginOf<T>(i, n, f, l)));
 	}
@@ -55,7 +55,7 @@ namespace AdHoc {
 	}
 
 	template <typename T>
-	const T *
+	T *
 	PluginManager::getImplementation(const std::string & n) const
 	{
 		return get<T>(n)->implementation();
@@ -91,10 +91,10 @@ namespace AdHoc {
 
 #define INSTANTIATEPLUGINOF(T) \
 	template class AdHoc::PluginOf<T>; \
-	template void AdHoc::PluginManager::add<T>(const T *, const std::string &, const std::string &, int); \
+	template void AdHoc::PluginManager::add<T>(T *, const std::string &, const std::string &, int); \
 	template void AdHoc::PluginManager::remove<T>(const std::string &); \
 	template boost::shared_ptr<const AdHoc::PluginOf<T>> AdHoc::PluginManager::get<T>(const std::string &) const; \
-	template const T * AdHoc::PluginManager::getImplementation<T>(const std::string &) const; \
+	template T * AdHoc::PluginManager::getImplementation<T>(const std::string &) const; \
 	template std::set<boost::shared_ptr<const AdHoc::PluginOf<T>>> AdHoc::PluginManager::getAll<T>() const; \
 	template void AdHoc::PluginManager::addResolver<T>(const AdHoc::PluginManager::PluginResolver & f); \
 	template void AdHoc::PluginManager::removeResolver<T>(); \
