@@ -89,15 +89,15 @@ namespace AdHoc {
 	}
 }
 
-#define INSTANTIATEPLUGINOF(T) \
-	template class AdHoc::PluginOf<T>; \
-	template void AdHoc::PluginManager::add<T>(T *, const std::string &, const std::string &, int); \
-	template void AdHoc::PluginManager::remove<T>(const std::string &); \
-	template boost::shared_ptr<const AdHoc::PluginOf<T>> AdHoc::PluginManager::get<T>(const std::string &) const; \
-	template T * AdHoc::PluginManager::getImplementation<T>(const std::string &) const; \
-	template std::set<boost::shared_ptr<const AdHoc::PluginOf<T>>> AdHoc::PluginManager::getAll<T>() const; \
-	template void AdHoc::PluginManager::addResolver<T>(const AdHoc::PluginManager::PluginResolver & f); \
-	template void AdHoc::PluginManager::removeResolver<T>(); \
+#define INSTANTIATEPLUGINOF(...) \
+	template class AdHoc::PluginOf<__VA_ARGS__>; \
+	template void AdHoc::PluginManager::add<__VA_ARGS__>(__VA_ARGS__ *, const std::string &, const std::string &, int); \
+	template void AdHoc::PluginManager::remove<__VA_ARGS__>(const std::string &); \
+	template boost::shared_ptr<const AdHoc::PluginOf<__VA_ARGS__>> AdHoc::PluginManager::get<__VA_ARGS__>(const std::string &) const; \
+	template __VA_ARGS__ * AdHoc::PluginManager::getImplementation<__VA_ARGS__>(const std::string &) const; \
+	template std::set<boost::shared_ptr<const AdHoc::PluginOf<__VA_ARGS__>>> AdHoc::PluginManager::getAll<__VA_ARGS__>() const; \
+	template void AdHoc::PluginManager::addResolver<__VA_ARGS__>(const AdHoc::PluginManager::PluginResolver & f); \
+	template void AdHoc::PluginManager::removeResolver<__VA_ARGS__>(); \
 
 #define PLUGINRESOLVER(T, F) \
 	namespace MAKE_UNIQUE(__plugin__) { \
