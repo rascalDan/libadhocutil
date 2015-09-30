@@ -9,7 +9,7 @@ namespace AdHoc {
 	 * Base class for factories creating instances of Base.
 	 */
 	template <typename Base, typename ... Params>
-	class DLL_PUBLIC Factory : public AbstractPluginImplementation {
+	class DLL_PUBLIC Factory : public virtual AbstractPluginImplementation {
 		public:
 			virtual ~Factory() = 0;
 
