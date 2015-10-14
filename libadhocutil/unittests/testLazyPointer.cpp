@@ -38,6 +38,8 @@ BOOST_AUTO_TEST_CASE ( islazy )
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	Test * t = p.get();
 	BOOST_REQUIRE(t);
+	bool pbool = p;
+	BOOST_REQUIRE(pbool);
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
 	BOOST_REQUIRE_EQUAL(p, t);
 	BOOST_REQUIRE_EQUAL(3, t->val);
