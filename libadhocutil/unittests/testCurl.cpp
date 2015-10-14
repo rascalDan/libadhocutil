@@ -7,6 +7,7 @@
 #include "curlStream.h"
 #include "definedDirs.h"
 #include "net.h"
+#include <boost/algorithm/string/predicate.hpp>
 
 using namespace AdHoc::Net;
 
@@ -54,6 +55,23 @@ BOOST_AUTO_TEST_CASE( fetch_missing )
 	auto url = "file://" + rootDir.string() + "/nothere";
 	CurlHandle ch(url);
 	BOOST_REQUIRE_THROW(ch.perform(), AdHoc::Net::CurlException);
+}
+
+BOOST_AUTO_TEST_CASE( fetch_http_stream )
+{
+	CurlStreamSource css("http://sys.randomdan.homeip.net/env.cgi");
+	css.appendHeader("X-POWERED-BY: mature-cheddar");
+	CurlStream curlstrm(css);
+	std::string tok;
+	int expected = 0;
+	while (!curlstrm.eof()) {
+		curlstrm >> tok;
+		if (boost::algorithm::starts_with(tok, "HTTP_X_POWERED_BY=")) {
+			expected += 1;
+			BOOST_REQUIRE_EQUAL("HTTP_X_POWERED_BY=mature-cheddar", tok);
+		}
+	}
+	BOOST_REQUIRE_EQUAL(1, expected);
 }
 
 BOOST_AUTO_TEST_CASE( fetch_file_stream )
