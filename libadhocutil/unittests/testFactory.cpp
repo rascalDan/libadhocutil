@@ -70,3 +70,10 @@ BOOST_AUTO_TEST_CASE( create )
 	BOOST_REQUIRE(i2 != i3);
 }
 
+BOOST_AUTO_TEST_CASE( createNew )
+{
+	auto i = BaseThingFactory::createNew("a", 1, "std");
+	BOOST_REQUIRE(i);
+	delete i;
+}
+
