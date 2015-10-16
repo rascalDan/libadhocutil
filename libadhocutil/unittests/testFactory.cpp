@@ -10,29 +10,42 @@ using namespace AdHoc;
 
 class BaseThing {
 	public:
-		BaseThing(int, const std::string &){}
+		BaseThing(int, std::string * n) :
+			name(n)
+		{
+		}
+
 		virtual ~BaseThing() = default;
 
 		virtual void execute() const = 0;
+
+	protected:
+		std::string * name;
 };
 
 class ImplOfThing : public BaseThing {
 	public:
-		ImplOfThing(int i, const std::string & s) : BaseThing(i, s) {}
-		void execute() const { }
+		ImplOfThing(int i, std::string * s) : BaseThing(i, s) {}
+		void execute() const
+		{
+			*name = typeid(this).name();
+		}
 };
 class OtherImplOfThing : public BaseThing {
 	public:
-		OtherImplOfThing(int i, const std::string & s) : BaseThing(i, s) {}
-		void execute() const { }
+		OtherImplOfThing(int i, std::string * s) : BaseThing(i, s) {}
+		void execute() const
+		{
+			*name = typeid(this).name();
+		}
 };
 
-typedef AdHoc::Factory<BaseThing, int, std::string> BaseThingFactory;
+typedef AdHoc::Factory<BaseThing, int, std::string *> BaseThingFactory;
 
 NAMEDFACTORY("a", ImplOfThing, BaseThingFactory);
 FACTORY(OtherImplOfThing, BaseThingFactory);
 
-INSTANTIATEFACTORY(BaseThing, int, std::string);
+INSTANTIATEFACTORY(BaseThing, int, std::string *);
 // Multiple factories in one compilation unit
 INSTANTIATEFACTORY(BaseThing, std::string, std::string);
 // Factories of things with commas
@@ -59,12 +72,19 @@ BOOST_AUTO_TEST_CASE( create )
 {
 	auto factory1 = BaseThingFactory::get("a");
 	auto factory2 = BaseThingFactory::get("OtherImplOfThing");
-	auto i1 = factory1->create(1, "std");
-	auto i2 = factory1->create(1, "std");
-	auto i3 = factory2->create(1, "std");
+	std::string n;
+	auto i1 = factory1->create(1, &n);
+	auto i2 = factory1->create(1, &n);
+	auto i3 = factory2->create(1, &n);
 	BOOST_REQUIRE(i1);
+	i1->execute();
+	BOOST_REQUIRE_EQUAL(n, "PK11ImplOfThing");
 	BOOST_REQUIRE(i2);
+	i2->execute();
+	BOOST_REQUIRE_EQUAL(n, "PK11ImplOfThing");
 	BOOST_REQUIRE(i3);
+	i3->execute();
+	BOOST_REQUIRE_EQUAL(n, "PK16OtherImplOfThing");
 	BOOST_REQUIRE(i1 != i2);
 	BOOST_REQUIRE(i1 != i3);
 	BOOST_REQUIRE(i2 != i3);
@@ -72,7 +92,8 @@ BOOST_AUTO_TEST_CASE( create )
 
 BOOST_AUTO_TEST_CASE( createNew )
 {
-	auto i = BaseThingFactory::createNew("a", 1, "std");
+	std::string n;
+	auto i = BaseThingFactory::createNew("a", 1, &n);
 	BOOST_REQUIRE(i);
 	delete i;
 }
