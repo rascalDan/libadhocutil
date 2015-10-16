@@ -88,6 +88,9 @@ BOOST_AUTO_TEST_CASE( create )
 	BOOST_REQUIRE(i1 != i2);
 	BOOST_REQUIRE(i1 != i3);
 	BOOST_REQUIRE(i2 != i3);
+	delete i1;
+	delete i2;
+	delete i3;
 }
 
 BOOST_AUTO_TEST_CASE( createNew )
