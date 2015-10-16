@@ -5,12 +5,9 @@
 #include "cache.h"
 #include "cache.impl.h"
 
-namespace std {
-	std::ostream & operator<<(std::ostream & s, const std::nullptr_t &)
-	{
-		return s << "(nil)";
-	}
-}
+// LCOV_EXCL_START
+BOOST_TEST_DONT_PRINT_LOG_VALUE(std::nullptr_t);
+// LCOV_EXCL_STOP
 
 namespace AdHoc {
 	typedef Cache<int, std::string> TestCache;
