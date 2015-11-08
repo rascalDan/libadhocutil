@@ -164,3 +164,13 @@ run
 	testFactory
 	;
 
+run
+	testException.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	:
+	testException
+	;
+
