@@ -1,7 +1,8 @@
 import package ;
 import lex ;
 
-lib boost_utf : : <name>boost_unit_test_framework ;
+lib boost_system ;
+lib boost_thread ;
 lib Ice : ;
 lib IceUtil ;
 lib pthread ;
@@ -15,6 +16,8 @@ lib adhocutil :
 	:
 	<include>.
 	<library>iceall
+	<library>boost_system
+	<library>boost_thread
 	<library>curl
 	<library>dl
 	<cflags>-fvisibility=hidden
