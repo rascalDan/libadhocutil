@@ -24,13 +24,18 @@ namespace AdHoc {
 
 			/// Create a reference to a new resource.
 			ResourceHandle(Object *);
+			/// Create a reference to an existing resource.
 			ResourceHandle(const ResourceHandle &);
 			~ResourceHandle();
 
+			/// Reference to an existing resource.
 			void operator=(const ResourceHandle &);
+			/// Access to the resource.
 			Resource * operator->() const;
+			/// Access to the resource.
 			Resource * get() const;
 
+			/// Get number of handles to this resource.
 			unsigned int handleCount() const;
 
 		private:
@@ -46,20 +51,33 @@ namespace AdHoc {
 		public:
 			friend class ResourceHandle<Resource>;
 
+			/// Create a new resource pool.
+			/// @param maxSize The upper limit of how many concurrent active resources there can be.
+			/// @param keep The number of resources to cache for reuse.
 			ResourcePool(unsigned int maxSize, unsigned int keep);
 			virtual ~ResourcePool();
 
+			/// Get a resource from the pool (maybe cached, maybe constructed afresh)
 			ResourceHandle<Resource> get();
-			ResourceHandle<Resource> get(unsigned int);
+			/// Get a resource from the pool (with timeout on max size of pool)
+			/// @param ms Timeout in milliseconds.
+			ResourceHandle<Resource> get(unsigned int ms);
+			/// Get a new handle to the resource previous allocated to the current.
 			ResourceHandle<Resource> getMine();
+			/// Go idle; destroy all cached resources, currently active instances are untouched.
 			void idle();
 
+			/// Get number of active resources.
 			unsigned int inUseCount() const;
+			/// Get number of available cached resources.
 			unsigned int availableCount() const;
 
 		protected:
+			/// Create a new resource instance to add to the pool.
 			virtual Resource * createResource() const = 0;
+			/// Destroy an existing resource (defaults to delete).
 			virtual void destroyResource(Resource *) const;
+			/// Test a cached resource is still suitable for use (defaults to no-op).
 			virtual void testResource(const Resource *) const;
 
 		private:
@@ -82,6 +100,7 @@ namespace AdHoc {
 	/// Represents a failure to acquire a new resource within the given timeout.
 	class DLL_PUBLIC TimeOutOnResourcePool : public AdHoc::StdException {
 		public:
+			/// Constrcut a new timeout exception for the given resource type.
 			TimeOutOnResourcePool(const char * const type);
 
 			std::string message() const throw() override;

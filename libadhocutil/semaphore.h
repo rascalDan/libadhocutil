@@ -12,11 +12,16 @@ namespace AdHoc {
 	/// A portable semaphore with timeout support
 	class DLL_PUBLIC Semaphore {
 		public:
+			/// Construct a new semaphore with optional initial count.
 			Semaphore(unsigned int initial = 0);
 
+			/// Notify one waiting thread.
 			void notify();
+			/// Wait for a single count.
 			void wait();
-			bool wait(unsigned int);
+			/// Wait for a single count with timeout.
+			/// @param ms Timeout in milliseconds.
+			bool wait(unsigned int ms);
 
 		private:
 			boost::mutex mutex;
