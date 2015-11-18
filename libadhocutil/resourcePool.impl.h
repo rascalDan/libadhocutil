@@ -98,7 +98,7 @@ namespace AdHoc {
 
 	template <typename R>
 	void
-	ResourcePool<R>::destroyResource(R * r) const
+	ResourcePool<R>::destroyResource(R * r) const throw()
 	{
 		delete r;
 	}
@@ -166,20 +166,24 @@ namespace AdHoc {
 	ResourceHandle<R>
 	ResourcePool<R>::getOne()
 	{
-		UpgradableLock(lock, ulock);
-		if (available.empty()) {
-			auto ro = new typename ResourceHandle<R>::Object(createResource(), this);
-			UpgradeLock(ulock);
-			inUse.insert({ std::this_thread::get_id(), ro });
-			return ro;
+		Lock(lock);
+		while (!available.empty()) {
+			auto r = available.front();
+			try {
+				testResource(r);
+				auto ro = new typename ResourceHandle<R>::Object(r, this);
+				available.pop_front();
+				inUse.insert({ std::this_thread::get_id(), ro });
+				return ro;
+			}
+			catch (...) {
+				destroyResource(r);
+				available.pop_front();
+			}
 		}
-		else {
-			UpgradeLock(ulock);
-			auto ro = new typename ResourceHandle<R>::Object(available.front(), this);
-			available.pop_front();
-			inUse.insert({ std::this_thread::get_id(), ro });
-			return ro;
-		}
+		auto ro = new typename ResourceHandle<R>::Object(createResource(), this);
+		inUse.insert({ std::this_thread::get_id(), ro });
+		return ro;
 	}
 
 	template <typename R>

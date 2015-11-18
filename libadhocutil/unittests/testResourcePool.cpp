@@ -245,3 +245,40 @@ BOOST_AUTO_TEST_CASE( threading2 )
 	BOOST_REQUIRE_EQUAL(1, pool.availableCount());
 }
 
+class TTRP : public TRP {
+	public:
+		TTRP() : n(0) { }
+		void testResource(const MockResource *) const override
+		{
+			n += 1;
+			if (n % 2) {
+				throw std::exception();
+			}
+		}
+	private:
+		mutable int n;
+};
+
+BOOST_AUTO_TEST_CASE( test )
+{
+	TTRP pool;
+	MockResource * rp;
+	{
+		auto r = pool.get();
+		rp = r.get();
+	}
+	{
+		auto r = pool.get();
+		BOOST_REQUIRE(r.get());
+		BOOST_REQUIRE(rp != r.get());
+		BOOST_REQUIRE_EQUAL(1, MockResource::count);
+		rp = r.get();
+	}
+	{
+		auto r = pool.get();
+		BOOST_REQUIRE(r.get());
+		BOOST_REQUIRE(rp == r.get());
+		BOOST_REQUIRE_EQUAL(1, MockResource::count);
+	}
+}
+

@@ -76,7 +76,7 @@ namespace AdHoc {
 			/// Create a new resource instance to add to the pool.
 			virtual Resource * createResource() const = 0;
 			/// Destroy an existing resource (defaults to delete).
-			virtual void destroyResource(Resource *) const;
+			virtual void destroyResource(Resource *) const throw();
 			/// Test a cached resource is still suitable for use (defaults to no-op).
 			virtual void testResource(const Resource *) const;
 
