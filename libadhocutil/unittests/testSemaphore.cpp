@@ -11,6 +11,14 @@ BOOST_AUTO_TEST_CASE( addRemoveOne )
 	s.wait();
 }
 
+BOOST_AUTO_TEST_CASE( initial )
+{
+	AdHoc::Semaphore s(2);
+	s.wait();
+	s.wait();
+	BOOST_REQUIRE_EQUAL(false, s.wait(0));
+}
+
 BOOST_AUTO_TEST_CASE( addRemoveSome )
 {
 	AdHoc::Semaphore s;
