@@ -213,19 +213,24 @@ BOOST_AUTO_TEST_CASE( threading1 )
 
 static
 void
-acquireAndKeepFor1Second(TRPSmall * pool)
+acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::Semaphore & s)
 {
 	auto r = pool->get();
+	s.notify();
 	sleep(1);
 }
 
 BOOST_AUTO_TEST_CASE( threading2 )
 {
 	TRPSmall pool;
-	std::thread t1([&pool]() { acquireAndKeepFor1Second(&pool); });
-	std::thread t2([&pool]() { acquireAndKeepFor1Second(&pool); });
-	std::thread t3([&pool]() { acquireAndKeepFor1Second(&pool); });
+	AdHoc::Semaphore s;
+	std::thread t1([&pool, &s]() { acquireAndKeepFor1Second(&pool, s); });
+	std::thread t2([&pool, &s]() { acquireAndKeepFor1Second(&pool, s); });
+	std::thread t3([&pool, &s]() { acquireAndKeepFor1Second(&pool, s); });
 
+	s.wait();
+	s.wait();
+	s.wait();
 	BOOST_REQUIRE_THROW(pool.get(100), AdHoc::TimeOutOnResourcePoolT<MockResource>);
 	BOOST_REQUIRE_EQUAL(3, pool.inUseCount());
 
