@@ -16,6 +16,7 @@ class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public Curl
 	public:
 		/** Construct a new stream source for the given URL. */
 		CurlStreamSource(const std::string & url);
+		virtual ~CurlStreamSource();
 
 		/** Required member function for reading of the stream source by boost::iostreams::stream. */
 		std::streamsize read(char * target, std::streamsize targetSize);

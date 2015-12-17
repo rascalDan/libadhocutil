@@ -13,6 +13,10 @@ CurlStreamSource::CurlStreamSource(const std::string & url) :
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, this);
 }
 
+AdHoc::Net::CurlStreamSource::~CurlStreamSource()
+{
+}
+
 std::streamsize
 CurlStreamSource::read(char * target, std::streamsize targetSize)
 {
