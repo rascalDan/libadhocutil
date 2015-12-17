@@ -129,6 +129,19 @@ lib utilTestClasses :
 	;
 
 run
+	testDirs.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	<define>ROOT=\"$(me)\"
+	<library>boost_filesystem
+	<library>boost_system
+	:
+	testDirs
+	;
+
+run
 	testPlugins.cpp
 	: : :
 	<define>BOOST_TEST_DYN_LINK

@@ -9,9 +9,7 @@
 
 using namespace AdHoc;
 
-auto variant	= selfExe.parent_path().leaf();
-auto toolset	= selfExe.parent_path().parent_path().leaf();
-auto lib = rootDir / "bin" / toolset / variant / "libutilTestClasses.so";
+auto lib = rootDir / "bin" / buildVariant / "libutilTestClasses.so";
 
 static boost::optional<std::string> nullResolver(const std::type_info &, const std::string &);
 static boost::optional<std::string> badResolver(const std::type_info &, const std::string &);
