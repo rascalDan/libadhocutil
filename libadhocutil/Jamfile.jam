@@ -21,7 +21,6 @@ lib adhocutil :
 	<library>curl
 	<library>dl
 	<cflags>-fvisibility=hidden
-	<variant>release:<cflags>-flto
 	: :
 	<include>.
 	;
