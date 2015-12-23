@@ -9,12 +9,13 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/variant.hpp>
+#include "visibility.h"
 
 namespace AdHoc {
 
 /// @cond
 template <typename T, typename K>
-class Cacheable {
+class DLL_PUBLIC Cacheable {
 	public:
 		Cacheable(const K & k, time_t validUntil);
 
@@ -25,7 +26,7 @@ class Cacheable {
 };
 
 template <typename T, typename K>
-class ObjectCacheable : public Cacheable<T, K> {
+class DLL_PUBLIC ObjectCacheable : public Cacheable<T, K> {
 	public:
 		ObjectCacheable(const T & t, const K & k, time_t validUtil);
 
@@ -36,7 +37,7 @@ class ObjectCacheable : public Cacheable<T, K> {
 };
 
 template <typename T, typename K>
-class CallCacheable : public Cacheable<T, K> {
+class DLL_PUBLIC CallCacheable : public Cacheable<T, K> {
 	public:
 		CallCacheable(const T & t, const K & k, time_t validUtil);
 		CallCacheable(const boost::function<T()> & t, const K & k, time_t validUtil);
@@ -54,7 +55,7 @@ struct byKey {};
 
 /// In-memory cache of T, keyed by K.
 template <typename T, typename K>
-class Cache {
+class DLL_PUBLIC Cache {
 	public:
 		/// @cond
 		typedef K Key;
@@ -93,7 +94,7 @@ class Cache {
 		size_t size() const;
 
 	private:
-		void prune() const;
+		void DLL_PRIVATE prune() const;
 		mutable time_t lastPruneTime;
 
 		mutable boost::shared_mutex lock;
