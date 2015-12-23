@@ -96,11 +96,13 @@ namespace AdHoc {
 	{
 		ASSERT(resource);
 		if (!--boost::get<2>(*resource)) {
-			if (std::uncaught_exception()) {
-				boost::get<1>(*resource)->discard(boost::get<0>(*resource));
-			}
-			else {
-				boost::get<1>(*resource)->putBack(boost::get<0>(*resource));
+			if (auto & pool = boost::get<1>(*resource)) {
+				if (std::uncaught_exception()) {
+					pool->discard(boost::get<0>(*resource));
+				}
+				else {
+					pool->putBack(boost::get<0>(*resource));
+				}
 			}
 			delete resource;
 		}
@@ -126,6 +128,7 @@ namespace AdHoc {
 		}
 		for (auto & r : inUse) {
 			destroyResource(boost::get<0>(*r.second));
+			boost::get<1>(*r.second) = nullptr;
 		}
 	}
 

@@ -11,6 +11,8 @@ class MockResource {
 		MockResource(const MockResource &) = delete;
 		void operator=(const MockResource &) = delete;
 
+		bool valid() const { return true; }
+
 		static std::atomic<unsigned int> count;
 };
 
@@ -88,6 +90,18 @@ BOOST_AUTO_TEST_CASE ( get )
 		BOOST_REQUIRE_EQUAL(2, pool.availableCount());
 	}
 	BOOST_REQUIRE_EQUAL(0, MockResource::count);
+}
+
+BOOST_AUTO_TEST_CASE( destroyPoolWhenInUse )
+{
+	auto rp = new TRP();
+	auto rh1 = rp->get();
+	auto rh2 = rp->get();
+	auto rh3 = rh1;
+	delete rp;
+	BOOST_REQUIRE(rh1->valid());
+	BOOST_REQUIRE(rh2->valid());
+	BOOST_REQUIRE(rh3->valid());
 }
 
 BOOST_AUTO_TEST_CASE ( getMine )
