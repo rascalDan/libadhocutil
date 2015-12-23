@@ -5,6 +5,8 @@
 #include "lockHelpers.h"
 #include "safeMapFind.h"
 
+#define ASSERT(expr) if(!expr) throw std::runtime_error(#expr)
+
 namespace AdHoc {
 	//
 	// ResourceHandle
@@ -27,13 +29,16 @@ namespace AdHoc {
 	template <typename R>
 	ResourceHandle<R>::~ResourceHandle()
 	{
-		decRef();
+		if (resource) {
+			decRef();
+		}
 	}
 
 	template <typename R>
 	unsigned int
 	ResourceHandle<R>::handleCount() const
 	{
+		ASSERT(resource);
 		return boost::get<2>(*resource);
 	}
 
@@ -41,20 +46,47 @@ namespace AdHoc {
 	R *
 	ResourceHandle<R>::get() const
 	{
+		ASSERT(resource);
 		return boost::get<0>(*resource);
+	}
+
+	template <typename R>
+	void
+	ResourceHandle<R>::release()
+	{
+		decRef();
+	}
+
+	template <typename R>
+	ResourceHandle<R>::operator bool() const
+	{
+		return resource;
 	}
 
 	template <typename R>
 	R *
 	ResourceHandle<R>::operator->() const
 	{
+		ASSERT(resource);
 		return boost::get<0>(*resource);
+	}
+
+	template <typename R>
+	void
+	ResourceHandle<R>::operator=(const ResourceHandle & rh)
+	{
+		if (resource) {
+			decRef();
+		}
+		resource = rh.resource;
+		incRef();
 	}
 
 	template <typename R>
 	void
 	ResourceHandle<R>::incRef() const
 	{
+		ASSERT(resource);
 		++boost::get<2>(*resource);
 	}
 
@@ -62,6 +94,7 @@ namespace AdHoc {
 	void
 	ResourceHandle<R>::decRef()
 	{
+		ASSERT(resource);
 		if (!--boost::get<2>(*resource)) {
 			if (std::uncaught_exception()) {
 				boost::get<1>(*resource)->discard(boost::get<0>(*resource));

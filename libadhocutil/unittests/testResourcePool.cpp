@@ -58,7 +58,8 @@ BOOST_AUTO_TEST_CASE ( get )
 			BOOST_REQUIRE_EQUAL(2, MockResource::count);
 			BOOST_REQUIRE(r2.get());
 
-			auto r1a = r1;
+			auto r1a = r2;
+			r1a = r1;
 			BOOST_REQUIRE_EQUAL(2, pool.inUseCount());
 			BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 			BOOST_REQUIRE_EQUAL(2, r1.handleCount());
@@ -67,6 +68,20 @@ BOOST_AUTO_TEST_CASE ( get )
 			BOOST_REQUIRE(r1.get());
 			BOOST_REQUIRE(r1a.get());
 			BOOST_REQUIRE_EQUAL(r1.get(), r1a.get());
+
+			BOOST_REQUIRE(r1a);
+			r1a.release();
+			if (!r1a) {
+				BOOST_REQUIRE(true);
+			}
+			BOOST_REQUIRE(!r1a);
+			BOOST_REQUIRE_THROW(r1a.get(), std::runtime_error);
+			r1a = r2;
+			BOOST_REQUIRE(r1a);
+			BOOST_REQUIRE_EQUAL(r2.get(), r1a.get());
+			if (r1a) {
+				BOOST_REQUIRE(true);
+			}
 		}
 
 		BOOST_REQUIRE_EQUAL(0, pool.inUseCount());

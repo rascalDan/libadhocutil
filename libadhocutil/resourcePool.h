@@ -34,6 +34,10 @@ namespace AdHoc {
 			Resource * operator->() const;
 			/// Access to the resource.
 			Resource * get() const;
+			/// Release the resource back to the pool.
+			void release();
+			/// Cast to bool.
+			operator bool() const;
 
 			/// Get number of handles to this resource.
 			unsigned int handleCount() const;
