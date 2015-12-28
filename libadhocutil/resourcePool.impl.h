@@ -162,6 +162,14 @@ namespace AdHoc {
 	}
 
 	template <typename R>
+	unsigned int
+	ResourcePool<R>::freeCount() const
+	{
+		SharedLock(lock);
+		return poolSize.freeCount();
+	}
+
+	template <typename R>
 	ResourceHandle<R>
 	ResourcePool<R>::getMine()
 	{

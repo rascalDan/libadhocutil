@@ -75,6 +75,8 @@ namespace AdHoc {
 			unsigned int inUseCount() const;
 			/// Get number of available cached resources.
 			unsigned int availableCount() const;
+			/// Get number of free slots.
+			unsigned int freeCount() const;
 
 		protected:
 			/// Create a new resource instance to add to the pool.
