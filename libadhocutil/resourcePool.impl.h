@@ -193,7 +193,13 @@ namespace AdHoc {
 	ResourcePool<R>::get()
 	{
 		poolSize.wait();
-		return getOne();
+		try {
+			return getOne();
+		}
+		catch(...) {
+			poolSize.notify();
+			throw;
+		}
 	}
 
 	template <typename R>
@@ -203,7 +209,13 @@ namespace AdHoc {
 		if (!poolSize.wait(timeout)) {
 			throw TimeOutOnResourcePoolT<R>();
 		}
-		return getOne();
+		try {
+			return getOne();
+		}
+		catch(...) {
+			poolSize.notify();
+			throw;
+		}
 	}
 
 	template <typename R>

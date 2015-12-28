@@ -38,6 +38,16 @@ class TRPSmall : public AdHoc::ResourcePool<MockResource> {
 		}
 };
 
+class TRPFail : public AdHoc::ResourcePool<MockResource> {
+	public:
+		TRPFail() : AdHoc::ResourcePool<MockResource>(3, 1) { }
+	protected:
+		MockResource * createResource() const override
+		{
+			throw std::exception();
+		}
+};
+
 BOOST_AUTO_TEST_CASE ( get )
 {
 	{
@@ -309,5 +319,27 @@ BOOST_AUTO_TEST_CASE( test )
 		BOOST_REQUIRE(rp == r.get());
 		BOOST_REQUIRE_EQUAL(1, MockResource::count);
 	}
+}
+
+BOOST_AUTO_TEST_CASE( createFail )
+{
+	TRPFail pool;
+	BOOST_REQUIRE_EQUAL(0, MockResource::count);
+	BOOST_REQUIRE_EQUAL(0, pool.availableCount());
+	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
+	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
+	BOOST_REQUIRE_THROW(pool.get(), std::exception);
+	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
+	BOOST_REQUIRE_THROW(pool.get(0), std::exception);
+	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
+	BOOST_REQUIRE_THROW(pool.get(100), std::exception);
+	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
+	BOOST_REQUIRE_EQUAL(0, MockResource::count);
+	BOOST_REQUIRE_EQUAL(0, pool.availableCount());
+	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
+	BOOST_REQUIRE_THROW(pool.get(), std::exception);
+	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
+	BOOST_REQUIRE_THROW(pool.get(), std::exception);
+	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
 }
 
