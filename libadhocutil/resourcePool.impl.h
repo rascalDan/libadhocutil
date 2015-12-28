@@ -146,6 +146,12 @@ namespace AdHoc {
 	}
 
 	template <typename R>
+	void
+	ResourcePool<R>::returnTestResource(const R *) const
+	{
+	}
+
+	template <typename R>
 	unsigned int
 	ResourcePool<R>::inUseCount() const
 	{
@@ -248,10 +254,16 @@ namespace AdHoc {
 	{
 		Lock(lock);
 		removeFrom(r, inUse);
-		if (available.size() < keep) {
-			available.push_back(r);
+		try {
+			returnTestResource(r);
+			if (available.size() < keep) {
+				available.push_back(r);
+			}
+			else {
+				destroyResource(r);
+			}
 		}
-		else {
+		catch (...) {
 			destroyResource(r);
 		}
 		poolSize.notify();

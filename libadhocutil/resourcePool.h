@@ -83,8 +83,10 @@ namespace AdHoc {
 			virtual Resource * createResource() const = 0;
 			/// Destroy an existing resource (defaults to delete).
 			virtual void destroyResource(Resource *) const throw();
-			/// Test a cached resource is still suitable for use (defaults to no-op).
+			/// Test a cached resource is still suitable for use before re-use (defaults to no-op).
 			virtual void testResource(const Resource *) const;
+			/// Test a cached resource is still suitable for use on return (defaults to no-op).
+			virtual void returnTestResource(const Resource *) const;
 
 		private:
 			typedef std::list<Resource *> Available;
