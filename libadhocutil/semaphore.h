@@ -22,6 +22,8 @@ namespace AdHoc {
 			/// Wait for a single count with timeout.
 			/// @param ms Timeout in milliseconds.
 			bool wait(unsigned int ms);
+			/// Free
+			unsigned int freeCount() const;
 
 		private:
 			boost::mutex mutex;

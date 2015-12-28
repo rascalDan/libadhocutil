@@ -22,12 +22,19 @@ BOOST_AUTO_TEST_CASE( initial )
 BOOST_AUTO_TEST_CASE( addRemoveSome )
 {
 	AdHoc::Semaphore s;
+	BOOST_REQUIRE_EQUAL(0, s.freeCount());
 	s.notify();
+	BOOST_REQUIRE_EQUAL(1, s.freeCount());
 	s.notify();
+	BOOST_REQUIRE_EQUAL(2, s.freeCount());
 	s.notify();
+	BOOST_REQUIRE_EQUAL(3, s.freeCount());
 	s.wait();
+	BOOST_REQUIRE_EQUAL(2, s.freeCount());
 	s.wait();
+	BOOST_REQUIRE_EQUAL(1, s.freeCount());
 	s.wait();
+	BOOST_REQUIRE_EQUAL(0, s.freeCount());
 }
 
 BOOST_AUTO_TEST_CASE( addRemoveTimeOut )

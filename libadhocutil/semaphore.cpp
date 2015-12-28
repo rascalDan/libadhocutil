@@ -36,5 +36,11 @@ namespace AdHoc {
 		--count;
 		return true;
 	}
+
+	unsigned int
+	Semaphore::freeCount() const
+	{
+		return count;
+	}
 }
 
