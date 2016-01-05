@@ -92,6 +92,9 @@ class DLL_PUBLIC Cache {
 		 * determine or estimate the amount of memory used by items in the cache without further
 		 * knowledge of the items themselves. */
 		size_t size() const;
+		/** Explicitly remove an item from the cache.
+		 * @param k Cache key to remove. */
+		void remove(const K & k);
 
 	private:
 		void DLL_PRIVATE prune() const;

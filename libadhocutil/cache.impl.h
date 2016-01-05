@@ -119,6 +119,14 @@ Cache<T, K>::size() const
 
 template<typename T, typename K>
 void
+Cache<T, K>::remove(const K & k)
+{
+	Lock(lock);
+	cached.template get<byKey>().erase(k);
+}
+
+template<typename T, typename K>
+void
 Cache<T, K>::prune() const
 {
 	auto now = time(NULL);

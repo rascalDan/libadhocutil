@@ -63,6 +63,26 @@ BOOST_AUTO_TEST_CASE( hit )
 	BOOST_REQUIRE_EQUAL(vu, tc.getItem("key")->validUntil);
 	BOOST_REQUIRE_EQUAL("key", tc.getItem("key")->key);
 	BOOST_REQUIRE_EQUAL(1, tc.size());
+	tc.remove("key");
+	BOOST_REQUIRE_EQUAL(0, tc.size());
+}
+
+BOOST_AUTO_TEST_CASE( multivalues )
+{
+	TestCache tc;
+	auto vu = time(NULL) + 5;
+	tc.add("key1", 1, vu);
+	tc.add("key2", 2, vu);
+	tc.add("key3", 3, vu);
+	BOOST_REQUIRE_EQUAL(3, tc.size());
+	BOOST_REQUIRE_EQUAL(1, *tc.get("key1"));
+	BOOST_REQUIRE_EQUAL(2, *tc.get("key2"));
+	BOOST_REQUIRE_EQUAL(3, *tc.get("key3"));
+	tc.remove("key1");
+	BOOST_REQUIRE_EQUAL(2, tc.size());
+	BOOST_REQUIRE(!tc.get("key1"));
+	BOOST_REQUIRE_EQUAL(2, *tc.get("key2"));
+	BOOST_REQUIRE_EQUAL(3, *tc.get("key3"));
 }
 
 BOOST_AUTO_TEST_CASE( expired )
