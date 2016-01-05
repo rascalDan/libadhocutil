@@ -9,12 +9,34 @@
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::nullptr_t);
 // LCOV_EXCL_STOP
 
+class Obj {
+	public:
+		Obj(int i) : v(i) { }
+		bool operator==(const int & i) const {
+			return v == i;
+		}
+		int v;
+};
+
+bool
+operator==(const int & i, const Obj & o)
+{
+	return i == o.v;
+}
+
+namespace std {
+	ostream & operator<<(ostream & s, const Obj & o)
+	{
+		return s << o.v;
+	}
+}
+
 namespace AdHoc {
-	typedef Cache<int, std::string> TestCache;
-	template class Cache<int, std::string>;
-	template class Cacheable<int, std::string>;
-	template class ObjectCacheable<int, std::string>;
-	template class CallCacheable<int, std::string>;
+	typedef Cache<Obj, std::string> TestCache;
+	template class Cache<Obj, std::string>;
+	template class Cacheable<Obj, std::string>;
+	template class ObjectCacheable<Obj, std::string>;
+	template class CallCacheable<Obj, std::string>;
 }
 
 using namespace AdHoc;
