@@ -17,35 +17,50 @@ namespace AdHoc {
 template <typename T, typename K>
 class DLL_PUBLIC Cacheable {
 	public:
+		typedef const boost::shared_ptr<const T> Value;
 		Cacheable(const K & k, time_t validUntil);
 
 		const K key;
 		const time_t validUntil;
 
-		virtual const T & item() const = 0;
+		virtual Value item() const = 0;
 };
 
 template <typename T, typename K>
 class DLL_PUBLIC ObjectCacheable : public Cacheable<T, K> {
 	public:
 		ObjectCacheable(const T & t, const K & k, time_t validUtil);
+		ObjectCacheable(typename Cacheable<T, K>::Value & t, const K & k, time_t validUtil);
 
-		virtual const T & item() const override;
+		virtual typename Cacheable<T, K>::Value item() const override;
 
 	private:
-		const T value;
+		typename Cacheable<T, K>::Value value;
 };
 
 template <typename T, typename K>
 class DLL_PUBLIC CallCacheable : public Cacheable<T, K> {
 	public:
-		CallCacheable(const T & t, const K & k, time_t validUtil);
-		CallCacheable(const boost::function<T()> & t, const K & k, time_t validUtil);
+		typedef boost::function<T()> Factory;
+		CallCacheable(const Factory & t, const K & k, time_t validUtil);
 
-		virtual const T & item() const override;
+		virtual typename Cacheable<T, K>::Value item() const override;
 
 	private:
-		mutable boost::variant<T, boost::function<T()>> value;
+		mutable boost::variant<boost::shared_ptr<const T>, Factory> value;
+		mutable boost::shared_mutex lock;
+};
+
+template <typename T, typename K>
+class DLL_PUBLIC PointerCallCacheable : public Cacheable<T, K> {
+	public:
+		typedef boost::function<typename Cacheable<T, K>::Value()> Factory;
+		PointerCallCacheable(const Factory & t, const K & k, time_t validUtil);
+
+		virtual typename Cacheable<T, K>::Value item() const override;
+
+	private:
+		mutable boost::variant<boost::shared_ptr<const T>, Factory> value;
 		mutable boost::shared_mutex lock;
 };
 
@@ -59,7 +74,9 @@ class DLL_PUBLIC Cache {
 	public:
 		/// @cond
 		typedef K Key;
-		typedef T Value;
+		typedef const boost::shared_ptr<const T> Value;
+		typedef boost::function<T()> Factory;
+		typedef boost::function<Value()> PointerFactory;
 		typedef Cacheable<T, K> Item;
 		typedef boost::shared_ptr<Item> Element;
 		/// @endcond
@@ -73,6 +90,12 @@ class DLL_PUBLIC Cache {
 		 * @param validUntil The absolute time the cache item should expire.
 		 */
 		void add(const K & k, const T & t, time_t validUntil);
+		/** Add a known item to the cache.
+		 * @param k The key of the cache item.
+		 * @param t The item to cache.
+		 * @param validUntil The absolute time the cache item should expire.
+		 */
+		void add(const K & k, Value & t, time_t validUntil);
 		/** Add a callback item to the cache.
 		 * The callback will be called on first hit of the cache item, at which
 		 * point the return value of the function will be cached.
@@ -80,14 +103,22 @@ class DLL_PUBLIC Cache {
 		 * @param tf The callback function to cache.
 		 * @param validUntil The absolute time the cache item should expire.
 		 */
-		void add(const K & k, const boost::function<T()> & tf, time_t validUntil);
+		void add(const K & k, const Factory & tf, time_t validUntil);
+		/** Add a pointer callback item to the cache.
+		 * The callback will be called on first hit of the cache item, at which
+		 * point the return value of the function will be cached.
+		 * @param k The key of the cache item.
+		 * @param tf The callback function to cache.
+		 * @param validUntil The absolute time the cache item should expire.
+		 */
+		void add(const K & k, const PointerFactory & tf, time_t validUntil);
 		/** Get an Element from the cache. The element represents the key, item and expiry time.
 		 * Returns null on cache-miss.
 		 * @param k Cache key to get. */
 		Element getItem(const K & k) const;
 		/** Get an Item from the cache. Returns null on cache-miss.
 		 * @param k Cache key to get. */
-		const T * get(const K & k) const;
+		Value get(const K & k) const;
 		/** Get the size of the cache (number of items). @warning This cannot be reliably used to
 		 * determine or estimate the amount of memory used by items in the cache without further
 		 * knowledge of the items themselves. */

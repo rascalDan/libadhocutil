@@ -18,43 +18,63 @@ Cacheable<T, K>::Cacheable(const K & k, time_t vu) :
 template<typename T, typename K>
 ObjectCacheable<T, K>::ObjectCacheable(const T & t, const K & k, time_t vu) :
 	Cacheable<T, K>(k, vu),
+	value(new T(t))
+{
+}
+
+template<typename T, typename K>
+ObjectCacheable<T, K>::ObjectCacheable(typename Cacheable<T, K>::Value & t, const K & k, time_t vu) :
+	Cacheable<T, K>(k, vu),
 	value(t)
 {
 }
 
 template<typename T, typename K>
-const T &
+typename Cacheable<T, K>::Value
 ObjectCacheable<T, K>::item() const
 {
 	return value;
 }
 
 template<typename T, typename K>
-CallCacheable<T, K>::CallCacheable(const T & t, const K & k, time_t vu) :
+CallCacheable<T, K>::CallCacheable(const Factory & t, const K & k, time_t vu) :
 	Cacheable<T, K>(k, vu),
 	value(t)
 {
 }
 
 template<typename T, typename K>
-CallCacheable<T, K>::CallCacheable(const boost::function<T()> & t, const K & k, time_t vu) :
-	Cacheable<T, K>(k, vu),
-	value(t)
-{
-}
-
-template<typename T, typename K>
-const T &
+typename Cacheable<T, K>::Value
 CallCacheable<T, K>::item() const
 {
 	Lock(lock);
-	const T * t = boost::get<T>(&value);
-	if (t) {
+	if (auto t = boost::get<typename Cacheable<T, K>::Value>(&value)) {
 		return *t;
 	}
-	const boost::function<T()> & f = boost::get<boost::function<T()>>(value);
+	const Factory & f = boost::get<Factory>(value);
+	value = typename Cacheable<T, K>::Value(new T(f()));
+	return boost::get<typename Cacheable<T, K>::Value>(value);
+}
+
+
+template<typename T, typename K>
+PointerCallCacheable<T, K>::PointerCallCacheable(const Factory & t, const K & k, time_t vu) :
+	Cacheable<T, K>(k, vu),
+	value(t)
+{
+}
+
+template<typename T, typename K>
+typename Cacheable<T, K>::Value
+PointerCallCacheable<T, K>::item() const
+{
+	Lock(lock);
+	if (auto t = boost::get<typename Cacheable<T, K>::Value>(&value)) {
+		return *t;
+	}
+	const Factory & f = boost::get<Factory>(value);
 	value = f();
-	return boost::get<T>(value);
+	return boost::get<typename Cacheable<T, K>::Value>(value);
 }
 
 
@@ -74,10 +94,26 @@ Cache<T, K>::add(const K & k, const T & t, time_t validUntil)
 
 template<typename T, typename K>
 void
-Cache<T, K>::add(const K & k, const boost::function<T()> & tf, time_t validUntil)
+Cache<T, K>::add(const K & k, Value & t, time_t validUntil)
+{
+	Lock(lock);
+	cached.insert(Element(new ObjectCacheable<T, K>(t, k, validUntil)));
+}
+
+template<typename T, typename K>
+void
+Cache<T, K>::add(const K & k, const Factory & tf, time_t validUntil)
 {
 	Lock(lock);
 	cached.insert(Element(new CallCacheable<T, K>(tf, k, validUntil)));
+}
+
+template<typename T, typename K>
+void
+Cache<T, K>::add(const K & k, const PointerFactory & tf, time_t validUntil)
+{
+	Lock(lock);
+	cached.insert(Element(new PointerCallCacheable<T, K>(tf, k, validUntil)));
 }
 
 template<typename T, typename K>
@@ -100,12 +136,12 @@ Cache<T, K>::getItem(const K & k) const
 }
 
 template<typename T, typename K>
-const T *
+typename Cache<T, K>::Value
 Cache<T, K>::get(const K & k) const
 {
 	auto i = getItem(k);
 	if (i) {
-		return &i->item();
+		return i->item();
 	}
 	return nullptr;
 }

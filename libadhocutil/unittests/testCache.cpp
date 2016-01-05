@@ -12,6 +12,7 @@ BOOST_TEST_DONT_PRINT_LOG_VALUE(std::nullptr_t);
 class Obj {
 	public:
 		Obj(int i) : v(i) { }
+		void operator=(const Obj &) = delete;
 		bool operator==(const int & i) const {
 			return v == i;
 		}
@@ -37,6 +38,7 @@ namespace AdHoc {
 	template class Cacheable<Obj, std::string>;
 	template class ObjectCacheable<Obj, std::string>;
 	template class CallCacheable<Obj, std::string>;
+	template class PointerCallCacheable<Obj, std::string>;
 }
 
 using namespace AdHoc;
@@ -59,7 +61,7 @@ BOOST_AUTO_TEST_CASE( hit )
 	tc.add("key", 3, vu);
 	BOOST_REQUIRE_EQUAL(1, tc.size());
 	BOOST_REQUIRE_EQUAL(3, *tc.get("key"));
-	BOOST_REQUIRE_EQUAL(3, tc.getItem("key")->item());
+	BOOST_REQUIRE_EQUAL(3, *tc.getItem("key")->item());
 	BOOST_REQUIRE_EQUAL(vu, tc.getItem("key")->validUntil);
 	BOOST_REQUIRE_EQUAL("key", tc.getItem("key")->key);
 	BOOST_REQUIRE_EQUAL(1, tc.size());
@@ -114,11 +116,47 @@ BOOST_AUTO_TEST_CASE( callcache )
 	int callCount = 0;
 	auto vu = time(NULL) + 5;
 	BOOST_REQUIRE_EQUAL(nullptr, tc.get("key"));
-	tc.add("key", [&callCount]{ callCount++; return 3; }, vu);
+	tc.add("key", TestCache::Factory([&callCount]{ callCount++; return 3; }), vu);
 	BOOST_REQUIRE_EQUAL(0, callCount);
 	BOOST_REQUIRE_EQUAL(3, *tc.get("key"));
 	BOOST_REQUIRE_EQUAL(1, callCount);
 	BOOST_REQUIRE_EQUAL(3, *tc.get("key"));
 	BOOST_REQUIRE_EQUAL(1, callCount);
+}
+
+BOOST_AUTO_TEST_CASE( pointercallcache )
+{
+	TestCache tc;
+	int callCount = 0;
+	auto vu = time(NULL) + 5;
+	BOOST_REQUIRE_EQUAL(nullptr, tc.get("key"));
+	tc.add("key", TestCache::PointerFactory([&callCount]{ callCount++; return TestCache::Value(new Obj(3)); }), vu);
+	BOOST_REQUIRE_EQUAL(0, callCount);
+	BOOST_REQUIRE_EQUAL(3, *tc.get("key"));
+	BOOST_REQUIRE_EQUAL(1, callCount);
+	BOOST_REQUIRE_EQUAL(3, *tc.get("key"));
+	BOOST_REQUIRE_EQUAL(1, callCount);
+}
+
+BOOST_AUTO_TEST_CASE( hitThenRenove )
+{
+	TestCache tc;
+	tc.add("key", 3, time(NULL) + 5);
+	auto h = tc.get("key");
+	BOOST_REQUIRE(h);
+	BOOST_REQUIRE_EQUAL(3, *h);
+	tc.remove("key");
+	BOOST_REQUIRE(!tc.get("key"));
+	BOOST_REQUIRE_EQUAL(3, *h);
+}
+
+BOOST_AUTO_TEST_CASE( addPointer )
+{
+	TestCache tc;
+	auto v = TestCache::Value(new Obj(3));
+	tc.add("key", v, time(NULL) + 1);
+	auto h = tc.get("key");
+	BOOST_REQUIRE(h);
+	BOOST_REQUIRE_EQUAL(3, *h);
 }
 
