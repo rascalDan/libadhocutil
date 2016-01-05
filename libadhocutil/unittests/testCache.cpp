@@ -83,6 +83,8 @@ BOOST_AUTO_TEST_CASE( multivalues )
 	BOOST_REQUIRE(!tc.get("key1"));
 	BOOST_REQUIRE_EQUAL(2, *tc.get("key2"));
 	BOOST_REQUIRE_EQUAL(3, *tc.get("key3"));
+	tc.clear();
+	BOOST_REQUIRE_EQUAL(0, tc.size());
 }
 
 BOOST_AUTO_TEST_CASE( expired )

@@ -95,6 +95,8 @@ class DLL_PUBLIC Cache {
 		/** Explicitly remove an item from the cache.
 		 * @param k Cache key to remove. */
 		void remove(const K & k);
+		/** Explicitly remove ALL items from the cache. */
+		void clear();
 
 	private:
 		void DLL_PRIVATE prune() const;
