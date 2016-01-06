@@ -95,7 +95,7 @@ class DLL_PUBLIC Cache {
 		 * @param t The item to cache.
 		 * @param validUntil The absolute time the cache item should expire.
 		 */
-		void add(const K & k, Value & t, time_t validUntil);
+		void addPointer(const K & k, Value & t, time_t validUntil);
 		/** Add a callback item to the cache.
 		 * The callback will be called on first hit of the cache item, at which
 		 * point the return value of the function will be cached.
@@ -103,7 +103,7 @@ class DLL_PUBLIC Cache {
 		 * @param tf The callback function to cache.
 		 * @param validUntil The absolute time the cache item should expire.
 		 */
-		void add(const K & k, const Factory & tf, time_t validUntil);
+		void addFactory(const K & k, const Factory & tf, time_t validUntil);
 		/** Add a pointer callback item to the cache.
 		 * The callback will be called on first hit of the cache item, at which
 		 * point the return value of the function will be cached.
@@ -111,7 +111,7 @@ class DLL_PUBLIC Cache {
 		 * @param tf The callback function to cache.
 		 * @param validUntil The absolute time the cache item should expire.
 		 */
-		void add(const K & k, const PointerFactory & tf, time_t validUntil);
+		void addPointerFactory(const K & k, const PointerFactory & tf, time_t validUntil);
 		/** Get an Element from the cache. The element represents the key, item and expiry time.
 		 * Returns null on cache-miss.
 		 * @param k Cache key to get. */
