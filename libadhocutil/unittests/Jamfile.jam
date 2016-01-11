@@ -9,6 +9,19 @@ lib boost_thread ;
 lib dl ;
 
 run
+	testUriParse.cpp
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_system
+	<library>boost_filesystem
+	<library>boost_utf
+	:
+	testUriParse
+	;
+
+run
 	testContext.cpp
 	: : :
 	<define>ROOT=\"$(me)\"
