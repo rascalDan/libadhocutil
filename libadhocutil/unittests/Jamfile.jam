@@ -135,6 +135,9 @@ run
 
 lib utilTestClasses :
 	utilTestClasses.cpp
+	:
+	<cflags>-fvisibility=hidden
+	<library>..//adhocutil
 	: :
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil

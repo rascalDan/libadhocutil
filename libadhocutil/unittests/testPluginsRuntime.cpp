@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE( loadAndUnloadlib )
 boost::optional<std::string>
 nullResolver(const std::type_info &, const std::string &)
 {
-	return nullptr;
+	return boost::optional<std::string>();
 }
 
 boost::optional<std::string>
