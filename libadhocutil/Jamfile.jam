@@ -20,7 +20,6 @@ lib adhocutil :
 	<library>boost_thread
 	<library>curl
 	<library>dl
-	<cflags>-fvisibility=hidden
 	: :
 	<include>.
 	;
