@@ -2,6 +2,7 @@ import package ;
 import lex ;
 
 lib boost_system ;
+lib boost_filesystem ;
 lib boost_thread ;
 lib Ice : ;
 lib IceUtil ;
@@ -17,6 +18,7 @@ lib adhocutil :
 	<include>.
 	<library>iceall
 	<library>boost_system
+	<library>boost_filesystem
 	<library>boost_thread
 	<library>curl
 	<library>dl
