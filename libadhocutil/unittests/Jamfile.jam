@@ -249,3 +249,14 @@ run
 	<library>boost_filesystem
 	;
 
+run
+	testLexer.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	<define>ROOT=\"$(me)\"
+	<library>boost_system
+	<library>boost_filesystem
+	;
+

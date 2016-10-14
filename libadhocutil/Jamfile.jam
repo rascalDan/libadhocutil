@@ -21,6 +21,7 @@ lib adhocutil :
 	<library>boost_filesystem
 	<library>boost_thread
 	<library>curl
+	<library>..//glibmm
 	<library>dl
 	: :
 	<include>.
