@@ -5,7 +5,7 @@
 
 class MockResource {
 	public:
-		MockResource() { count += 1; }
+		MockResource() : id(ids++) { count += 1; }
 		~MockResource() { count -= 1; }
 
 		MockResource(const MockResource &) = delete;
@@ -13,9 +13,12 @@ class MockResource {
 
 		bool valid() const { return true; }
 
+		const unsigned int id;
+		static std::atomic<unsigned int> ids;
 		static std::atomic<unsigned int> count;
 };
 
+std::atomic<unsigned int> MockResource::ids;
 std::atomic<unsigned int> MockResource::count;
 
 class TRP : public AdHoc::ResourcePool<MockResource> {
@@ -126,7 +129,7 @@ BOOST_AUTO_TEST_CASE ( getMine )
 	auto r1 = pool.get();
 	BOOST_REQUIRE(r1.get());
 	auto r2 = pool.getMine();
-	BOOST_REQUIRE_EQUAL(r1.get(), r2.get());
+	BOOST_REQUIRE_EQUAL(r1.get()->id, r2.get()->id);
 	BOOST_REQUIRE_EQUAL(2, r1.handleCount());
 	BOOST_REQUIRE_EQUAL(2, r2.handleCount());
 }
@@ -138,7 +141,7 @@ BOOST_AUTO_TEST_CASE( getMineNoCurrent )
 	{
 		auto r1 = pool.get();
 		auto r2 = pool.getMine();
-		BOOST_REQUIRE_EQUAL(r1.get(), r2.get());
+		BOOST_REQUIRE_EQUAL(r1.get()->id, r2.get()->id);
 	}
 	BOOST_REQUIRE_THROW(pool.getMine(), AdHoc::NoCurrentResource);
 }
@@ -297,6 +300,7 @@ class TTRP : public TRP {
 		{
 			n += 1;
 			if (n % 2) {
+				fprintf(stderr, "%d, so throwing\n", n);
 				throw std::exception();
 			}
 		}
@@ -307,22 +311,22 @@ class TTRP : public TRP {
 BOOST_AUTO_TEST_CASE( test )
 {
 	TTRP pool;
-	MockResource * rp;
+	unsigned int rpId;
 	{
 		auto r = pool.get();
-		rp = r.get();
+		rpId = r.get()->id;
 	}
 	{
 		auto r = pool.get();
 		BOOST_REQUIRE(r.get());
-		BOOST_REQUIRE(rp != r.get());
+		BOOST_REQUIRE(rpId != r.get()->id);
 		BOOST_REQUIRE_EQUAL(1, MockResource::count);
-		rp = r.get();
+		rpId = r.get()->id;
 	}
 	{
 		auto r = pool.get();
 		BOOST_REQUIRE(r.get());
-		BOOST_REQUIRE(rp == r.get());
+		BOOST_REQUIRE(rpId == r.get()->id);
 		BOOST_REQUIRE_EQUAL(1, MockResource::count);
 	}
 }
