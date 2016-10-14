@@ -3,6 +3,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -11,7 +12,7 @@ namespace AdHoc {
 
 		class DLL_PUBLIC FileHandle {
 			public:
-				FileHandle(const boost::filesystem::path & path);
+				FileHandle(const boost::filesystem::path & path, int flags = O_RDONLY);
 				virtual ~FileHandle();
 
 				const int fh;

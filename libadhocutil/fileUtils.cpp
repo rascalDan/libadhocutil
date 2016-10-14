@@ -1,5 +1,4 @@
 #include "fileUtils.h"
-#include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
 
@@ -12,8 +11,8 @@ namespace AdHoc {
 			return *pp;
 		}
 
-		FileHandle::FileHandle(const boost::filesystem::path & path) :
-			fh(open(path.c_str(), O_RDONLY))
+		FileHandle::FileHandle(const boost::filesystem::path & path, int flags) :
+			fh(open(path.c_str(), flags))
 		{
 			if (fh < 0) {
 				throw std::runtime_error("Failed to open " + path.string());
