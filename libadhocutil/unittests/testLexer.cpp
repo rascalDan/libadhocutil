@@ -73,6 +73,25 @@ BOOST_AUTO_TEST_CASE( state )
 	BOOST_REQUIRE_EQUAL("aa", s);
 }
 
+BOOST_AUTO_TEST_CASE( multibyte )
+{
+	AdHoc::Lexer::PatternPtr maskHead = AdHoc::LexerMatchers::regex(
+			"^# ([^<\n]+)? ?(<(.+?@[^\n>]+)>?)? \\((\\d+ *(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\w* \\d+)\\)$",
+			(GRegexCompileFlags)(G_REGEX_OPTIMIZE | G_REGEX_CASELESS | G_REGEX_UNGREEDY));
+	Glib::ustring input("# Michał Górny <mgorny@gentoo.org> (28 Mar 2015)");
+	BOOST_REQUIRE(input.bytes() > input.length());
+	BOOST_REQUIRE(maskHead->matches(input.c_str(), input.bytes(), 0));
+	BOOST_REQUIRE_EQUAL(maskHead->matchedLength(), input.bytes());
+	BOOST_REQUIRE(maskHead->match(1));
+	BOOST_REQUIRE_EQUAL("Michał Górny", *maskHead->match(1));
+	BOOST_REQUIRE(maskHead->match(2));
+	BOOST_REQUIRE_EQUAL("<mgorny@gentoo.org>", *maskHead->match(2));
+	BOOST_REQUIRE(maskHead->match(3));
+	BOOST_REQUIRE_EQUAL("mgorny@gentoo.org", *maskHead->match(3));
+	BOOST_REQUIRE(maskHead->match(4));
+	BOOST_REQUIRE_EQUAL("28 Mar 2015", *maskHead->match(4));
+}
+
 BOOST_AUTO_TEST_CASE( badre )
 {
 	BOOST_REQUIRE_THROW(regex("["), std::runtime_error);

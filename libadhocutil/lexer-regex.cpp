@@ -56,7 +56,7 @@ namespace AdHoc {
 						if (start == -1 && end == -1) {
 							return boost::optional<Glib::ustring>();
 						}
-						return Glib::ustring(str + start, end - start);
+						return Glib::ustring(str + start, str + end);
 					}
 					return boost::optional<Glib::ustring>();
 				}
