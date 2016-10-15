@@ -5,7 +5,14 @@
 
 namespace AdHoc {
 	namespace LexerMatchers {
-		DLL_PUBLIC Lexer::PatternPtr regex(const Glib::ustring &, GRegexCompileFlags compile = (GRegexCompileFlags)0, GRegexMatchFlags match = (GRegexMatchFlags)0);
+		/**
+		 * Create a AdHoc::Lexer pattern matcher using regexen.
+		 * @param regex The regex string.
+		 * @param compile The regex compile flags.
+		 * @param match The regex match flags.
+		 * @return Pointer to the newly created pattern matcher.
+		 */
+		DLL_PUBLIC Lexer::PatternPtr regex(const Glib::ustring & regex, GRegexCompileFlags compile = (GRegexCompileFlags)0, GRegexMatchFlags match = (GRegexMatchFlags)0);
 	}
 };
 

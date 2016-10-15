@@ -51,14 +51,14 @@ BOOST_AUTO_TEST_CASE( state )
 		{ { "3" }, regex("a"), [&](auto es)
 			{
 				m += 3;
-				s += *es->pattern->match(0);
+				s += *es->pattern()->match(0);
 				BOOST_REQUIRE_EQUAL(3, es->depth());
 				es->setState("4");
 				BOOST_REQUIRE_EQUAL(3, es->depth());
 				BOOST_REQUIRE_EQUAL("4", es->getState());
 				BOOST_REQUIRE_EQUAL(3, es->depth());
-				BOOST_REQUIRE(!es->pattern->match(1));
-				BOOST_REQUIRE(!es->pattern->match(2));
+				BOOST_REQUIRE(!es->pattern()->match(1));
+				BOOST_REQUIRE(!es->pattern()->match(2));
 				es->popState();
 				BOOST_REQUIRE_EQUAL(2, es->depth());
 				BOOST_REQUIRE_EQUAL("2", es->getState());
