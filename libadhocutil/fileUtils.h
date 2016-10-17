@@ -27,6 +27,15 @@ namespace AdHoc {
 				 * @param flags File handle flags
 				 */
 				FileHandle(const boost::filesystem::path & path, int flags = O_RDONLY);
+
+				/**
+				 * Open a new file handle.
+				 * @param path Path of file to open.
+				 * @param flags File handle flags
+				 * @param mode File handle mode
+				 */
+				FileHandle(const boost::filesystem::path & path, int flags, int mode);
+
 				virtual ~FileHandle();
 
 				/// The file handle.

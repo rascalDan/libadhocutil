@@ -1,5 +1,6 @@
 #include "fileUtils.h"
 #include <unistd.h>
+#include <sys.h>
 #include <sys/mman.h>
 
 namespace AdHoc {
@@ -15,7 +16,15 @@ namespace AdHoc {
 			fh(open(path.c_str(), flags))
 		{
 			if (fh < 0) {
-				throw std::runtime_error("Failed to open " + path.string());
+				throw SystemException("Failed to open " + path.string(), strerror(errno), errno);
+			}
+		}
+
+		FileHandle::FileHandle(const boost::filesystem::path & path, int flags, int mode) :
+			fh(open(path.c_str(), flags, mode))
+		{
+			if (fh < 0) {
+				throw SystemException("Failed to open " + path.string(), strerror(errno), errno);
 			}
 		}
 
@@ -29,7 +38,7 @@ namespace AdHoc {
 		{
 			if (fstat(fh, &st)) {
 				// LCOV_EXCL_START can't think of a way to test open succeeding and fstat failing
-				throw std::runtime_error("Failed to stat " + path.string());
+				throw SystemException("Failed to fstat " + path.string(), strerror(errno), errno);
 				// LCOV_EXCL_STOP
 			}
 		}
@@ -45,7 +54,7 @@ namespace AdHoc {
 			data(mmap(0, st.st_size, PROT_READ, MAP_SHARED, fh, 0))
 		{
 			if (data == (void*)-1) {
-				throw std::runtime_error("Failed to mmap " + path.string());
+				throw SystemException("Failed to mmap " + path.string(), strerror(errno), errno);
 			}
 		}
 

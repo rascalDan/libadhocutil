@@ -3,6 +3,7 @@
 
 #include <fileUtils.h>
 #include <definedDirs.h>
+#include <sys.h>
 
 BOOST_AUTO_TEST_CASE( memmap )
 {
@@ -16,14 +17,14 @@ BOOST_AUTO_TEST_CASE( openfail )
 {
 	BOOST_REQUIRE_THROW({
 		AdHoc::FileUtils::MemMap f("/tmp/nothere");
-	}, std::runtime_error);
+	}, AdHoc::SystemException);
 }
 
 BOOST_AUTO_TEST_CASE( mapfail )
 {
 	BOOST_REQUIRE_THROW({
 		AdHoc::FileUtils::MemMap f("/dev/null");
-	}, std::runtime_error);
+	}, AdHoc::SystemException);
 }
 
 BOOST_AUTO_TEST_CASE( pathPart )
