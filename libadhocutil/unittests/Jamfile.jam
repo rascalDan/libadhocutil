@@ -261,3 +261,11 @@ run
 	<library>boost_filesystem
 	;
 
+run
+	testOptionals.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	;
+
