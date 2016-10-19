@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE Buffer
 #include <boost/test/unit_test.hpp>
 
-#include <optionals.h>
+#include <optionalUtils.h>
 #include <boost/optional.hpp>
 #include <IceUtil/Exception.h>
 #include <IceUtil/Optional.h>
