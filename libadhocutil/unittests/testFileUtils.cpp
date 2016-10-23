@@ -27,6 +27,12 @@ BOOST_AUTO_TEST_CASE( mapfail )
 	}, AdHoc::SystemException);
 }
 
+BOOST_AUTO_TEST_CASE( msg )
+{
+	AdHoc::SystemException x("verb", "No such file or directory", ENOENT);
+	BOOST_REQUIRE_EQUAL(x.what(), "verb (2:No such file or directory)");
+}
+
 BOOST_AUTO_TEST_CASE( pathPart )
 {
 	using namespace AdHoc::FileUtils;
