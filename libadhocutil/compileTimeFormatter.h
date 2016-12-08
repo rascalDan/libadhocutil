@@ -45,10 +45,10 @@ namespace AdHoc {
 	template <typename stream, char ... sn>
 	struct StreamWriter {
 		template<typename ... Pn>
-  	static void write(stream & s, const Pn & ... pn)
-    {
-    	next(s, Upto<'%', sn...>::stuff(s, Buffer<>()), pn...);
-    }
+		static void write(stream & s, const Pn & ... pn)
+		{
+			next(s, Upto<'%', sn...>::stuff(s, Buffer<>()), pn...);
+		}
 		template<typename ... Pn, char... ssn, template <char...> class Buffer>
 		static void next(stream & s, const Buffer<ssn...>&, const Pn & ... pn)
 		{
@@ -90,21 +90,34 @@ namespace AdHoc {
 		static int err;
 	};
 
-	template <const char * const & S, char s0 = *S, int offset = 0, char ... sn>
-	struct Formatter {
-		template<typename stream, typename ... Pn>
-		static void write(stream & s, const Pn & ... pn)
+	template <const char * const & S, int offset, char s0, char ... sn>
+	struct Parser {
+		static auto parse()
 		{
-			Formatter<S, S[offset], offset + 1, sn..., S[offset]>::write(s, pn...);
+			return Parser<S, offset + 1, S[offset + 1], sn..., s0>::parse();
 		}
 	};
 
 	template <const char * const & S, int offset, char ... sn>
-	struct Formatter<S, 0, offset, sn...> {
+	struct Parser<S, offset, 0, sn...> {
+		static auto parse()
+		{
+			return Buffer<sn..., 0>();
+		}
+	};
+
+	template <const char * const & S>
+	struct Formatter {
 		template<typename stream, typename ... Pn>
 		static void write(stream & s, const Pn & ... pn)
 		{
-			StreamWriter<stream, sn...>::write(s, pn...);
+			run(Parser<S, 0, *S>::parse(), s, pn...);
+		}
+
+		template<typename stream, char...ssn, template<char...> class Buffer, typename ... Pn>
+		static void run(const Buffer<ssn...> &, stream & s, const Pn & ... pn)
+		{
+			StreamWriter<stream, ssn...>::write(s, pn...);
 		}
 	};
 }
