@@ -144,41 +144,26 @@ namespace AdHoc {
 		}
 	};
 
-	template <const char * const & S, int offset, char s0, char ... sn>
-	struct Parser<S, offset, WRAP_AT, s0, sn...> {
+	template <const char * const & S, bool more, char ... sn>
+	struct ParserBase {
 		static auto parse()
 		{
-			return Buffer<true, 0, sn..., s0>();
+			return innerparse();
 		}
 		static auto innerparse()
 		{
-			return Buffer<true, 0, sn..., s0>();
+			return Buffer<more, 0, sn...>();
 		}
 	};
+
+	template <const char * const & S, int offset, char s0, char ... sn>
+	struct Parser<S, offset, WRAP_AT, s0, sn...> : public ParserBase<S, true, sn..., s0> { };
 
 	template <const char * const & S, int offset, char ... sn>
-	struct Parser<S, offset, WRAP_AT, 0, sn...> {
-		static auto parse()
-		{
-			return Buffer<false, 0, sn...>();
-		}
-		static auto innerparse()
-		{
-			return Buffer<false, 0, sn...>();
-		}
-	};
+	struct Parser<S, offset, WRAP_AT, 0, sn...> : public ParserBase<S, true, sn..., 0> { };
 
 	template <const char * const & S, int offset, int roffset, char ... sn>
-	struct Parser<S, offset, roffset, 0, sn...> {
-		static auto parse()
-		{
-			return Buffer<false, 0, sn..., 0>();
-		}
-		static auto innerparse()
-		{
-			return Buffer<false, 0, sn..., 0>();
-		}
-	};
+	struct Parser<S, offset, roffset, 0, sn...> : public ParserBase<S, false, sn..., 0>{ };
 
 	template <const char * const & S>
 	struct Formatter {
