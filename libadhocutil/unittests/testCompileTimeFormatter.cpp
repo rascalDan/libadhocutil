@@ -90,19 +90,19 @@ BOOST_AUTO_TEST_CASE ( multi )
 
 namespace AdHoc {
 	// Custom stream writer formatter, formats as (bracketed expression)
-	template<typename stream, char ... sn>
-	struct StreamWriter<stream, '%', '(', ')', sn...> {
+	template<const char * const & S, int start, typename stream, char ... sn>
+	struct StreamWriter<S, start, stream, '%', '(', ')', sn...> {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
 			s << "-( " << p << " )-";
-			StreamWriter<stream, sn...>::write(s, pn...);
+			StreamWriter<S, start + 3, stream, sn...>::write(s, pn...);
 		}
 	};
 	// Custom stream writer formatter, formats
 	//            right-aligned by given width
-	template<typename stream, char ... sn>
-	struct StreamWriter<stream, '%', 'r', 'a', sn...> {
+	template<const char * const & S, int start, typename stream, char ... sn>
+	struct StreamWriter<S, start, stream, '%', 'r', 'a', sn...> {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, int width, const P & p, const Pn & ... pn)
 		{
@@ -110,7 +110,7 @@ namespace AdHoc {
 			buf << p;
 			std::string spaces(width - buf.str().length(), ' ');
 			s << spaces << buf.str();
-			StreamWriter<stream, sn...>::write(s, pn...);
+			StreamWriter<S, start + 3, stream, sn...>::write(s, pn...);
 		}
 	};
 }
