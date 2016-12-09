@@ -80,6 +80,17 @@ namespace AdHoc {
 		}
 	};
 
+	// Escaped % stream writer formatter
+	template<const char * const & S, int start, typename stream, char ... sn>
+	struct StreamWriter<S, start, stream, '%', '%', sn...> {
+		template<typename ... Pn>
+		static void write(stream & s, const Pn & ... pn)
+		{
+			s << '%';
+			StreamWriter<S, start + 2, stream, sn...>::write(s, pn...);
+		}
+	};
+
 	// Unknown stream writer formatter
 	template<const char * const & S, int start, typename stream, char ... sn>
 	struct StreamWriter<S, start, stream, '%', sn...> {

@@ -16,6 +16,10 @@ extern constexpr const char * formatEdgeCaseFormatLonely = "%?";
 extern constexpr const char * formatStringLiteral = "literal";
 extern constexpr const char * formatStringSingle = "single %?.";
 extern constexpr const char * formatStringMulti = "First %?, then %?.";
+extern constexpr const char * formatStringEscape1 = "literal %% percentage.";
+extern constexpr const char * formatStringEscape2 = "literal %%? percentage.";
+extern constexpr const char * formatStringEscape3 = "literal %%%? percentage.";
+extern constexpr const char * formatStringEscape4 = "literal %%%?%% percentage.";
 
 BOOST_AUTO_TEST_CASE ( empty )
 {
@@ -84,8 +88,36 @@ BOOST_AUTO_TEST_CASE ( singlePath )
 BOOST_AUTO_TEST_CASE ( multi )
 {
 	std::stringstream buf;
-  Formatter<formatStringMulti>::write(buf, "one", "two");
+	Formatter<formatStringMulti>::write(buf, "one", "two");
 	BOOST_REQUIRE_EQUAL(buf.str(), "First one, then two.");
+}
+
+BOOST_AUTO_TEST_CASE ( escape1 )
+{
+	std::stringstream buf;
+	Formatter<formatStringEscape1>::write(buf);
+	BOOST_REQUIRE_EQUAL(buf.str(), "literal % percentage.");
+}
+
+BOOST_AUTO_TEST_CASE ( escape2 )
+{
+	std::stringstream buf;
+	Formatter<formatStringEscape2>::write(buf);
+	BOOST_REQUIRE_EQUAL(buf.str(), "literal %? percentage.");
+}
+
+BOOST_AUTO_TEST_CASE ( escape3 )
+{
+	std::stringstream buf;
+	Formatter<formatStringEscape3>::write(buf, 3);
+	BOOST_REQUIRE_EQUAL(buf.str(), "literal %3 percentage.");
+}
+
+BOOST_AUTO_TEST_CASE ( escape4 )
+{
+	std::stringstream buf;
+	Formatter<formatStringEscape4>::write(buf, 3);
+	BOOST_REQUIRE_EQUAL(buf.str(), "literal %3% percentage.");
 }
 
 namespace AdHoc {
