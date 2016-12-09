@@ -7,7 +7,7 @@ namespace AdHoc {
 
 	template <int, char...> struct Buffer { };
 
-	template <const char * const & S, char stop, int start, int offset, char ...>
+	template <const char * const & S, int start, int offset, char ...>
 	struct Upto {
 		template<typename stream>
 		static auto stuff(stream &, const Buffer<start> & f)
@@ -15,12 +15,12 @@ namespace AdHoc {
 			return f;
 		}
 	};
-	template <const char * const & S, char stop, int start, int offset, char s0, char... sn>
-	struct Upto<S, stop, start, offset, s0, sn...> {
+	template <const char * const & S, int start, int offset, char s0, char... sn>
+	struct Upto<S, start, offset, s0, sn...> {
 		template<typename stream, int len, char... sm>
 		static auto stuff(stream & s, const Buffer<len, sm...> &)
 		{
-			return Upto<S, stop, start, offset + 1, sn...>::stuff(s, Buffer<len, sm..., s0>());
+			return Upto<S, start, offset + 1, sn...>::stuff(s, Buffer<len, sm..., s0>());
 		}
 	};
 	template <const char * const & S, int start, char... sn>
@@ -32,23 +32,23 @@ namespace AdHoc {
 			return Buffer<sizeof...(sm), sn...>();
 		}
 	};
-	template <const char * const & S, char stop, int start, int offset, char... sn>
-	struct Upto<S, stop, start, offset, stop, sn...> : public UptoWrite<S, start, stop, sn...> { };
-	template <const char * const & S, char stop, int start, int offset, char... sn>
-	struct Upto<S, stop, start, offset, 0, sn...> : public UptoWrite<S, start, 0, sn...> { };
-	template <const char * const & S, char stop, int start, char s0, char... sn>
-	struct Upto<S, stop, start, WRAP_AT, s0, sn...> : public UptoWrite<S, start, s0, sn...> { };
-	template <const char * const & S, char stop, int start, char... sn>
-	struct Upto<S, stop, start, WRAP_AT, stop, sn...> : public UptoWrite<S, start, stop, sn...> { };
-	template <const char * const & S, char stop, int start, char... sn>
-	struct Upto<S, stop, start, WRAP_AT, 0, sn...> : public UptoWrite<S, start, 0, sn...> { };
+	template <const char * const & S, int start, int offset, char... sn>
+	struct Upto<S, start, offset, '%', sn...> : public UptoWrite<S, start, '%', sn...> { };
+	template <const char * const & S, int start, int offset, char... sn>
+	struct Upto<S, start, offset, 0, sn...> : public UptoWrite<S, start, 0, sn...> { };
+	template <const char * const & S, int start, char s0, char... sn>
+	struct Upto<S, start, WRAP_AT, s0, sn...> : public UptoWrite<S, start, s0, sn...> { };
+	template <const char * const & S, int start, char... sn>
+	struct Upto<S, start, WRAP_AT, '%', sn...> : public UptoWrite<S, start, '%', sn...> { };
+	template <const char * const & S, int start, char... sn>
+	struct Upto<S, start, WRAP_AT, 0, sn...> : public UptoWrite<S, start, 0, sn...> { };
 
 	template <const char * const & S, int start, typename stream, char ... sn>
 	struct StreamWriter {
 		template<typename ... Pn>
 		static void write(stream & s, const Pn & ... pn)
 		{
-			next(s, Upto<S, '%', start, 0, sn...>::stuff(s, Buffer<0>()), pn...);
+			next(s, Upto<S, start, 0, sn...>::stuff(s, Buffer<0>()), pn...);
 		}
 		template<typename ... Pn, int len, char... ssn, template <int, char...> class Buffer>
 		static void next(stream & s, const Buffer<len, ssn...>&, const Pn & ... pn)
