@@ -136,11 +136,11 @@ BOOST_AUTO_TEST_CASE ( customMultiArgRightAlign )
 	BOOST_REQUIRE_EQUAL(buf3.str(), "value              123.45");
 }
 
-extern constexpr const char * formatStringLong = "                                                                                                                            ";
+extern constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
 BOOST_AUTO_TEST_CASE ( longFormatString )
 {
 	std::stringstream buf;
   Formatter<formatStringLong>::write(buf);
-	BOOST_REQUIRE_EQUAL(buf.str().length(), 124);
+	BOOST_REQUIRE_EQUAL(buf.str().length(), 246);
 }
 
