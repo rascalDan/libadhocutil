@@ -142,6 +142,13 @@ BOOST_AUTO_TEST_CASE ( customBracketted )
 	BOOST_REQUIRE_EQUAL(this->str(), "custom -( expr )-");
 }
 
+typedef Formatter<formatStringCustom> TestFormat;
+BOOST_AUTO_TEST_CASE ( typedefFormat )
+{
+	TestFormat::write(*this, "expr");
+	BOOST_REQUIRE_EQUAL(this->str(), "custom -( expr )-");
+}
+
 extern constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
 BOOST_AUTO_TEST_CASE ( longFormatString )
 {
