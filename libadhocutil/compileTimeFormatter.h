@@ -117,6 +117,8 @@ namespace AdHoc {
 		static int err;
 	};
 
+	template <bool, char...> struct ParserBuffer { };
+
 	template <const char * const & S, int offset, int roffset, char s0, char ... sn>
 	struct Parser {
 		static auto parse()
@@ -128,19 +130,19 @@ namespace AdHoc {
 			return Parser<S, offset + 1, roffset + 1, S[offset + 1], sn..., s0>::innerparse();
 		}
 		template<char...ssn>
-		static auto append(const Buffer<true, 0, ssn...> & b)
+		static auto append(const ParserBuffer<true, ssn...> & b)
 		{
 			return join(b, Parser<S, offset + 1 + WRAP_AT, 0, S[offset + 1 + WRAP_AT]>::parse());
 		}
 		template<char...ssn>
-		static auto append(const Buffer<false, 0, ssn...> & b)
+		static auto append(const ParserBuffer<false, ssn...> & b)
 		{
 			return b;
 		}
 		template<bool more, char...ssn, char...ssm>
-		static auto join(const Buffer<true, 0, ssn...> &, const Buffer<more, 0, ssm...> &)
+		static auto join(const ParserBuffer<true, ssn...> &, const ParserBuffer<more, ssm...> &)
 		{
-			return Buffer<more, 0, ssn..., ssm...>();
+			return ParserBuffer<more, ssn..., ssm...>();
 		}
 	};
 
@@ -152,7 +154,7 @@ namespace AdHoc {
 		}
 		static auto innerparse()
 		{
-			return Buffer<more, 0, sn...>();
+			return ParserBuffer<more, sn...>();
 		}
 	};
 
@@ -173,8 +175,8 @@ namespace AdHoc {
 			run(Parser<S, 0, 0, *S>::parse(), s, pn...);
 		}
 
-		template<typename stream, char...ssn, template<bool, int, char...> class Buffer, typename ... Pn>
-		static void run(const Buffer<false, 0, ssn...> &, stream & s, const Pn & ... pn)
+		template<typename stream, char...ssn, template<bool, char...> class ParserBuffer, typename ... Pn>
+		static void run(const ParserBuffer<false, ssn...> &, stream & s, const Pn & ... pn)
 		{
 			StreamWriter<S, 0, stream, ssn...>::write(s, pn...);
 		}
