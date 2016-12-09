@@ -16,6 +16,10 @@ extern constexpr const char * formatEdgeCaseFormatLonely = "%?";
 extern constexpr const char * formatStringLiteral = "literal";
 extern constexpr const char * formatStringSingle = "single %?.";
 extern constexpr const char * formatStringMulti = "First %?, then %?.";
+extern constexpr const char * formatStringCustom = "custom %()";
+extern constexpr const char * formatStringCustomLong = "custom %(longname)";
+extern constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
+extern constexpr const char * formatStringMultiArg = "value%ra";
 extern constexpr const char * formatStringEscape1 = "literal %% percentage.";
 extern constexpr const char * formatStringEscape2 = "literal %%? percentage.";
 extern constexpr const char * formatStringEscape3 = "literal %%%? percentage.";
@@ -23,19 +27,25 @@ extern constexpr const char * formatStringEscape4 = "literal %%%?%% percentage."
 
 namespace AdHoc {
 	// Custom stream writer formatter, formats as (bracketed expression)
-	template<const char * const & S, int start, typename stream, char ... sn>
-	struct StreamWriter<S, start, stream, '%', '(', ')', sn...> {
+	StreamWriterT('(', ')') {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
 			s << "-( " << p << " )-";
-			StreamWriter<S, start + 3, stream, sn...>::write(s, pn...);
+			StreamWriter::next(s, pn...);
+		}
+	};
+	StreamWriterT('(', 'l', 'o', 'n', 'g', 'n', 'a', 'm', 'e', ')') {
+		template<typename P, typename ... Pn>
+		static void write(stream & s, const P & p, const Pn & ... pn)
+		{
+			s << "---( " << p << " )---";
+			StreamWriter::next(s, pn...);
 		}
 	};
 	// Custom stream writer formatter, formats
 	//            right-aligned by given width
-	template<const char * const & S, int start, typename stream, char ... sn>
-	struct StreamWriter<S, start, stream, '%', 'r', 'a', sn...> {
+	StreamWriterT('r', 'a') {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, int width, const P & p, const Pn & ... pn)
 		{
@@ -43,7 +53,7 @@ namespace AdHoc {
 			buf << p;
 			std::string spaces(width - buf.str().length(), ' ');
 			s << spaces << buf.str();
-			StreamWriter<S, start + 3, stream, sn...>::write(s, pn...);
+			StreamWriter::next(s, pn...);
 		}
 	};
 }
@@ -135,11 +145,16 @@ BOOST_AUTO_TEST_CASE ( escape4 )
 	BOOST_REQUIRE_EQUAL(this->str(), "literal %3% percentage.");
 }
 
-extern constexpr const char * formatStringCustom = "custom %()";
 BOOST_AUTO_TEST_CASE ( customBracketted )
 {
 	Formatter<formatStringCustom>::write(*this, "expr");
 	BOOST_REQUIRE_EQUAL(this->str(), "custom -( expr )-");
+}
+
+BOOST_AUTO_TEST_CASE ( customLongName )
+{
+	Formatter<formatStringCustomLong>::write(*this, "some text here");
+	BOOST_REQUIRE_EQUAL(this->str(), "custom ---( some text here )---");
 }
 
 typedef Formatter<formatStringCustom> TestFormat;
@@ -149,7 +164,6 @@ BOOST_AUTO_TEST_CASE ( typedefFormat )
 	BOOST_REQUIRE_EQUAL(this->str(), "custom -( expr )-");
 }
 
-extern constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
 BOOST_AUTO_TEST_CASE ( longFormatString )
 {
 	Formatter<formatStringLong>::write(*this);
@@ -158,7 +172,6 @@ BOOST_AUTO_TEST_CASE ( longFormatString )
 
 BOOST_AUTO_TEST_SUITE_END();
 
-extern constexpr const char * formatStringMultiArg = "value%ra";
 BOOST_AUTO_TEST_CASE ( customMultiArgRightAlign )
 {
 	std::stringstream buf1, buf2, buf3;

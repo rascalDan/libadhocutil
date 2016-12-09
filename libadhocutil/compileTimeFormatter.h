@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <boost/static_assert.hpp>
+#include <boost/preprocessor/variadic/size.hpp>
 
 namespace AdHoc {
 	constexpr int WRAP_AT = 120;
@@ -69,25 +70,37 @@ namespace AdHoc {
 		static void write(stream &, const Pn & ...) { }
 	};
 
+	template<const char * const & S, int start, int len, typename stream, char ... sn>
+	struct StreamWriterBase {
+		template<typename ... Pn>
+		static void next(stream & s, const Pn & ... pn)
+		{
+			StreamWriter<S, start + len, stream, sn...>::write(s, pn...);
+		}
+	};
+
+#define StreamWriterT(C...) \
+	template<const char * const & S, int start, typename stream, char ... sn> \
+	struct StreamWriter<S, start, stream, '%', C, sn...> : \
+		public StreamWriterBase<S, start, BOOST_PP_VARIADIC_SIZE(C) + 1, stream, sn...>
+
 	// Default stream writer formatter
-	template<const char * const & S, int start, typename stream, char ... sn>
-	struct StreamWriter<S, start, stream, '%', '?', sn...> {
+	StreamWriterT('?') {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
 			s << p;
-			StreamWriter<S, start + 2, stream, sn...>::write(s, pn...);
+			StreamWriter::next(s, pn...);
 		}
 	};
 
 	// Escaped % stream writer formatter
-	template<const char * const & S, int start, typename stream, char ... sn>
-	struct StreamWriter<S, start, stream, '%', '%', sn...> {
+	StreamWriterT('%') {
 		template<typename ... Pn>
 		static void write(stream & s, const Pn & ... pn)
 		{
 			s << '%';
-			StreamWriter<S, start + 2, stream, sn...>::write(s, pn...);
+			StreamWriter::next(s, pn...);
 		}
 	};
 
