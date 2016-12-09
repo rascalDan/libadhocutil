@@ -5,12 +5,12 @@
 namespace AdHoc {
 	constexpr int WRAP_AT = 120;
 
-	template <bool, int, char...> struct Buffer { };
+	template <int, char...> struct Buffer { };
 
 	template <const char * const & S, char stop, int start, int offset, char ...>
 	struct Upto {
 		template<typename stream>
-		static auto stuff(stream &, const Buffer<false, start> & f)
+		static auto stuff(stream &, const Buffer<start> & f)
 		{
 			return f;
 		}
@@ -18,54 +18,54 @@ namespace AdHoc {
 	template <const char * const & S, char stop, int start, int offset, char s0, char... sn>
 	struct Upto<S, stop, start, offset, s0, sn...> {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<false, len, sm...> &)
+		static auto stuff(stream & s, const Buffer<len, sm...> &)
 		{
-			return Upto<S, stop, start, offset + 1, sn...>::stuff(s, Buffer<false, len, sm..., s0>());
+			return Upto<S, stop, start, offset + 1, sn...>::stuff(s, Buffer<len, sm..., s0>());
 		}
 	};
 	template <const char * const & S, char stop, int start, int offset, char... sn>
 	struct Upto<S, stop, start, offset, stop, sn...> {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<false, len, sm...> &)
+		static auto stuff(stream & s, const Buffer<len, sm...> &)
 		{
 			s.write(S + start, sizeof...(sm));
-			return Buffer<false, sizeof...(sm), stop, sn...>();
+			return Buffer<sizeof...(sm), stop, sn...>();
 		}
 	};
 	template <const char * const & S, char stop, int start, int offset, char... sn>
 	struct Upto<S, stop, start, offset, 0, sn...> {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<false, len, sm...> &)
+		static auto stuff(stream & s, const Buffer<len, sm...> &)
 		{
 			s.write(S + start, sizeof...(sm));
-			return Buffer<false, sizeof...(sm), 0, sn...>();
+			return Buffer<sizeof...(sm), 0, sn...>();
 		}
 	};
 	template <const char * const & S, char stop, int start, char s0, char... sn>
 	struct Upto<S, stop, start, WRAP_AT, s0, sn...> {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<false, len, sm...> &)
+		static auto stuff(stream & s, const Buffer<len, sm...> &)
 		{
 			s.write(S + start, sizeof...(sm));
-			return Buffer<false, sizeof...(sm), s0, sn...>();
+			return Buffer<sizeof...(sm), s0, sn...>();
 		}
 	};
 	template <const char * const & S, char stop, int start, char... sn>
 	struct Upto<S, stop, start, WRAP_AT, stop, sn...> {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<false, len, sm...> &)
+		static auto stuff(stream & s, const Buffer<len, sm...> &)
 		{
 			s.write(S + start, sizeof...(sm));
-			return Buffer<false, sizeof...(sm), stop, sn...>();
+			return Buffer<sizeof...(sm), stop, sn...>();
 		}
 	};
 	template <const char * const & S, char stop, int start, char... sn>
 	struct Upto<S, stop, start, WRAP_AT, 0, sn...> {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<false, len, sm...> &)
+		static auto stuff(stream & s, const Buffer<len, sm...> &)
 		{
 			s.write(S + start, sizeof...(sm));
-			return Buffer<false, sizeof...(sm), 0, sn...>();
+			return Buffer<sizeof...(sm), 0, sn...>();
 		}
 	};
 
@@ -74,10 +74,10 @@ namespace AdHoc {
 		template<typename ... Pn>
 		static void write(stream & s, const Pn & ... pn)
 		{
-			next(s, Upto<S, '%', start, 0, sn...>::stuff(s, Buffer<false, 0>()), pn...);
+			next(s, Upto<S, '%', start, 0, sn...>::stuff(s, Buffer<0>()), pn...);
 		}
-		template<typename ... Pn, int len, char... ssn, template <bool, int, char...> class Buffer>
-		static void next(stream & s, const Buffer<false, len, ssn...>&, const Pn & ... pn)
+		template<typename ... Pn, int len, char... ssn, template <int, char...> class Buffer>
+		static void next(stream & s, const Buffer<len, ssn...>&, const Pn & ... pn)
 		{
 			StreamWriter<S, start + len, stream, ssn...>::write(s, pn...);
 		}
