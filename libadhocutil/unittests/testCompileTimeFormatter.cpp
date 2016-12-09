@@ -12,11 +12,12 @@ extern constexpr const char * formatEdgeCaseSingle = "1";
 extern constexpr const char * formatEdgeCaseFormatStart = "%? after";
 extern constexpr const char * formatEdgeCaseFormatEnd = "before %?";
 extern constexpr const char * formatEdgeCaseFormatLonely = "%?";
-
 extern constexpr const char * formatStringLiteral = "literal";
 extern constexpr const char * formatStringSingle = "single %?.";
 extern constexpr const char * formatStringMulti = "First %?, then %?.";
 extern constexpr const char * formatStringCustom = "custom %()";
+extern constexpr const char * formatStringCustomParam1 = "custom %(\x3)";
+extern constexpr const char * formatStringCustomParam2 = "custom %(\x9)";
 extern constexpr const char * formatStringCustomLong = "custom %(longname)";
 extern constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
 extern constexpr const char * formatStringMultiArg = "value%ra";
@@ -26,7 +27,8 @@ extern constexpr const char * formatStringEscape3 = "literal %%%? percentage.";
 extern constexpr const char * formatStringEscape4 = "literal %%%?%% percentage.";
 
 namespace AdHoc {
-	// Custom stream writer formatter, formats as (bracketed expression)
+	// Custom stream writer formatter, formats as
+	// -( bracketed expression )-
 	StreamWriterT('(', ')') {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
@@ -35,11 +37,24 @@ namespace AdHoc {
 			StreamWriter::next(s, pn...);
 		}
 	};
+	// Custom stream writer formatter with a long identifier, formats as
+	// ---( bracketed expression )---
 	StreamWriterT('(', 'l', 'o', 'n', 'g', 'n', 'a', 'm', 'e', ')') {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
 			s << "---( " << p << " )---";
+			StreamWriter::next(s, pn...);
+		}
+	};
+	// Custom stream writer formatter that has parameter in the format string, formats as
+	// dashes*-( bracketed expression )dashes*-
+	StreamWriterTP(dashes, '(', dashes, ')') {
+		template<typename P, typename ... Pn>
+		static void write(stream & s, const P & p, const Pn & ... pn)
+		{
+			std::string d(dashes, '-');
+			s << d << "( " << p << " )" << d;
 			StreamWriter::next(s, pn...);
 		}
 	};
@@ -155,6 +170,18 @@ BOOST_AUTO_TEST_CASE ( customLongName )
 {
 	Formatter<formatStringCustomLong>::write(*this, "some text here");
 	BOOST_REQUIRE_EQUAL(this->str(), "custom ---( some text here )---");
+}
+
+BOOST_AUTO_TEST_CASE ( customParam1 )
+{
+	Formatter<formatStringCustomParam1>::write(*this, "some text here");
+	BOOST_REQUIRE_EQUAL(this->str(), "custom ---( some text here )---");
+}
+
+BOOST_AUTO_TEST_CASE ( customParam2 )
+{
+	Formatter<formatStringCustomParam2>::write(*this, "some text here");
+	BOOST_REQUIRE_EQUAL(this->str(), "custom ---------( some text here )---------");
 }
 
 typedef Formatter<formatStringCustom> TestFormat;

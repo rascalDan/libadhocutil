@@ -84,6 +84,11 @@ namespace AdHoc {
 	struct StreamWriter<S, start, stream, '%', C, sn...> : \
 		public StreamWriterBase<S, start, BOOST_PP_VARIADIC_SIZE(C) + 1, stream, sn...>
 
+#define StreamWriterTP(P, C...) \
+	template<const char * const & S, int start, typename stream, char P, char ... sn> \
+	struct StreamWriter<S, start, stream, '%', C, sn...> : \
+		public StreamWriterBase<S, start, BOOST_PP_VARIADIC_SIZE(C) + 1, stream, sn...>
+
 	// Default stream writer formatter
 	StreamWriterT('?') {
 		template<typename P, typename ... Pn>
