@@ -117,6 +117,11 @@ BOOST_AUTO_TEST_CASE ( singleInt )
 	BOOST_REQUIRE_EQUAL(this->str(), "single 32.");
 }
 
+BOOST_AUTO_TEST_CASE ( singleIntReturn )
+{
+	BOOST_REQUIRE_EQUAL(Formatter<formatStringSingle>::write(*this, 32).str(), "single 32.");
+}
+
 BOOST_AUTO_TEST_CASE ( singleDouble )
 {
 	Formatter<formatStringSingle>::write(*this, 3.14);

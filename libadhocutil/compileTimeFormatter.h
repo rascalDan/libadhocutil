@@ -176,20 +176,20 @@ namespace AdHoc {
 		static std::string get(const Pn & ... pn)
 		{
 			std::stringstream s;
-			run(Parser<S, 0, 0, *S>::parse(), s, pn...);
-			return s.str();
+			return run(Parser<S, 0, 0, *S>::parse(), s, pn...).str();
 		}
 
 		template<typename stream, typename ... Pn>
-		static void write(stream & s, const Pn & ... pn)
+		static stream & write(stream & s, const Pn & ... pn)
 		{
-			run(Parser<S, 0, 0, *S>::parse(), s, pn...);
+			return run(Parser<S, 0, 0, *S>::parse(), s, pn...);
 		}
 
 		template<typename stream, char...ssn, template<bool, char...> class ParserBuffer, typename ... Pn>
-		static void run(const ParserBuffer<false, ssn...> &, stream & s, const Pn & ... pn)
+		static stream & run(const ParserBuffer<false, ssn...> &, stream & s, const Pn & ... pn)
 		{
 			StreamWriter<S, 0, stream, ssn...>::write(s, pn...);
+			return s;
 		}
 	};
 }
