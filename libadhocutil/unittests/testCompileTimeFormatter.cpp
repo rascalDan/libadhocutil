@@ -211,3 +211,9 @@ BOOST_AUTO_TEST_CASE ( customMultiArgRightAlign )
 	BOOST_REQUIRE_EQUAL(buf3.str(), "value              123.45");
 }
 
+BOOST_AUTO_TEST_CASE ( get )
+{
+	auto s = Formatter<formatStringMultiArg>::get(20, "something else");
+	BOOST_REQUIRE_EQUAL(s, "value      something else");
+}
+

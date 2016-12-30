@@ -1,4 +1,4 @@
-#include <iostream>
+#include <sstream>
 #include <string.h>
 #include <boost/static_assert.hpp>
 #include <boost/preprocessor/variadic/size.hpp>
@@ -172,6 +172,14 @@ namespace AdHoc {
 
 	template <const char * const & S>
 	struct Formatter {
+		template<typename ... Pn>
+		static std::string get(const Pn & ... pn)
+		{
+			std::stringstream s;
+			run(Parser<S, 0, 0, *S>::parse(), s, pn...);
+			return s.str();
+		}
+
 		template<typename stream, typename ... Pn>
 		static void write(stream & s, const Pn & ... pn)
 		{
