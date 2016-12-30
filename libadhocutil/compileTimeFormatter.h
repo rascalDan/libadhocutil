@@ -11,7 +11,7 @@ namespace AdHoc {
 	template <const char * const & S, int start, int offset, char ...>
 	struct Upto {
 		template<typename stream>
-		static auto stuff(stream &, const Buffer<start> & f)
+		static auto scan(stream &, const Buffer<start> & f)
 		{
 			return f;
 		}
@@ -19,15 +19,15 @@ namespace AdHoc {
 	template <const char * const & S, int start, int offset, char s0, char... sn>
 	struct Upto<S, start, offset, s0, sn...> {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<len, sm...> &)
+		static auto scan(stream & s, const Buffer<len, sm...> &)
 		{
-			return Upto<S, start, offset + 1, sn...>::stuff(s, Buffer<len, sm..., s0>());
+			return Upto<S, start, offset + 1, sn...>::scan(s, Buffer<len, sm..., s0>());
 		}
 	};
 	template <const char * const & S, int start, char... sn>
 	struct UptoWrite {
 		template<typename stream, int len, char... sm>
-		static auto stuff(stream & s, const Buffer<len, sm...> &)
+		static auto scan(stream & s, const Buffer<len, sm...> &)
 		{
 			s.write(S + start, sizeof...(sm));
 			return Buffer<sizeof...(sm), sn...>();
@@ -49,7 +49,7 @@ namespace AdHoc {
 		template<typename ... Pn>
 		static void write(stream & s, const Pn & ... pn)
 		{
-			next(s, Upto<S, start, 0, sn...>::stuff(s, Buffer<0>()), pn...);
+			next(s, Upto<S, start, 0, sn...>::scan(s, Buffer<0>()), pn...);
 		}
 		template<typename ... Pn, int len, char... ssn, template <int, char...> class Buffer>
 		static void next(stream & s, const Buffer<len, ssn...>&, const Pn & ... pn)
