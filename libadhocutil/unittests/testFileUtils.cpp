@@ -33,6 +33,12 @@ BOOST_AUTO_TEST_CASE( msg )
 	BOOST_REQUIRE_EQUAL(x.what(), "verb (2:No such file or directory)");
 }
 
+BOOST_AUTO_TEST_CASE( msgOn )
+{
+	AdHoc::SystemExceptionOn x("verb", "No such file or directory", ENOENT, "noun");
+	BOOST_REQUIRE_EQUAL(x.what(), "verb on 'noun' (2:No such file or directory)");
+}
+
 BOOST_AUTO_TEST_CASE( pathPart )
 {
 	using namespace AdHoc::FileUtils;

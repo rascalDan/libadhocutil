@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "compileTimeFormatter.h"
 
 namespace AdHoc {
 	const Lexer::State Lexer::InitialState = "";
@@ -11,6 +12,7 @@ namespace AdHoc {
 	{
 	}
 
+	AdHocFormatter(UnexpectedInputState, "Unexpected input in state (%?) at %?");
 	void
 	Lexer::extract(const gchar * string, size_t length) const
 	{
@@ -29,7 +31,7 @@ namespace AdHoc {
 				}
 			}
 			if (!selected) {
-				throw std::runtime_error(std::string("Unexpected input in state (" + es.getState() + ") at ") + (string + es.pos));
+				throw std::runtime_error(UnexpectedInputState::get(es.getState(), string + es.pos));
 			}
 			es.pat = boost::get<1>(*selected);
 			const auto & h = boost::get<2>(*selected);

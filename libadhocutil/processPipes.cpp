@@ -4,10 +4,24 @@
 #include <string.h>
 #include <sys/resource.h>
 #include <stdexcept>
+#include <sys.h>
 #include "scopeExit.h"
 
 namespace AdHoc {
 namespace System {
+
+static
+void
+pipe(int pipes[2], ScopeExit & tidyUp)
+{
+	if (::pipe(pipes)) {
+		throw SystemException("pipe(2) failed", strerror(errno), errno);
+	}
+	tidyUp.onFailure.push_back([pipes] {
+			close(pipes[0]);
+			close(pipes[1]);
+		});
+}
 
 ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o, bool e) :
 	in(-1),
@@ -17,35 +31,17 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 	int ipipes[2], opipes[2], epipes[2];
 	ScopeExit tidyUp;
 	if (i) {
-		if (pipe(ipipes)) {
-			throw std::runtime_error("Failed to create stdin pipe");
-		}
-		tidyUp.onFailure.push_back([ipipes] {
-				close(ipipes[0]);
-				close(ipipes[1]);
-			});
+		pipe(ipipes, tidyUp);
 	}
 	if (o) {
-		if (pipe(opipes)) {
-			throw std::runtime_error("Failed to create stdout pipe");
-		}
-		tidyUp.onFailure.push_back([opipes] {
-				close(opipes[0]);
-				close(opipes[1]);
-			});
+		pipe(opipes, tidyUp);
 	}
 	if (e) {
-		if (pipe(epipes)) {
-			throw std::runtime_error("Failed to create stderr pipe");
-		}
-		tidyUp.onFailure.push_back([epipes] {
-				close(epipes[0]);
-				close(epipes[1]);
-			});
+		pipe(epipes, tidyUp);
 	}
 	switch (child = fork()) {
 		case -1: // fail
-			throw std::runtime_error("Failed to fork");
+			throw SystemException("fork(2) failed", strerror(errno), errno);
 		default: // parent
 			if (i) {
 				close(ipipes[0]);

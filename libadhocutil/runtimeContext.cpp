@@ -1,5 +1,7 @@
 #include "runtimeContext.h"
-#include <stdexcept>
+#include <errno.h>
+#include <string.h>
+#include <sys.h>
 
 namespace AdHoc {
 namespace System {
@@ -10,7 +12,7 @@ RuntimeContext::RuntimeContext(size_t stacksize) :
 {
 	stack = malloc(stacksize);
 	if (getcontext(&ctxCallback) == -1)
-		throw std::runtime_error("Failed to getcontext");
+		throw SystemException("getcontext(3) failed", strerror(errno), errno);
 	ctxCallback.uc_stack.ss_sp = stack;
 	ctxCallback.uc_stack.ss_size = stacksize;
 	ctxCallback.uc_link = &ctxInitial;

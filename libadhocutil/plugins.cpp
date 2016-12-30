@@ -3,7 +3,7 @@
 #include <dlfcn.h>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
-#include "buffer.h"
+#include "compileTimeFormatter.h"
 
 namespace std {
 	bool
@@ -60,24 +60,28 @@ namespace AdHoc {
 
 	Plugin::~Plugin() = default;
 
+	AdHocFormatter(NoSuchPluginExceptionMsg, "No such plugin: %? of type %?");
 	NoSuchPluginException::NoSuchPluginException(const std::string & n, const std::type_info & t) :
-		std::runtime_error(stringbf("No such plugin: %s of type %s", n, t))
+		std::runtime_error(NoSuchPluginExceptionMsg::get(n, t))
 	{
 	}
 
+	AdHocFormatter(DuplicatePluginExceptionMsg, "Duplicate plugin %? for type %? at %?:%?, originally from %?:%?");
 	DuplicatePluginException::DuplicatePluginException(PluginPtr p1, PluginPtr p2) :
-		std::runtime_error(stringbf("Duplicate plugin %s for type %s at %s:%d, originally from %s:%d",
-				p1->name, p1->type(), p2->filename, p2->lineno, p1->filename, p1->lineno))
+		std::runtime_error(DuplicatePluginExceptionMsg::get(
+					p1->name, p1->type(), p2->filename, p2->lineno, p1->filename, p1->lineno))
 	{
 	}
 
+	AdHocFormatter(DuplicateResolverExceptionMsg, "Duplicate resolver function for type %?");
 	DuplicateResolverException::DuplicateResolverException(const std::type_info & t) :
-		std::runtime_error(stringbf("Duplicate resolver function for type %s", t))
+		std::runtime_error(DuplicateResolverExceptionMsg::get(t))
 	{
 	}
 
+	AdHocFormatter(LoadLibraryExceptionMsg, "Failed to load library [%?]; %?");
 	LoadLibraryException::LoadLibraryException(const std::string & f, const char * msg) :
-		std::runtime_error(stringbf("Failed to load library [%s]; %s", f, msg))
+		std::runtime_error(LoadLibraryExceptionMsg::get(f, msg))
 	{
 	}
 

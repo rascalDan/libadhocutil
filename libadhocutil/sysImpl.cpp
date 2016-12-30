@@ -1,10 +1,18 @@
 #include <sys.h>
-#include <boost/format.hpp>
+#include "compileTimeFormatter.h"
 
 namespace AdHoc {
-	static boost::format e("%s (%d:%s)");
+	AdHocFormatter(SystemExceptionMsg, "%? (%?:%?)");
+
 	void SystemException::ice_print(std::ostream & s) const
 	{
-		s << e % task % errNo % message;
+		SystemExceptionMsg::write(s, task, errNo, message);
+	}
+
+	AdHocFormatter(SystemExceptionOnMsg, "%? on '%?' (%?:%?)");
+
+	void SystemExceptionOn::ice_print(std::ostream & s) const
+	{
+		SystemExceptionOnMsg::write(s, task, objectName, errNo, message);
 	}
 }

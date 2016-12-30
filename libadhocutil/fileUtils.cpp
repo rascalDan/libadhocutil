@@ -16,7 +16,7 @@ namespace AdHoc {
 			fh(open(path.c_str(), flags))
 		{
 			if (fh < 0) {
-				throw SystemException("Failed to open " + path.string(), strerror(errno), errno);
+				throw SystemExceptionOn("open(2) failed", strerror(errno), errno, path.string());
 			}
 		}
 
@@ -24,7 +24,7 @@ namespace AdHoc {
 			fh(open(path.c_str(), flags, mode))
 		{
 			if (fh < 0) {
-				throw SystemException("Failed to open " + path.string(), strerror(errno), errno);
+				throw SystemExceptionOn("open(2) failed", strerror(errno), errno, path.string());
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace AdHoc {
 		{
 			if (fstat(fh, &st)) {
 				// LCOV_EXCL_START can't think of a way to test open succeeding and fstat failing
-				throw SystemException("Failed to fstat " + path.string(), strerror(errno), errno);
+				throw SystemExceptionOn("fstat(2) failed", strerror(errno), errno, path.string());
 				// LCOV_EXCL_STOP
 			}
 		}
@@ -54,7 +54,7 @@ namespace AdHoc {
 			data(mmap(0, st.st_size, PROT_READ, MAP_SHARED, fh, 0))
 		{
 			if (data == (void*)-1) {
-				throw SystemException("Failed to mmap " + path.string(), strerror(errno), errno);
+				throw SystemExceptionOn("mmap(2) failed", strerror(errno), errno, path.string());
 			}
 		}
 

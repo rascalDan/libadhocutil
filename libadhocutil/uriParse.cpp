@@ -1,7 +1,7 @@
 #include "uriParse.h"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
-#include "buffer.h"
+#include "compileTimeFormatter.h"
 
 namespace AdHoc {
 	static inline int _is_scheme_char(int c)
@@ -179,10 +179,12 @@ namespace AdHoc {
 	{
 	}
 
+	AdHocFormatter(InvalidUriMsg, "InvalidUri (%?) parsing [%?]");
+
 	std::string
 	InvalidUri::message() const throw()
 	{
-		return stringbf("InvalidUri (%s) parsing [%s]", err, uri);
+		return InvalidUriMsg::get(err, uri);
 	}
 }
 

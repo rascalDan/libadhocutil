@@ -1,6 +1,7 @@
 #include "curlHandle.h"
 #include <net.h>
 #include <boost/numeric/conversion/cast.hpp>
+#include "compileTimeFormatter.h"
 
 namespace AdHoc {
 namespace Net {
@@ -118,6 +119,20 @@ CurlHandle::checkCurlCode(CURLcode res) const
 		}
 		throw ce;
 	}
+}
+
+AdHocFormatter(CurlExceptionMsg, "Network operation failed: %? (%?)");
+AdHocFormatter(CurlExceptionMsgHttp, "HTTP operation failed: %?: %? (%?)");
+
+void
+CurlException::ice_print(std::ostream & s) const
+{
+	if (httpcode) {
+		CurlExceptionMsgHttp::write(s, *httpcode, message, resultcode);
+	}	
+	else {
+		CurlExceptionMsg::write(s, message, resultcode);
+	}	
 }
 
 }

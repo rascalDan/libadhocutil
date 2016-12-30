@@ -1,5 +1,5 @@
 #include "resourcePool.h"
-#include "buffer.h"
+#include "compileTimeFormatter.h"
 
 namespace AdHoc {
 	TimeOutOnResourcePool::TimeOutOnResourcePool(const char * const n) :
@@ -7,10 +7,11 @@ namespace AdHoc {
 	{
 	}
 
+	AdHocFormatter(TimeOutOnResourcePoolMsg, "Timeout getting a resource from pool of %?");
 	std::string
 	TimeOutOnResourcePool::message() const throw()
 	{
-		return stringbf("Timeout getting a resource from pool of %s", name);
+		return TimeOutOnResourcePoolMsg::get(name);
 	}
 
 	NoCurrentResource::NoCurrentResource(const std::thread::id & id, const char * const n) :
@@ -19,10 +20,11 @@ namespace AdHoc {
 	{
 	}
 
+	AdHocFormatter(NoCurrentResourceMsg, "Thread %? has no current resource handle of type %?");
 	std::string
 	NoCurrentResource::message() const throw()
 	{
-		return stringbf("Thread %s has no current resource handle of type %s", threadId, name);
+		return NoCurrentResourceMsg::get(threadId, name);
 	}
 }
 
