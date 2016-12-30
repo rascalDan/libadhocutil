@@ -213,3 +213,9 @@ namespace AdHoc {
 	};
 }
 
+#define AdHocFormatterTypedef(name, str, id) \
+	extern constexpr auto id = str; \
+	typedef ::AdHoc::Formatter<id> name
+#define AdHocFormatter(name, str) \
+	AdHocFormatterTypedef(name, str, name ## __COUNTER__)
+

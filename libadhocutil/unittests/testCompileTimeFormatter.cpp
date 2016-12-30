@@ -196,6 +196,13 @@ BOOST_AUTO_TEST_CASE ( typedefFormat )
 	BOOST_REQUIRE_EQUAL(this->str(), "custom -( expr )-");
 }
 
+AdHocFormatter(TypedefWrapper, "Typedef wrapper %?.");
+BOOST_AUTO_TEST_CASE ( typedefWrapper )
+{
+	TypedefWrapper::write(*this, "expr");
+	BOOST_REQUIRE_EQUAL(this->str(), "Typedef wrapper expr.");
+}
+
 BOOST_AUTO_TEST_CASE ( longFormatString )
 {
 	Formatter<formatStringLong>::write(*this);
