@@ -4,6 +4,7 @@
 #include <boost/preprocessor/variadic/size.hpp>
 
 namespace AdHoc {
+	/// @cond
 	constexpr int WRAP_AT = 120;
 
 	template <int, char...> struct Buffer { };
@@ -169,28 +170,46 @@ namespace AdHoc {
 
 	template <const char * const & S, int offset, int roffset, char ... sn>
 	struct Parser<S, offset, roffset, 0, sn...> : public ParserBase<S, false, sn..., 0>{ };
+	/// @endcond
 
+	/**
+	 * Compile time string formatter.
+	 * @param S the format string.
+	 */
 	template <const char * const & S>
-	struct Formatter {
-		template<typename ... Pn>
-		static std::string get(const Pn & ... pn)
-		{
-			std::stringstream s;
-			return run(Parser<S, 0, 0, *S>::parse(), s, pn...).str();
-		}
+	class Formatter {
+		public:
+			/**
+			 * Get a string containing the result of formatting.
+			 * @param pn the format arguments.
+			 * @return the formatted string.
+			 */
+			template<typename ... Pn>
+			static std::string get(const Pn & ... pn)
+			{
+				std::stringstream s;
+				return run(Parser<S, 0, 0, *S>::parse(), s, pn...).str();
+			}
 
-		template<typename stream, typename ... Pn>
-		static stream & write(stream & s, const Pn & ... pn)
-		{
-			return run(Parser<S, 0, 0, *S>::parse(), s, pn...);
-		}
+			/**
+			 * Write the result of formatting to the given stream.
+			 * @param s the stream to write to.
+			 * @param pn the format arguments.
+			 * @return the stream.
+			 */
+			template<typename stream, typename ... Pn>
+			static stream & write(stream & s, const Pn & ... pn)
+			{
+				return run(Parser<S, 0, 0, *S>::parse(), s, pn...);
+			}
 
-		template<typename stream, char...ssn, template<bool, char...> class ParserBuffer, typename ... Pn>
-		static stream & run(const ParserBuffer<false, ssn...> &, stream & s, const Pn & ... pn)
-		{
-			StreamWriter<S, 0, stream, ssn...>::write(s, pn...);
-			return s;
-		}
+		private:
+			template<typename stream, char...ssn, template<bool, char...> class ParserBuffer, typename ... Pn>
+			static stream & run(const ParserBuffer<false, ssn...> &, stream & s, const Pn & ... pn)
+			{
+				StreamWriter<S, 0, stream, ssn...>::write(s, pn...);
+				return s;
+			}
 	};
 }
 
