@@ -4,6 +4,7 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include "compileTimeFormatter.h"
+#include "globalStatic.impl.h"
 
 namespace std {
 	bool
@@ -29,25 +30,7 @@ namespace std {
 }
 
 namespace AdHoc {
-	static void createDefaultManager() __attribute__((constructor(101)));
-	static void deleteDefaultManager() __attribute__((destructor(101)));
-
-	static AdHoc::PluginManager * defaultPluginManager;
-
-	static
-	void
-	createDefaultManager()
-	{
-		defaultPluginManager = new PluginManager();
-	}
-
-	static
-	void
-	deleteDefaultManager()
-	{
-		delete defaultPluginManager;
-		defaultPluginManager = nullptr;
-	}
+	template class GlobalStatic<PluginManager>;
 
 	AbstractPluginImplementation::~AbstractPluginImplementation() = default;
 
@@ -100,7 +83,7 @@ namespace AdHoc {
 	PluginManager *
 	PluginManager::getDefault()
 	{
-		return defaultPluginManager;
+		return GlobalStatic<PluginManager>::get();
 	}
 
 	void
