@@ -2,9 +2,17 @@
 #define ADHOCUTIL_GLOBALSTATIC_H
 
 namespace AdHoc {
+	/**
+	 * Wrapper class for initialising/destroying a global static object via
+	 * __attribute__ constructor/destructor.
+	 */
 	template<typename Object>
 	class GlobalStatic {
 		public:
+			/**
+			 * Get the contained object.
+			 * @return The object.
+			 */
 			static Object * get();
 
 		private:
