@@ -5,12 +5,30 @@
 #include <definedDirs.h>
 #include <sys.h>
 
+BOOST_AUTO_TEST_CASE( raw )
+{
+	int f = open("/proc/self/exe", O_RDONLY);
+	BOOST_REQUIRE(f != -1);
+	AdHoc::FileUtils::FileHandle fh(f);
+	BOOST_REQUIRE_EQUAL(f, fh);
+}
+
 BOOST_AUTO_TEST_CASE( memmap )
 {
 	AdHoc::FileUtils::MemMap f(rootDir / "testFileUtils.cpp");
 	BOOST_REQUIRE(f.fh);
 	BOOST_REQUIRE_EQUAL(f.getStat().st_mode, 0100644);
 	BOOST_REQUIRE_EQUAL(0, memcmp(f.data, "#define BOOST_TEST_MODULE FileUtils", 35));
+}
+
+BOOST_AUTO_TEST_CASE( openmode )
+{
+	boost::filesystem::remove(binDir / "test.file");
+	BOOST_REQUIRE_THROW({
+		AdHoc::FileUtils::FileHandle fh(binDir / "test.file", O_RDONLY, S_IRWXU);
+	}, AdHoc::SystemExceptionOn);
+	AdHoc::FileUtils::FileHandle fh(binDir / "test.file", O_CREAT, S_IRWXU);
+	boost::filesystem::remove(binDir / "test.file");
 }
 
 BOOST_AUTO_TEST_CASE( openfail )

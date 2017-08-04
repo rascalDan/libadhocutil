@@ -12,6 +12,11 @@ namespace AdHoc {
 			return *pp;
 		}
 
+		FileHandle::FileHandle(int d) :
+			fh(d)
+		{
+		}
+
 		FileHandle::FileHandle(const boost::filesystem::path & path, int flags) :
 			fh(open(path.c_str(), flags))
 		{
@@ -31,6 +36,11 @@ namespace AdHoc {
 		FileHandle::~FileHandle()
 		{
 			close(fh);
+		}
+
+		FileHandle::operator int() const
+		{
+			return fh;
 		}
 
 		FileHandleStat::FileHandleStat(const boost::filesystem::path & path) :

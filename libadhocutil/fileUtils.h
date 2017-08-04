@@ -22,6 +22,12 @@ namespace AdHoc {
 		class DLL_PUBLIC FileHandle {
 			public:
 				/**
+				 * Construct from an existing file descriptor.
+				 * @param fd An open file descriptor.
+				 */
+				FileHandle(int fd);
+
+				/**
 				 * Open a new file handle.
 				 * @param path Path of file to open.
 				 * @param flags File handle flags
@@ -37,6 +43,15 @@ namespace AdHoc {
 				FileHandle(const boost::filesystem::path & path, int flags, int mode);
 
 				virtual ~FileHandle();
+
+				FileHandle(const FileHandle &) = delete;
+				void operator=(const FileHandle &) = delete;
+
+				/**
+				 * Implicit conversion back to raw Unix file descriptor.
+				 * @return The container file descriptor.
+				 */
+				operator int() const;
 
 				/// The file handle.
 				const int fh;
