@@ -22,6 +22,11 @@ namespace AdHoc {
 		class DLL_PUBLIC FileHandle {
 			public:
 				/**
+				 * Move constructor.
+				 */
+				FileHandle(FileHandle &&) = default;
+
+				/**
 				 * Construct from an existing file descriptor.
 				 * @param fd An open file descriptor.
 				 */
@@ -63,10 +68,30 @@ namespace AdHoc {
 		class DLL_PUBLIC FileHandleStat : public FileHandle {
 			public:
 				/**
+				 * Move constructor.
+				 */
+				FileHandleStat(FileHandleStat &&) = default;
+
+				/**
+				 * Construct from an existing file descriptor.
+				 * @param fd An open file descriptor.
+				 */
+				FileHandleStat(int fd);
+
+				/**
 				 * Open a new file handle (with the default flags).
 				 * @param path Path of file to open.
+				 * @param flags File handle flags
 				 */
-				FileHandleStat(const boost::filesystem::path & path);
+				FileHandleStat(const boost::filesystem::path & path, int flags = O_RDONLY);
+
+				/**
+				 * Open a new file handle.
+				 * @param path Path of file to open.
+				 * @param flags File handle flags
+				 * @param mode File handle mode
+				 */
+				FileHandleStat(const boost::filesystem::path & path, int flags, int mode);
 
 				/**
 				 * Get the stat structure.
@@ -74,9 +99,18 @@ namespace AdHoc {
 				 */
 				const struct stat & getStat() const;
 
+				/**
+				 * Refresh and return the stat structure.
+				 * @return The stat structure.
+				 */
+				const struct stat & refreshStat();
+
 			protected:
 				/// The stat structure.
 				struct stat st;
+
+			private:
+				DLL_PRIVATE void refreshStat(const boost::filesystem::path & path);
 		};
 
 		/**
@@ -85,14 +119,41 @@ namespace AdHoc {
 		class DLL_PUBLIC MemMap : public FileHandleStat {
 			public:
 				/**
+				 * Move constructor.
+				 */
+				MemMap(MemMap &&) = default;
+
+				/**
+				 * Construct from an existing file descriptor.
+				 * @param fd An open file descriptor.
+				 * @param flags File handle flags
+				 */
+				MemMap(int fd, int flags = O_RDONLY);
+
+				/**
 				 * Open a new file handle (with the default flags).
 				 * @param path Path of file to open.
+				 * @param flags File handle flags
 				 */
-				MemMap(const boost::filesystem::path & path);
+				MemMap(const boost::filesystem::path & path, int flags = O_RDONLY);
+
+				/**
+				 * Open a new file handle.
+				 * @param path Path of file to open.
+				 * @param flags File handle flags
+				 * @param mode File handle mode
+				 */
+				MemMap(const boost::filesystem::path & path, int flags, int mode);
+
 				~MemMap();
 
 				/// The file data.
 				void * const data;
+
+			private:
+				DLL_PUBLIC void * setupMapInt(int flags) const;
+				DLL_PUBLIC void * setupMap(int flags) const;
+				DLL_PUBLIC void * setupMap(const boost::filesystem::path & path, int flags) const;
 		};
 	}
 }

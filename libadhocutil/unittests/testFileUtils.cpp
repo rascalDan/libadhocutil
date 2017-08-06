@@ -5,12 +5,60 @@
 #include <definedDirs.h>
 #include <sys.h>
 
-BOOST_AUTO_TEST_CASE( raw )
+template <typename T>
+void testRaw()
 {
 	int f = open("/proc/self/exe", O_RDONLY);
 	BOOST_REQUIRE(f != -1);
-	AdHoc::FileUtils::FileHandle fh(f);
+	T fh(f);
 	BOOST_REQUIRE_EQUAL(f, fh);
+}
+
+BOOST_AUTO_TEST_CASE( raw )
+{
+	testRaw<AdHoc::FileUtils::FileHandle>();
+	testRaw<AdHoc::FileUtils::FileHandleStat>();
+	testRaw<AdHoc::FileUtils::MemMap>();
+}
+
+template <typename T, typename ... P>
+T openfh(P ... p)
+{
+	T fh(rootDir / "testFileUtils.cpp", p...);
+	return fh;
+}
+
+template <typename T, typename ... P>
+T moveTest(P ... p)
+{
+	T fh = openfh<T>(p...);
+	char out;
+	BOOST_REQUIRE_EQUAL(1, read(fh, &out, 1));
+	return fh;
+}
+
+BOOST_AUTO_TEST_CASE( moveFileHandle )
+{
+	moveTest<AdHoc::FileUtils::FileHandle>();
+	moveTest<AdHoc::FileUtils::FileHandle>(O_RDONLY);
+	moveTest<AdHoc::FileUtils::FileHandle>(O_RDONLY, O_NONBLOCK);
+}
+
+BOOST_AUTO_TEST_CASE( moveFileHandleStat )
+{
+	auto f = moveTest<AdHoc::FileUtils::FileHandleStat>();
+	BOOST_REQUIRE_EQUAL(0100644, f.getStat().st_mode);
+	moveTest<AdHoc::FileUtils::FileHandleStat>(O_RDONLY);
+	moveTest<AdHoc::FileUtils::FileHandleStat>(O_RDONLY, O_NONBLOCK);
+}
+
+BOOST_AUTO_TEST_CASE( moveMemMap )
+{
+	auto f = moveTest<AdHoc::FileUtils::MemMap>();
+	BOOST_REQUIRE_EQUAL(0100644, f.getStat().st_mode);
+	BOOST_REQUIRE_EQUAL(0, memcmp(f.data, "#define BOOST_TEST_MODULE FileUtils", 35));
+	moveTest<AdHoc::FileUtils::MemMap>(O_RDONLY);
+	moveTest<AdHoc::FileUtils::MemMap>(O_RDONLY, O_NONBLOCK);
 }
 
 BOOST_AUTO_TEST_CASE( memmap )
