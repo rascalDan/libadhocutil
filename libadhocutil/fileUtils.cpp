@@ -20,6 +20,12 @@ namespace AdHoc {
 		{
 		}
 
+		FileHandle::FileHandle(FileHandle && o) :
+			fh(o.fh)
+		{
+			const_cast<int &>(o.fh) = -1;
+		}
+
 		FileHandle::FileHandle(const boost::filesystem::path & path, int flags) :
 			fh(open(path.c_str(), flags))
 		{
@@ -38,7 +44,9 @@ namespace AdHoc {
 
 		FileHandle::~FileHandle()
 		{
-			close(fh);
+			if (fh >= 0) {
+				BOOST_VERIFY(close(fh) == 0);
+			}
 		}
 
 		FileHandle::operator int() const

@@ -24,7 +24,7 @@ namespace AdHoc {
 				/**
 				 * Move constructor.
 				 */
-				FileHandle(FileHandle &&) = default;
+				FileHandle(FileHandle &&);
 
 				/**
 				 * Construct from an existing file descriptor.
