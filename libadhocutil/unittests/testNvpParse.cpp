@@ -20,13 +20,15 @@ NvpTarget(TestTarget) TestTargetMap {
 	NvpValue(TestTarget, d),
 };
 
+BOOST_TEST_DONT_PRINT_LOG_VALUE(decltype(TestTargetMap.find("")));
+
 BOOST_AUTO_TEST_CASE ( targetmap )
 {
-	BOOST_REQUIRE(TestTargetMap.find("a") != TestTargetMap.end());
-	BOOST_REQUIRE(TestTargetMap.find("b") != TestTargetMap.end());
-	BOOST_REQUIRE(TestTargetMap.find("c") != TestTargetMap.end());
-	BOOST_REQUIRE(TestTargetMap.find("d") != TestTargetMap.end());
-	BOOST_REQUIRE(TestTargetMap.find("e") == TestTargetMap.end());
+	BOOST_REQUIRE_NE(TestTargetMap.find("a"), TestTargetMap.end());
+	BOOST_REQUIRE_NE(TestTargetMap.find("b"), TestTargetMap.end());
+	BOOST_REQUIRE_NE(TestTargetMap.find("c"), TestTargetMap.end());
+	BOOST_REQUIRE_NE(TestTargetMap.find("d"), TestTargetMap.end());
+	BOOST_REQUIRE_EQUAL(TestTargetMap.find("e"), TestTargetMap.end());
 }
 
 BOOST_AUTO_TEST_CASE ( parse )

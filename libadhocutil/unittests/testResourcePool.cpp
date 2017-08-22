@@ -249,7 +249,7 @@ BOOST_AUTO_TEST_CASE( threading1 )
 		}));
 		usleep(5000);
 		// pool size never exceeds 3
-		BOOST_REQUIRE(pool.inUseCount() <= 3);
+		BOOST_REQUIRE_LE(pool.inUseCount(), 3);
 	}
 	for(std::thread * thread : threads) {
 		thread->join();
@@ -319,14 +319,14 @@ BOOST_AUTO_TEST_CASE( test )
 	{
 		auto r = pool.get();
 		BOOST_REQUIRE(r.get());
-		BOOST_REQUIRE(rpId != r.get()->id);
+		BOOST_REQUIRE_NE(rpId, r.get()->id);
 		BOOST_REQUIRE_EQUAL(1, MockResource::count);
 		rpId = r.get()->id;
 	}
 	{
 		auto r = pool.get();
 		BOOST_REQUIRE(r.get());
-		BOOST_REQUIRE(rpId == r.get()->id);
+		BOOST_REQUIRE_EQUAL(rpId, r.get()->id);
 		BOOST_REQUIRE_EQUAL(1, MockResource::count);
 	}
 }

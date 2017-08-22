@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE( multibyte )
 			"^# ([^<\n]+)? ?(<(.+?@[^\n>]+)>?)? \\((\\d+ *(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\w* \\d+)\\)$",
 			(GRegexCompileFlags)(G_REGEX_OPTIMIZE | G_REGEX_CASELESS | G_REGEX_UNGREEDY));
 	Glib::ustring input("# Michał Górny <mgorny@gentoo.org> (28 Mar 2015)");
-	BOOST_REQUIRE(input.bytes() > input.length());
+	BOOST_REQUIRE_GT(input.bytes(), input.length());
 	BOOST_REQUIRE(maskHead->matches(input.c_str(), input.bytes(), 0));
 	BOOST_REQUIRE_EQUAL(maskHead->matchedLength(), input.bytes());
 	BOOST_REQUIRE(maskHead->match(1));

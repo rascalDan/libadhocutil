@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( get )
 	BOOST_REQUIRE(factory1);
 	BOOST_REQUIRE_EQUAL(factory1, factory2);
 	BOOST_REQUIRE(factory3);
-	BOOST_REQUIRE(factory1 != factory3);
+	BOOST_REQUIRE_NE(factory1, factory3);
 }
 
 BOOST_AUTO_TEST_CASE( create )

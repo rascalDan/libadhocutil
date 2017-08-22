@@ -9,13 +9,13 @@
 	BOOST_REQUIRE_EQUAL(fcntl(fh, F_GETFD), -1)
 
 #define REQUIRE_VALID_FH(fh) \
-	BOOST_REQUIRE(fcntl(fh, F_GETFD) != -1)
+	BOOST_REQUIRE_NE(fcntl(fh, F_GETFD), -1)
 
 template <typename T>
 void testRaw()
 {
 	int f = open("/proc/self/exe", O_RDONLY);
-	BOOST_REQUIRE(f != -1);
+	BOOST_REQUIRE_NE(f, -1);
 	T fh(f);
 	BOOST_REQUIRE_EQUAL(f, fh);
 }

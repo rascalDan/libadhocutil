@@ -20,9 +20,9 @@ BOOST_AUTO_TEST_CASE( registered )
 BOOST_AUTO_TEST_CASE( get )
 {
 	auto implOfThingPlugin = PluginManager::getDefault()->get<BaseThing>("ImplOfThing");
-	BOOST_REQUIRE(implOfThingPlugin != nullptr);
+	BOOST_REQUIRE(implOfThingPlugin);
 	auto implOfThing = implOfThingPlugin->implementation();
-	BOOST_REQUIRE(implOfThing != nullptr);
+	BOOST_REQUIRE(implOfThing);
 	auto implOfThingDirect = PluginManager::getDefault()->getImplementation<BaseThing>("ImplOfThing");
 	BOOST_REQUIRE_EQUAL(implOfThing, implOfThingDirect);
 }
@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_CASE( addManual )
 	BOOST_REQUIRE(c2);
 	BOOST_REQUIRE(o2);
 	BOOST_REQUIRE_EQUAL(o1, o2);
-	BOOST_REQUIRE(c1 != o1);
-	BOOST_REQUIRE(c2 != o1);
+	BOOST_REQUIRE_NE(c1, o1);
+	BOOST_REQUIRE_NE(c2, o1);
 }
 
 BOOST_AUTO_TEST_CASE( removeManual )
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE( otherTypes )
 	PluginPtr p2 = PluginManager::getDefault()->get<OtherBase>("ImplOfThing");
 	BOOST_REQUIRE(p1);
 	BOOST_REQUIRE(p2);
-	BOOST_REQUIRE(p1 != p2);
+	BOOST_REQUIRE_NE(p1, p2);
 	PluginManager::getDefault()->remove<OtherBase>("ImplOfThing");
 	BOOST_REQUIRE_EQUAL(1, PluginManager::getDefault()->count());
 	BOOST_REQUIRE(PluginManager::getDefault()->get<BaseThing>("ImplOfThing"));

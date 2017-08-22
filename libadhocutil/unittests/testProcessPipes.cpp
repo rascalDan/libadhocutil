@@ -11,8 +11,8 @@ BOOST_AUTO_TEST_CASE ( readfind )
 {
 	ProcessPipes pp({"/usr/bin/find", rootDir.string(), "-maxdepth", "1"}, false, true, true);
 	BOOST_REQUIRE_EQUAL(pp.fdIn(), -1);
-	BOOST_REQUIRE(pp.fdOut() != -1);
-	BOOST_REQUIRE(pp.fdError() != -1);
+	BOOST_REQUIRE_NE(pp.fdOut(), -1);
+	BOOST_REQUIRE_NE(pp.fdError(), -1);
 	char buf[BUFSIZ];
 	ssize_t bytes = read(pp.fdOut(), buf, BUFSIZ);
 	BOOST_REQUIRE_MESSAGE(bytes > 0, "bytes = " << bytes);

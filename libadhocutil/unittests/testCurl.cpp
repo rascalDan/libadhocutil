@@ -46,8 +46,8 @@ BOOST_AUTO_TEST_CASE( setAndGetOptions )
 	// double
 	double totalTime;
 	ch.getinfo(CURLINFO_TOTAL_TIME, totalTime);
-	BOOST_REQUIRE(totalTime > 0);
-	BOOST_REQUIRE(totalTime < 50);
+	BOOST_REQUIRE_GT(totalTime, 0);
+	BOOST_REQUIRE_LT(totalTime, 50);
 }
 
 BOOST_AUTO_TEST_CASE( fetch_missing )
