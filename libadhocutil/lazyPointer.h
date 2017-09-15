@@ -4,6 +4,8 @@
 #include <boost/function.hpp>
 #include <boost/variant.hpp>
 #include <boost/intrusive_ptr.hpp>
+#include <boost/get_pointer.hpp>
+#include <ostream>
 
 namespace AdHoc {
 
@@ -37,7 +39,8 @@ class LazyPointer {
 		}
 
 		/** Construct pointer with an instance value. */
-		LazyPointer(T * p) :
+		template <typename TT = T>
+		LazyPointer(T * p, typename std::enable_if<!std::is_same<TT *, P>::value>::type * = NULL) :
 			source(P(p))
 		{
 		}
@@ -67,7 +70,7 @@ class LazyPointer {
 
 		T * get() const
 		{
-			return deref().get();
+			return boost::get_pointer(deref());
 		}
 
 		P deref() const
@@ -133,7 +136,6 @@ class LazyPointer {
 };
 
 }
-
 namespace boost {
 	template <typename R, typename T, typename P>
 		R * dynamic_pointer_cast(const AdHoc::LazyPointer<T, P> & p) {

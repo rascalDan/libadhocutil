@@ -17,6 +17,7 @@ class Test : public IntrusivePtrBase {
 };
 
 typedef LazyPointer<Test> TestLazyPointer;
+typedef LazyPointer<int, int *> RawLazyPointer;
 
 static
 TestLazyPointer::pointer_type
@@ -77,5 +78,40 @@ BOOST_AUTO_TEST_CASE ( nondefault )
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	BOOST_REQUIRE_EQUAL(11, (*p).val);
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
+}
+
+BOOST_AUTO_TEST_CASE( rawPointerNull )
+{
+	RawLazyPointer null;
+	BOOST_REQUIRE(null.hasValue());
+	BOOST_REQUIRE(!null);
+	BOOST_REQUIRE(!null.get());
+}
+
+BOOST_AUTO_TEST_CASE( rawPointerNonNull )
+{
+	RawLazyPointer value(new int(3));
+	BOOST_REQUIRE(value.hasValue());
+	BOOST_REQUIRE(value);
+	BOOST_REQUIRE(value.get());
+	BOOST_REQUIRE_EQUAL(*value, 3);
+	int * x = value;
+	BOOST_REQUIRE_EQUAL(*x, 3);
+	delete value;
+}
+
+int *
+rawFactory(const std::string & s)
+{
+	return new int(s.length());
+}
+
+BOOST_AUTO_TEST_CASE( rawPointerFactory )
+{
+	RawLazyPointer value(boost::bind(&rawFactory, std::string("four")));
+	BOOST_REQUIRE(!value.hasValue());
+	BOOST_REQUIRE_EQUAL(*value, 4);
+	BOOST_REQUIRE(value.hasValue());
+	delete value;
 }
 
