@@ -94,12 +94,12 @@ BOOST_AUTO_TEST_CASE( fetch_file_stream )
 BOOST_AUTO_TEST_CASE( fetch_missing_stream )
 {
 	auto url = "file://" + rootDir.string() + "/nothere";
-	BOOST_REQUIRE_THROW({
-		CurlStreamSource css(url);
-		CurlStream curlstrm(css);
-		std::string tok;
-		curlstrm >> tok;
-	}, AdHoc::Net::CurlException);
+	CurlStreamSource css(url);
+	css.setopt(CURLOPT_FAILONERROR, 1L);
+	CurlStream curlstrm(css);
+	std::string tok;
+	curlstrm >> tok;
+	BOOST_REQUIRE(!curlstrm.good());
 }
 
 static
@@ -136,16 +136,16 @@ BOOST_AUTO_TEST_CASE( fetch_multi_fail )
 	bool errored = false;
 	bool finished = false;
 	cmh.addCurl("http://sys.randomdan.homeip.net/missing", [&finished, &errored](std::istream & s) {
-			try {
-				std::string tok;
-				while (!s.eof()) {
-					s >> tok;
-				}
-				finished = true;
-			} catch (...) {
+		std::string tok;
+		while (!s.eof()) {
+			if (!s.good()) {
 				errored = true;
+				return;
 			}
-		});
+			s >> tok;
+		}
+		finished = true;
+	});
 	cmh.performAll();
 	BOOST_REQUIRE(!finished);
 	BOOST_REQUIRE(errored);
