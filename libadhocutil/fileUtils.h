@@ -151,9 +151,11 @@ namespace AdHoc {
 				/// The file data.
 				void * const data;
 
+				/**
+				 * Create a std::string_view of the mapped data.
+				 */
 				template<typename T = char>
-				auto
-				sv() const 
+				auto sv() const
 				{
 					return std::basic_string_view<T>((const T *)data, st.st_size / sizeof(T));
 				}
