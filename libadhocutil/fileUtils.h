@@ -4,6 +4,7 @@
 #include <boost/filesystem/path.hpp>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string_view>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -149,6 +150,13 @@ namespace AdHoc {
 
 				/// The file data.
 				void * const data;
+
+				template<typename T = char>
+				auto
+				sv() const 
+				{
+					return std::basic_string_view<T>((const T *)data, st.st_size / sizeof(T));
+				}
 
 			private:
 				DLL_PUBLIC void * setupMapInt(int flags) const;

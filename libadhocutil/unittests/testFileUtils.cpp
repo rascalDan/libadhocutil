@@ -103,6 +103,15 @@ BOOST_AUTO_TEST_CASE( memmap )
 	BOOST_REQUIRE(f.fh);
 	BOOST_REQUIRE_EQUAL(f.getStat().st_mode, 0100644);
 	BOOST_REQUIRE_EQUAL(0, memcmp(f.data, "#define BOOST_TEST_MODULE FileUtils", 35));
+	// String things
+	auto s = f.sv();
+	BOOST_REQUIRE_EQUAL(s.substr(0, 35), "#define BOOST_TEST_MODULE FileUtils");
+	BOOST_REQUIRE_EQUAL(s.length(), f.getStat().st_size);
+	// Objects
+	auto i = f.sv<int>();
+	BOOST_REQUIRE_EQUAL(i[0], *reinterpret_cast<const int *>("#def"));
+	BOOST_REQUIRE_EQUAL(i[1], *reinterpret_cast<const int *>("ine "));
+	BOOST_REQUIRE_EQUAL(i.length(), f.getStat().st_size / sizeof(int));
 }
 
 BOOST_AUTO_TEST_CASE( openmode )
