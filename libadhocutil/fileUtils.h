@@ -151,6 +151,7 @@ namespace AdHoc {
 				/// The file data.
 				void * const data;
 
+#ifdef __cpp_lib_string_view
 				/**
 				 * Create a std::string_view of the mapped data.
 				 */
@@ -159,6 +160,7 @@ namespace AdHoc {
 				{
 					return std::basic_string_view<T>((const T *)data, st.st_size / sizeof(T));
 				}
+#endif
 
 			private:
 				DLL_PUBLIC void * setupMapInt(int flags) const;
