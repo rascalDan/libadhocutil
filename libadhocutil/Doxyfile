@@ -1,4 +1,4 @@
-# Doxyfile 1.8.10
+# Doxyfile 1.8.14
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -45,8 +45,9 @@ OPTIMIZE_FOR_FORTRAN   = NO
 OPTIMIZE_OUTPUT_VHDL   = NO
 EXTENSION_MAPPING      =
 MARKDOWN_SUPPORT       = YES
+TOC_INCLUDE_HEADINGS   = 0
 AUTOLINK_SUPPORT       = YES
-BUILTIN_STL_SUPPORT    = NO
+BUILTIN_STL_SUPPORT    = YES
 CPP_CLI_SUPPORT        = NO
 SIP_SUPPORT            = NO
 IDL_PROPERTY_SUPPORT   = YES
@@ -105,6 +106,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
+WARN_AS_ERROR          = NO
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           =
 #---------------------------------------------------------------------------
@@ -114,7 +116,8 @@ INPUT                  = .
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES
-EXCLUDE                = bin unittests
+EXCLUDE                = bin \
+                         unittests
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        =
@@ -139,10 +142,13 @@ REFERENCES_LINK_SOURCE = YES
 SOURCE_TOOLTIPS        = YES
 USE_HTAGS              = NO
 VERBATIM_HEADERS       = YES
+CLANG_ASSISTED_PARSING = NO
+CLANG_OPTIONS          =
+CLANG_COMPILATION_DATABASE_PATH                                        = 0
 #---------------------------------------------------------------------------
 # Configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
-ALPHABETICAL_INDEX     = YES
+ALPHABETICAL_INDEX     = NO
 COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          =
 #---------------------------------------------------------------------------
@@ -160,6 +166,7 @@ HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
 HTML_TIMESTAMP         = NO
+HTML_DYNAMIC_MENUS     = YES
 HTML_DYNAMIC_SECTIONS  = NO
 HTML_INDEX_NUM_ENTRIES = 100
 GENERATE_DOCSET        = NO
@@ -223,6 +230,7 @@ LATEX_BATCHMODE        = NO
 LATEX_HIDE_INDICES     = NO
 LATEX_SOURCE_CODE      = NO
 LATEX_BIB_STYLE        = plain
+LATEX_TIMESTAMP        = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the RTF output
 #---------------------------------------------------------------------------
@@ -274,7 +282,8 @@ SEARCH_INCLUDES        = YES
 INCLUDE_PATH           =
 INCLUDE_FILE_PATTERNS  =
 PREDEFINED             = DLL_PRIVATE= \
-                         DLL_PUBLIC=
+                         DLL_PUBLIC= \
+                         __cpp_lib_string_view
 EXPAND_AS_DEFINED      =
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
@@ -289,11 +298,11 @@ PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
 #---------------------------------------------------------------------------
-CLASS_DIAGRAMS         = NO
+CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            =
 DIA_PATH               =
 HIDE_UNDOC_RELATIONS   = YES
-HAVE_DOT               = NO
+HAVE_DOT               = YES
 DOT_NUM_THREADS        = 0
 DOT_FONTNAME           = Helvetica
 DOT_FONTSIZE           = 10
@@ -310,13 +319,14 @@ CALL_GRAPH             = NO
 CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
-DOT_IMAGE_FORMAT       = png
-INTERACTIVE_SVG        = NO
+DOT_IMAGE_FORMAT       = svg
+INTERACTIVE_SVG        = YES
 DOT_PATH               =
 DOTFILE_DIRS           =
 MSCFILE_DIRS           =
 DIAFILE_DIRS           =
 PLANTUML_JAR_PATH      =
+PLANTUML_CFG_FILE      =
 PLANTUML_INCLUDE_PATH  =
 DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 0
