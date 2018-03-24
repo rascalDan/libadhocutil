@@ -7,13 +7,14 @@ variant coverage : debug ;
 
 project
   : requirements
-      <cxxflags>"-std=c++17 -fvisibility=hidden -fvisibility-inlines-hidden"
-      <linkflags>"-Wl,-z,defs,--warn-once,--gc-sections"
-      <variant>release:<cxxflags>"-flto=2"
-      <variant>release:<linkflags>"-flto=2"
-      <variant>debug:<cxxflags>"-W -Wall -Werror -Wextra"
-      <variant>coverage:<cxxflags>"--coverage"
-      <variant>coverage:<linkflags>"--coverage"
+			<define>ICE_CPP11_MAPPING
+			<cxxflags>"-std=c++17 -fvisibility=hidden -fvisibility-inlines-hidden"
+			<linkflags>"-Wl,-z,defs,--warn-once,--gc-sections"
+			<variant>release:<cxxflags>"-flto=2"
+			<variant>release:<linkflags>"-flto=2"
+			<variant>debug:<cxxflags>"-W -Wall -Werror -Wextra"
+			<variant>coverage:<cxxflags>"--coverage"
+			<variant>coverage:<linkflags>"--coverage"
 	;
 
 build-project libadhocutil ;

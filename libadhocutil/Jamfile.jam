@@ -4,19 +4,16 @@ import lex ;
 lib boost_system ;
 lib boost_filesystem ;
 lib boost_thread ;
-lib Ice : ;
-lib IceUtil ;
+lib Ice++11 : ;
 lib pthread ;
 lib curl ;
 lib dl ;
-
-alias iceall : : : : <library>Ice <library>IceUtil <library>pthread ;
 
 lib adhocutil :
 	[ glob *.ll *.cpp *.ice : bin ]
 	:
 	<include>.
-	<library>iceall
+	<library>Ice++11
 	<library>boost_system
 	<library>boost_filesystem
 	<library>boost_thread
@@ -25,6 +22,7 @@ lib adhocutil :
 	<library>dl
 	: :
 	<include>.
+	<library>Ice++11
 	;
 
 build-project unittests ;

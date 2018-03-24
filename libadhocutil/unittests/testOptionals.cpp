@@ -3,8 +3,8 @@
 
 #include <optionalUtils.h>
 #include <boost/optional.hpp>
-#include <IceUtil/Exception.h>
-#include <IceUtil/Optional.h>
+#include <Ice/Exception.h>
+#include <Ice/Optional.h>
 
 using namespace AdHoc;
 
@@ -12,12 +12,12 @@ BOOST_AUTO_TEST_CASE ( general )
 {
 	boost::optional<int> x;
 	boost::optional<double> y = 2.3;
-	IceUtil::Optional<float> ix;
-	IceUtil::Optional<short> iy = 4;
+	Ice::optional<float> ix;
+	Ice::optional<short> iy = 4;
 	std::string * p = nullptr;
 	std::string * q = new std::string("str");
 	boost::optional<std::string> r;
-	IceUtil::Optional<std::string> s;
+	Ice::optional<std::string> s;
 
 	bool b(p);
 	BOOST_REQUIRE_EQUAL(false, b);
