@@ -20,7 +20,7 @@ namespace AdHoc {
 	class DLL_PUBLIC ResourceHandle {
 		public:
 			/// Handle to an allocated resource, the pool it belongs to and a count of active references.
-			typedef std::tuple<std::shared_ptr<Resource>, ResourcePool<Resource> *, std::atomic<unsigned int>> Object;
+			typedef std::tuple<std::shared_ptr<Resource>, ResourcePool<Resource> *> Object;
 
 			/// Create a reference to a new resource.
 			ResourceHandle(const std::shared_ptr<Object> &);
@@ -43,7 +43,6 @@ namespace AdHoc {
 			unsigned int handleCount() const;
 
 		private:
-			DLL_PRIVATE void incRef() const;
 			DLL_PRIVATE void decRef();
 			std::shared_ptr<Object> resource;
 	};

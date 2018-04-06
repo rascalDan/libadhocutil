@@ -16,14 +16,12 @@ namespace AdHoc {
 	ResourceHandle<R>::ResourceHandle(const std::shared_ptr<Object> & o) :
 		resource(o)
 	{
-		incRef();
 	}
 
 	template <typename R>
 	ResourceHandle<R>::ResourceHandle(const ResourceHandle & rh) :
 		resource(rh.resource)
 	{
-		incRef();
 	}
 
 	template <typename R>
@@ -39,7 +37,8 @@ namespace AdHoc {
 	ResourceHandle<R>::handleCount() const
 	{
 		ASSERT(resource);
-		return std::get<2>(*resource);
+		// InUse has one, we don't count that
+		return resource.use_count() - 1;
 	}
 
 	template <typename R>
@@ -79,15 +78,6 @@ namespace AdHoc {
 			decRef();
 		}
 		resource = rh.resource;
-		incRef();
-	}
-
-	template <typename R>
-	void
-	ResourceHandle<R>::incRef() const
-	{
-		ASSERT(resource);
-		++std::get<2>(*resource);
 	}
 
 	template <typename R>
@@ -95,7 +85,8 @@ namespace AdHoc {
 	ResourceHandle<R>::decRef()
 	{
 		ASSERT(resource);
-		if (!--std::get<2>(*resource)) {
+		// InUse has one, we don't count that
+		if (resource.use_count() == 2) {
 			if (auto pool = std::get<1>(*resource)) {
 				if (std::uncaught_exception()) {
 					pool->discard(std::get<0>(*resource));
@@ -231,7 +222,7 @@ namespace AdHoc {
 			auto & r = available.front();
 			try {
 				testResource(r.get());
-				auto ro = std::make_shared<typename ResourceHandle<R>::Object>(r, this, 0);
+				auto ro = std::make_shared<typename ResourceHandle<R>::Object>(r, this);
 				available.pop_front();
 				inUse.insert({ std::this_thread::get_id(), ro });
 				return ro;
@@ -241,7 +232,7 @@ namespace AdHoc {
 				available.pop_front();
 			}
 		}
-		auto ro = std::make_shared<typename ResourceHandle<R>::Object>(createResource(), this, 0);
+		auto ro = std::make_shared<typename ResourceHandle<R>::Object>(createResource(), this);
 		inUse.insert({ std::this_thread::get_id(), ro });
 		return ro;
 	}
