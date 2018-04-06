@@ -1,12 +1,10 @@
 #ifndef ADHOCUTIL_BUFFER_H
 #define ADHOCUTIL_BUFFER_H
 
-#include "intrusivePtrBase.h"
 #include <string>
 #include <vector>
 #include <stdarg.h>
 #include <boost/format.hpp>
-#include <boost/shared_ptr.hpp>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -20,7 +18,7 @@ namespace std {
 namespace AdHoc {
 
 /// High-speed text buffer for easy creation of programatically created strings.
-class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
+class DLL_PUBLIC Buffer {
 	public:
 		/** How should Buffer handle char * arguments? */
 		enum CStringHandling {
@@ -33,9 +31,9 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 		};
 
 		/// Pointer typedef.
-		typedef boost::intrusive_ptr<Buffer> Ptr;
+		typedef std::shared_ptr<Buffer> Ptr;
 		/// Const pointer typedef.
-		typedef boost::intrusive_ptr<const Buffer> CPtr;
+		typedef std::shared_ptr<const Buffer> CPtr;
 
 		/** Create an empty buffer */
 		Buffer();
@@ -90,7 +88,8 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 		template <typename ... Params>
 		Buffer & appendbf(const std::string & fmtstr, const Params & ... params)
 		{
-			return appendbf(*getFormat(fmtstr), params...);
+			auto bf = getFormat(fmtstr);
+			return appendbf(bf, params...);
 		}
 		/** Append the given boost::format and arguments to the buffer. */
 		template <typename Param, typename ... Params>
@@ -109,13 +108,13 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 		std::string str() const;
 
 		/** Helper function to centralize the construction of boost::format instances. */
-		static boost::shared_ptr<boost::format> getFormat(const std::string & msgfmt);
+		static boost::format getFormat(const std::string & msgfmt);
 
 	private:
 		Buffer & appendbf(boost::format & fmt);
 		void DLL_PRIVATE flatten() const;
 
-		class DLL_PRIVATE FragmentBase : public virtual IntrusivePtrBase {
+		class DLL_PRIVATE FragmentBase {
 			public:
 				virtual ~FragmentBase() = 0;
 
@@ -157,7 +156,7 @@ class DLL_PUBLIC Buffer : public virtual IntrusivePtrBase {
 				const std::string buf;
 		};
 
-		typedef boost::intrusive_ptr<FragmentBase> FragmentPtr;
+		typedef std::shared_ptr<FragmentBase> FragmentPtr;
 		typedef std::vector<FragmentPtr> Content;
 		mutable Content content;
 };

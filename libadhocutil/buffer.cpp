@@ -134,10 +134,10 @@ Buffer::append(const char * str, CStringHandling h)
 {
 	if (str && *str) {
 		if (h == Copy) {
-			content.push_back(new StringFragment(str));
+			content.push_back(std::make_shared<StringFragment>(str));
 		}
 		else {
-			content.push_back(new CStringFragment(str, h));
+			content.push_back(std::make_shared<CStringFragment>(str, h));
 		}
 	}
 	return *this;
@@ -148,10 +148,10 @@ Buffer::append(char * str, CStringHandling h)
 {
 	if (str && *str) {
 		if (h == Copy) {
-			content.push_back(new StringFragment(str));
+			content.push_back(std::make_shared<StringFragment>(str));
 		}
 		else {
-			content.push_back(new CStringFragment(str, h));
+			content.push_back(std::make_shared<CStringFragment>(str, h));
 		}
 	}
 	return *this;
@@ -161,7 +161,7 @@ Buffer &
 Buffer::append(const std::string & str)
 {
 	if (!str.empty()) {
-		content.push_back(new StringFragment(str));
+		content.push_back(std::make_shared<StringFragment>(str));
 	}
 	return *this;
 }
@@ -182,7 +182,7 @@ Buffer::vappendf(const char * fmt, va_list args)
 	char * frag;
 	size_t len = vasprintf(&frag, fmt, args);
 	if (len > 0) {
-		content.push_back(new CStringFragment(frag, Free, len));
+		content.push_back(std::make_shared<CStringFragment>(frag, Free, len));
 	}
 	else {
 		free(frag);
@@ -204,10 +204,10 @@ Buffer::clear()
 	return *this;
 }
 
-boost::shared_ptr<boost::format>
+boost::format
 Buffer::getFormat(const std::string & msgfmt)
 {
-	return boost::shared_ptr<boost::format>(new boost::format(msgfmt));
+	return boost::format(msgfmt);
 }
 
 void
@@ -257,9 +257,7 @@ void
 Buffer::flatten() const
 {
 	if (content.size() > 1) {
-		auto f = new StringFragment(str());
-		content.resize(1);
-		content.front() = f;
+		content = { std::make_shared<StringFragment>(str()) };
 	}
 }
 
@@ -282,16 +280,14 @@ Buffer::length() const
 Buffer &
 Buffer::operator=(const char * str)
 {
-	content.resize(1);
-	content.front() = new StringFragment(str);
+	content = { std::make_shared<StringFragment>(str) };
 	return *this;
 }
 
 Buffer &
 Buffer::operator=(const std::string & str)
 {
-	content.resize(1);
-	content.front() = new StringFragment(str);
+	content = { std::make_shared<StringFragment>(str) };
 	return *this;
 }
 

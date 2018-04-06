@@ -15,7 +15,8 @@ DLL_PUBLIC FILE * fopen(const boost::filesystem::path & path, const char * mode)
 template <typename ... Params>
 size_t inline fprintbf(FILE * f, const std::string & fmt, const Params & ... p)
 {
-	return fprintbf(f, *AdHoc::Buffer::getFormat(fmt), p...);
+	auto bf = AdHoc::Buffer::getFormat(fmt);
+	return fprintbf(f, bf, p...);
 }
 
 template <typename Param, typename ... Params>
