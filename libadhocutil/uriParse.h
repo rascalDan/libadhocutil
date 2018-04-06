@@ -3,7 +3,7 @@
 
 #include "visibility.h"
 #include "exception.h"
-#include <boost/optional.hpp>
+#include <optional>
 #include <boost/filesystem/path.hpp>
 #include <string>
 #include <map>
@@ -21,19 +21,19 @@ namespace AdHoc {
 			/// The scheme.
 			std::string scheme;
 			/// The optional username.
-			boost::optional<std::string> username;
+			std::optional<std::string> username;
 			/// The optional password.
-			boost::optional<std::string> password;
+			std::optional<std::string> password;
 			/// The host.
 			std::string host;
 			/// The optional port.
-			boost::optional<uint16_t> port;
+			std::optional<uint16_t> port;
 			/// The optional path.
-			boost::optional<boost::filesystem::path> path;
+			std::optional<boost::filesystem::path> path;
 			/// The parsed components of the query string.
 			std::multimap<std::string, std::string> query;
 			/// The optional fragment.
-			boost::optional<std::string> fragment;
+			std::optional<std::string> fragment;
 	};
 
 	/**
