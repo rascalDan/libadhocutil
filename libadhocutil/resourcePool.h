@@ -1,8 +1,8 @@
 #ifndef ADHOCUTIL_RESOURCEPOOL_H
 #define ADHOCUTIL_RESOURCEPOOL_H
 
-#include <boost/tuple/tuple.hpp>
-#include <boost/thread/shared_mutex.hpp>
+#include <tuple>
+#include <shared_mutex>
 #include <atomic>
 #include <thread>
 #include <list>
@@ -20,10 +20,10 @@ namespace AdHoc {
 	class DLL_PUBLIC ResourceHandle {
 		public:
 			/// Handle to an allocated resource, the pool it belongs to and a count of active references.
-			typedef boost::tuple<Resource *, ResourcePool<Resource> *, std::atomic<unsigned int>> Object;
+			typedef std::tuple<std::shared_ptr<Resource>, ResourcePool<Resource> *, std::atomic<unsigned int>> Object;
 
 			/// Create a reference to a new resource.
-			ResourceHandle(Object *);
+			ResourceHandle(const std::shared_ptr<Object> &);
 			/// Create a reference to an existing resource.
 			ResourceHandle(const ResourceHandle &);
 			~ResourceHandle();
@@ -45,7 +45,7 @@ namespace AdHoc {
 		private:
 			DLL_PRIVATE void incRef() const;
 			DLL_PRIVATE void decRef();
-			Object * resource;
+			std::shared_ptr<Object> resource;
 	};
 
 	/// A fully featured resource pool for sharing and reusing a finite set of
@@ -80,25 +80,25 @@ namespace AdHoc {
 
 		protected:
 			/// Create a new resource instance to add to the pool.
-			virtual Resource * createResource() const = 0;
+			virtual std::shared_ptr<Resource> createResource() const = 0;
 			/// Destroy an existing resource (defaults to delete).
-			virtual void destroyResource(Resource *) const throw();
+			virtual void destroyResource(const std::shared_ptr<Resource> &) const throw();
 			/// Test a cached resource is still suitable for use before re-use (defaults to no-op).
-			virtual void testResource(const Resource *) const;
+			virtual void testResource(const std::shared_ptr<const Resource> &) const;
 			/// Test a cached resource is still suitable for use on return (defaults to no-op).
-			virtual void returnTestResource(const Resource *) const;
+			virtual void returnTestResource(const std::shared_ptr<const Resource> &) const;
 
 		private:
-			typedef std::list<Resource *> Available;
-			typedef std::multimap<std::thread::id, typename ResourceHandle<Resource>::Object *> InUse;
+			typedef std::list<std::shared_ptr<Resource>> Available;
+			typedef std::multimap<std::thread::id, std::shared_ptr<typename ResourceHandle<Resource>::Object>> InUse;
 
-			void putBack(Resource *);
-			void discard(Resource *);
+			void putBack(const std::shared_ptr<Resource> &);
+			void discard(const std::shared_ptr<Resource> &);
 
-			DLL_PRIVATE static void removeFrom(Resource *, InUse &);
+			DLL_PRIVATE static void removeFrom(const std::shared_ptr<Resource> &, InUse &);
 			DLL_PRIVATE ResourceHandle<Resource> getOne();
 
-			mutable boost::upgrade_mutex lock;
+			mutable std::shared_mutex lock;
 			Semaphore poolSize;
 			unsigned int keep;
 			Available available;

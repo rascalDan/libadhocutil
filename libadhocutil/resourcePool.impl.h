@@ -13,7 +13,7 @@ namespace AdHoc {
 	//
 
 	template <typename R>
-	ResourceHandle<R>::ResourceHandle(Object * o) :
+	ResourceHandle<R>::ResourceHandle(const std::shared_ptr<Object> & o) :
 		resource(o)
 	{
 		incRef();
@@ -39,7 +39,7 @@ namespace AdHoc {
 	ResourceHandle<R>::handleCount() const
 	{
 		ASSERT(resource);
-		return boost::get<2>(*resource);
+		return std::get<2>(*resource);
 	}
 
 	template <typename R>
@@ -47,7 +47,7 @@ namespace AdHoc {
 	ResourceHandle<R>::get() const
 	{
 		ASSERT(resource);
-		return boost::get<0>(*resource);
+		return std::get<0>(*resource).get();
 	}
 
 	template <typename R>
@@ -60,7 +60,7 @@ namespace AdHoc {
 	template <typename R>
 	ResourceHandle<R>::operator bool() const
 	{
-		return resource;
+		return (bool)resource;
 	}
 
 	template <typename R>
@@ -68,7 +68,7 @@ namespace AdHoc {
 	ResourceHandle<R>::operator->() const
 	{
 		ASSERT(resource);
-		return boost::get<0>(*resource);
+		return std::get<0>(*resource).get();
 	}
 
 	template <typename R>
@@ -87,7 +87,7 @@ namespace AdHoc {
 	ResourceHandle<R>::incRef() const
 	{
 		ASSERT(resource);
-		++boost::get<2>(*resource);
+		++std::get<2>(*resource);
 	}
 
 	template <typename R>
@@ -95,18 +95,17 @@ namespace AdHoc {
 	ResourceHandle<R>::decRef()
 	{
 		ASSERT(resource);
-		if (!--boost::get<2>(*resource)) {
-			if (auto & pool = boost::get<1>(*resource)) {
+		if (!--std::get<2>(*resource)) {
+			if (auto pool = std::get<1>(*resource)) {
 				if (std::uncaught_exception()) {
-					pool->discard(boost::get<0>(*resource));
+					pool->discard(std::get<0>(*resource));
 				}
 				else {
-					pool->putBack(boost::get<0>(*resource));
+					pool->putBack(std::get<0>(*resource));
 				}
 			}
-			delete resource;
 		}
-		resource = nullptr;
+		resource.reset();
 	}
 
 	//
@@ -127,27 +126,26 @@ namespace AdHoc {
 			destroyResource(r);
 		}
 		for (auto & r : inUse) {
-			destroyResource(boost::get<0>(*r.second));
-			boost::get<1>(*r.second) = nullptr;
+			destroyResource(std::get<0>(*r.second));
+			std::get<1>(*r.second) = nullptr;
 		}
 	}
 
 	template <typename R>
 	void
-	ResourcePool<R>::destroyResource(R * r) const throw()
-	{
-		delete r;
-	}
-
-	template <typename R>
-	void
-	ResourcePool<R>::testResource(const R *) const
+	ResourcePool<R>::destroyResource(const std::shared_ptr<R> &) const throw()
 	{
 	}
 
 	template <typename R>
 	void
-	ResourcePool<R>::returnTestResource(const R *) const
+	ResourcePool<R>::testResource(const std::shared_ptr<const R> &) const
+	{
+	}
+
+	template <typename R>
+	void
+	ResourcePool<R>::returnTestResource(const std::shared_ptr<const R> &) const
 	{
 	}
 
@@ -233,7 +231,7 @@ namespace AdHoc {
 			auto r = available.front();
 			try {
 				testResource(r);
-				auto ro = new typename ResourceHandle<R>::Object(r, this);
+				auto ro = std::make_shared<typename ResourceHandle<R>::Object>(r, this, 0);
 				available.pop_front();
 				inUse.insert({ std::this_thread::get_id(), ro });
 				return ro;
@@ -243,14 +241,14 @@ namespace AdHoc {
 				available.pop_front();
 			}
 		}
-		auto ro = new typename ResourceHandle<R>::Object(createResource(), this);
+		auto ro = std::make_shared<typename ResourceHandle<R>::Object>(createResource(), this, 0);
 		inUse.insert({ std::this_thread::get_id(), ro });
 		return ro;
 	}
 
 	template <typename R>
 	void
-	ResourcePool<R>::putBack(R * r)
+	ResourcePool<R>::putBack(const std::shared_ptr<R> & r)
 	{
 		Lock(lock);
 		removeFrom(r, inUse);
@@ -271,7 +269,7 @@ namespace AdHoc {
 
 	template <typename R>
 	void
-	ResourcePool<R>::discard(R * r)
+	ResourcePool<R>::discard(const std::shared_ptr<R> & r)
 	{
 		Lock(lock);
 		removeFrom(r, inUse);
@@ -281,11 +279,11 @@ namespace AdHoc {
 
 	template <typename R>
 	void
-	ResourcePool<R>::removeFrom(R * r, InUse & inUse)
+	ResourcePool<R>::removeFrom(const std::shared_ptr<R> & r, InUse & inUse)
 	{
 		auto rs = inUse.equal_range(std::this_thread::get_id());
 		for (auto & ri = rs.first; ri != rs.second; ri++) {
-			if (boost::get<0>(*ri->second) == r) {
+			if (std::get<0>(*ri->second) == r) {
 				inUse.erase(ri);
 				return;
 			}

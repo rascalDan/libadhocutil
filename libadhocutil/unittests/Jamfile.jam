@@ -232,7 +232,6 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_thread
 	<library>boost_system
 	<library>pthread
 	:

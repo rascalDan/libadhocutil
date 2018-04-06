@@ -25,9 +25,9 @@ class TRP : public AdHoc::ResourcePool<MockResource> {
 	public:
 		TRP() : AdHoc::ResourcePool<MockResource>(10, 10) { }
 	protected:
-		MockResource * createResource() const override
+		std::shared_ptr<MockResource> createResource() const override
 		{
-			return new MockResource();
+			return std::make_shared<MockResource>();
 		}
 };
 
@@ -35,15 +35,15 @@ class TRPSmall : public AdHoc::ResourcePool<MockResource> {
 	public:
 		TRPSmall() : AdHoc::ResourcePool<MockResource>(3, 1) { }
 	protected:
-		MockResource * createResource() const override
+		std::shared_ptr<MockResource> createResource() const override
 		{
-			return new MockResource();
+			return std::make_shared<MockResource>();
 		}
 };
 
 class TRPCreateFail : public TRPSmall {
 	protected:
-		MockResource * createResource() const override
+		std::shared_ptr<MockResource> createResource() const override
 		{
 			throw std::exception();
 		}
@@ -51,7 +51,7 @@ class TRPCreateFail : public TRPSmall {
 
 class TRPReturnFail : public TRPSmall {
 	protected:
-		void returnTestResource(const MockResource *) const override
+		void returnTestResource(const std::shared_ptr<const MockResource> &) const override
 		{
 			throw std::exception();
 		}
@@ -296,7 +296,7 @@ BOOST_AUTO_TEST_CASE( threading2 )
 class TTRP : public TRP {
 	public:
 		TTRP() : n(0) { }
-		void testResource(const MockResource *) const override
+		void testResource(const std::shared_ptr<const MockResource> &) const override
 		{
 			n += 1;
 			if (n % 2) {
