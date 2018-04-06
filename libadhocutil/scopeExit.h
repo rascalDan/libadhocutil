@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_SCOPEEXIT_H
 #define ADHOCUTIL_SCOPEEXIT_H
 
-#include <boost/function.hpp>
+#include <functional>
 #include <vector>
 #include "visibility.h"
 
@@ -11,7 +11,7 @@ namespace AdHoc {
 class DLL_PUBLIC ScopeExit {
 	public:
 		/** Callback for code to be run. */
-		typedef boost::function<void()> Event;
+		typedef std::function<void()> Event;
 
 		/**
 		 * Construct an empty trigger for running code yet to be determined at scope exit
