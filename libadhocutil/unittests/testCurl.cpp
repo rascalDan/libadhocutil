@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE Curl
 #include <boost/test/unit_test.hpp>
 
-#include <boost/bind.hpp>
+#include <functional>
 #include "curlHandle.h"
 #include "curlMultiHandle.h"
 #include "curlStream.h"
@@ -115,14 +115,15 @@ mapFileToName(std::map<std::string, std::string> & map, const std::string & file
 
 BOOST_AUTO_TEST_CASE( fetch_multi )
 {
+	using std::placeholders::_1;
 	CurlMultiHandle cmh;
 	std::map<std::string, std::string> files;
 	cmh.addCurl("file://" + rootDir.string() + "/testBuffer.cpp",
-			boost::bind(&mapFileToName, boost::ref(files), "testBuffer.cpp", _1));
+			std::bind(&mapFileToName, std::ref(files), "testBuffer.cpp", _1));
 	cmh.addCurl("file://" + rootDir.string() + "/testCurl.cpp",
-			boost::bind(&mapFileToName, boost::ref(files), "testCurl.cpp", _1));
+			std::bind(&mapFileToName, std::ref(files), "testCurl.cpp", _1));
 	cmh.addCurl("file://" + rootDir.string() + "/testLocks.cpp",
-			boost::bind(&mapFileToName, boost::ref(files), "testLocks.cpp", _1));
+			std::bind(&mapFileToName, std::ref(files), "testLocks.cpp", _1));
 	cmh.performAll();
 	BOOST_REQUIRE_EQUAL(3, files.size());
 	BOOST_REQUIRE_EQUAL("Locks", files["testLocks.cpp"]);

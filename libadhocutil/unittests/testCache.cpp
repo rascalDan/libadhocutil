@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE Cache
 #include <boost/test/unit_test.hpp>
 
-#include <boost/bind.hpp>
+#include <functional>
 #include "cache.h"
 #include "cache.impl.h"
 #include <boost/version.hpp>

@@ -2,7 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <optionalUtils.h>
-#include <boost/optional.hpp>
+#include <optional>
 #include <Ice/Exception.h>
 #include <Ice/Optional.h>
 
@@ -10,13 +10,13 @@ using namespace AdHoc;
 
 BOOST_AUTO_TEST_CASE ( general )
 {
-	boost::optional<int> x;
-	boost::optional<double> y = 2.3;
+	std::optional<int> x;
+	std::optional<double> y = 2.3;
 	Ice::optional<float> ix;
 	Ice::optional<short> iy = 4;
 	std::string * p = nullptr;
 	std::string * q = new std::string("str");
-	boost::optional<std::string> r;
+	std::optional<std::string> r;
 	Ice::optional<std::string> s;
 
 	bool b(p);
