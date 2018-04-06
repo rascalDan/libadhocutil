@@ -1,6 +1,5 @@
 #include <sstream>
 #include <string.h>
-#include <boost/static_assert.hpp>
 #include <boost/preprocessor/variadic/size.hpp>
 
 namespace AdHoc {
@@ -81,7 +80,7 @@ namespace AdHoc {
 		template<typename ... Pn>
 		static void write(stream &, const Pn & ...)
 		{
-			BOOST_STATIC_ASSERT_MSG(!&err, "invalid format string/arguments");
+			static_assert(!&err, "invalid format string/arguments");
 		}
 		static int err;
 	};
