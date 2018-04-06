@@ -49,12 +49,12 @@ typename Cacheable<T, K>::Value
 CallCacheable<T, K>::item() const
 {
 	Lock(lock);
-	if (auto t = boost::get<typename Cacheable<T, K>::Value>(&value)) {
+	if (auto t = std::get_if<0>(&value)) {
 		return *t;
 	}
-	const Factory & f = boost::get<Factory>(value);
-	value = typename Cacheable<T, K>::Value(new T(f()));
-	return boost::get<typename Cacheable<T, K>::Value>(value);
+	const Factory & f = std::get<Factory>(value);
+	value = std::make_shared<T>(f());
+	return std::get<0>(value);
 }
 
 
@@ -70,12 +70,12 @@ typename Cacheable<T, K>::Value
 PointerCallCacheable<T, K>::item() const
 {
 	Lock(lock);
-	if (auto t = boost::get<typename Cacheable<T, K>::Value>(&value)) {
+	if (auto t = std::get_if<0>(&value)) {
 		return *t;
 	}
-	const Factory & f = boost::get<Factory>(value);
+	const Factory & f = std::get<Factory>(value);
 	value = f();
-	return boost::get<typename Cacheable<T, K>::Value>(value);
+	return std::get<0>(value);
 }
 
 

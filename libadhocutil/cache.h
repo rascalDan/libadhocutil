@@ -2,13 +2,13 @@
 #define ADHOCUTIL_CACHE_H
 
 #include <time.h>
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
+#include <memory>
+#include <functional>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
-#include <boost/thread/shared_mutex.hpp>
-#include <boost/variant.hpp>
+#include <shared_mutex>
+#include <variant>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -17,7 +17,7 @@ namespace AdHoc {
 template <typename T, typename K>
 class DLL_PUBLIC Cacheable {
 	public:
-		typedef const boost::shared_ptr<const T> Value;
+		typedef const std::shared_ptr<const T> Value;
 		Cacheable(const K & k, time_t validUntil);
 
 		const K key;
@@ -41,27 +41,27 @@ class DLL_PUBLIC ObjectCacheable : public Cacheable<T, K> {
 template <typename T, typename K>
 class DLL_PUBLIC CallCacheable : public Cacheable<T, K> {
 	public:
-		typedef boost::function<T()> Factory;
+		typedef std::function<T()> Factory;
 		CallCacheable(const Factory & t, const K & k, time_t validUtil);
 
 		virtual typename Cacheable<T, K>::Value item() const override;
 
 	private:
-		mutable boost::variant<boost::shared_ptr<const T>, Factory> value;
-		mutable boost::shared_mutex lock;
+		mutable std::variant<std::shared_ptr<const T>, Factory> value;
+		mutable std::shared_mutex lock;
 };
 
 template <typename T, typename K>
 class DLL_PUBLIC PointerCallCacheable : public Cacheable<T, K> {
 	public:
-		typedef boost::function<typename Cacheable<T, K>::Value()> Factory;
+		typedef std::function<typename Cacheable<T, K>::Value()> Factory;
 		PointerCallCacheable(const Factory & t, const K & k, time_t validUtil);
 
 		virtual typename Cacheable<T, K>::Value item() const override;
 
 	private:
-		mutable boost::variant<boost::shared_ptr<const T>, Factory> value;
-		mutable boost::shared_mutex lock;
+		mutable std::variant<std::shared_ptr<const T>, Factory> value;
+		mutable std::shared_mutex lock;
 };
 
 struct byValidity {};
@@ -74,11 +74,11 @@ class DLL_PUBLIC Cache {
 	public:
 		/// @cond
 		typedef K Key;
-		typedef const boost::shared_ptr<const T> Value;
-		typedef boost::function<T()> Factory;
-		typedef boost::function<Value()> PointerFactory;
+		typedef const std::shared_ptr<const T> Value;
+		typedef std::function<T()> Factory;
+		typedef std::function<Value()> PointerFactory;
 		typedef Cacheable<T, K> Item;
-		typedef boost::shared_ptr<Item> Element;
+		typedef std::shared_ptr<Item> Element;
 		/// @endcond
 
 		/** Construct a default empty cache. */
@@ -133,7 +133,7 @@ class DLL_PUBLIC Cache {
 		void DLL_PRIVATE prune() const;
 		mutable time_t lastPruneTime;
 
-		mutable boost::shared_mutex lock;
+		mutable std::shared_mutex lock;
 
 		typedef boost::multi_index::multi_index_container<Element,
 						boost::multi_index::indexed_by<
