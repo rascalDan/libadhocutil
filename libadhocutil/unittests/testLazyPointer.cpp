@@ -1,13 +1,11 @@
 #define BOOST_TEST_MODULE LazyPointer
 #include <boost/test/unit_test.hpp>
 
-#include <boost/bind.hpp>
-#include "intrusivePtrBase.h"
 #include "lazyPointer.h"
 
 using namespace AdHoc;
 
-class Test : public IntrusivePtrBase {
+class Test {
 	public:
 		Test(int v) :
 			val(v)
@@ -23,19 +21,19 @@ static
 TestLazyPointer::pointer_type
 factory()
 {
-	return new Test(3);
+	return std::make_shared<Test>(3);
 }
 
 static
 TestLazyPointer::pointer_type
 paramFactory(const std::string & str)
 {
-	return new Test(str.length());
+	return std::make_shared<Test>(str.length());
 }
 
 BOOST_AUTO_TEST_CASE ( islazy )
 {
-	TestLazyPointer p(boost::bind(&factory));
+	TestLazyPointer p(std::bind(&factory));
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	Test * t = p.get();
 	BOOST_REQUIRE(t);
@@ -65,7 +63,7 @@ BOOST_AUTO_TEST_CASE ( reset )
 	p = nullptr;
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
 	BOOST_REQUIRE_EQUAL(true, !p);
-	p = boost::bind(&factory);
+	p = std::bind(&factory);
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	p.get();
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
@@ -74,7 +72,7 @@ BOOST_AUTO_TEST_CASE ( reset )
 
 BOOST_AUTO_TEST_CASE ( nondefault )
 {
-	TestLazyPointer p(boost::bind(&paramFactory, "some string"));
+	TestLazyPointer p(std::bind(&paramFactory, "some string"));
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	BOOST_REQUIRE_EQUAL(11, (*p).val);
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
@@ -108,7 +106,7 @@ rawFactory(const std::string & s)
 
 BOOST_AUTO_TEST_CASE( rawPointerFactory )
 {
-	RawLazyPointer value(boost::bind(&rawFactory, std::string("four")));
+	RawLazyPointer value(std::bind(&rawFactory, std::string("four")));
 	BOOST_REQUIRE(!value.hasValue());
 	BOOST_REQUIRE_EQUAL(*value, 4);
 	BOOST_REQUIRE(value.hasValue());

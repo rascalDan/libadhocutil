@@ -1,10 +1,9 @@
 #ifndef ADHOCUTIL_LAZYPOINTER_H
 #define ADHOCUTIL_LAZYPOINTER_H
 
-#include <boost/function.hpp>
-#include <boost/variant.hpp>
-#include <boost/intrusive_ptr.hpp>
-#include <boost/get_pointer.hpp>
+#include <functional>
+#include <variant>
+#include <memory>
 #include <ostream>
 
 namespace AdHoc {
@@ -16,14 +15,14 @@ namespace AdHoc {
  * an attempt to dereference the pointer. All such operations will call
  * this factory function as required prior to evaluating the pointer's value.
  */
-template <typename T, typename P = boost::intrusive_ptr<T>>
+template <typename T, typename P = std::shared_ptr<T>>
 class LazyPointer {
 	public:
 		/// @cond
 		typedef T element_type;
 		typedef P pointer_type;
-		typedef boost::function0<P> Factory;
-		typedef boost::variant<P, Factory> Source;
+		typedef std::function<P()> Factory;
+		typedef std::variant<P, Factory> Source;
 		/// @endcond
 
 		/** Construct pointer with a factory function. */
@@ -70,18 +69,23 @@ class LazyPointer {
 
 		T * get() const
 		{
-			return boost::get_pointer(deref());
+			if constexpr (std::is_pointer<P>::value) {
+				return deref();
+			}
+			else {
+				return deref().get();
+			}
 		}
 
 		P deref() const
 		{
-			if (Factory * f = boost::get<Factory>(&source)) {
+			if (Factory * f = std::get_if<Factory>(&source)) {
 				P p = (*f)();
 				source = p;
 				return p;
 			}
 			else {
-				return boost::get<P>(source);
+				return std::get<P>(source);
 			}
 		}
 
@@ -128,7 +132,7 @@ class LazyPointer {
 		/** Does the lazy pointer have a value? (as opposed to a factory). */
 		bool hasValue() const
 		{
-			return boost::get<P>(&source);
+			return std::get_if<P>(&source);
 		}
 
 	private:
