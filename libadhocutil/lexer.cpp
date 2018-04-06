@@ -20,11 +20,11 @@ namespace AdHoc {
 		while (es.pos < length) {
 			const Rule * selected = nullptr;
 			for (const auto & r : rules) {
-				const auto & s = boost::get<0>(r);
+				const auto & s = std::get<0>(r);
 				if (s.find(es.getState()) == s.end()) {
 					continue;
 				}
-				const auto & p = boost::get<1>(r);
+				const auto & p = std::get<1>(r);
 				if (p->matches(string, length, es.pos)) {
 					selected = &r;
 					break;
@@ -33,8 +33,8 @@ namespace AdHoc {
 			if (!selected) {
 				throw std::runtime_error(UnexpectedInputState::get(es.getState(), string + es.pos));
 			}
-			es.pat = boost::get<1>(*selected);
-			const auto & h = boost::get<2>(*selected);
+			es.pat = std::get<1>(*selected);
+			const auto & h = std::get<2>(*selected);
 			h(&es);
 			es.pos += es.pat->matchedLength();
 		}

@@ -4,10 +4,10 @@
 #include <vector>
 #include <glibmm/ustring.h>
 #include <set>
-#include <boost/tuple/tuple.hpp>
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/optional.hpp>
+#include <tuple>
+#include <functional>
+#include <memory>
+#include <optional>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -24,10 +24,10 @@ namespace AdHoc {
 					/// Get the total amount of input matched.
 					virtual size_t matchedLength() const = 0;
 					/// Get an extracted value from the pattern.
-					virtual boost::optional<Glib::ustring> match(int) const = 0;
+					virtual std::optional<Glib::ustring> match(int) const = 0;
 			};
 			/// Smart pointer to Pattern.
-			typedef boost::shared_ptr<Pattern> PatternPtr;
+			typedef std::shared_ptr<Pattern> PatternPtr;
 			/// Lexer state identifiers.
 			typedef std::string State;
 			/// Collection of States.
@@ -63,14 +63,14 @@ namespace AdHoc {
 			};
 
 			/// Callback for handling matched patterns.
-			typedef boost::function<void(ExecuteState *)> Handler;
+			typedef std::function<void(ExecuteState *)> Handler;
 			/**
 			 * Rule definition:
 			 * States: in which states should the rule be considered?
 			 * Pattern: the pattern matcher to test against the input.
 			 * Handler: the callback to execute when a match succeeds.
 			 */
-			typedef boost::tuple<States, PatternPtr, Handler> Rule;
+			typedef std::tuple<States, PatternPtr, Handler> Rule;
 			/// Collection of Rules that make up the lexer configuration.
 			typedef std::vector<Rule> Rules;
 			/// The initial state of applied to the lexer.

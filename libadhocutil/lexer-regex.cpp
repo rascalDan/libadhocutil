@@ -49,16 +49,16 @@ namespace AdHoc {
 					return end - start;
 				}
 
-				boost::optional<Glib::ustring> match(int n) const override
+				std::optional<Glib::ustring> match(int n) const override
 				{
 					gint start, end;
 					if (g_match_info_fetch_pos(info, n, &start, &end)) {
 						if (start == -1 && end == -1) {
-							return boost::optional<Glib::ustring>();
+							return {};
 						}
 						return Glib::ustring(str + start, str + end);
 					}
-					return boost::optional<Glib::ustring>();
+					return {};
 				}
 
 			private:
