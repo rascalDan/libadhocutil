@@ -2,7 +2,7 @@
 #define ADHOCUTIL_CURLHANDLE_H
 
 #include <curl/curl.h>
-#include "intrusivePtrBase.h"
+#include <memory>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -10,7 +10,7 @@ namespace Net {
 
 /// libcurl handle wrapper.
 /** Wraps a libcurl CURL * object in a C++ friendly manner. */
-class DLL_PUBLIC CurlHandle : public virtual IntrusivePtrBase {
+class DLL_PUBLIC CurlHandle {
 	public:
 		/**
 		 * Create a new CurlHandle.
@@ -49,7 +49,7 @@ class DLL_PUBLIC CurlHandle : public virtual IntrusivePtrBase {
 		curl_httppost * postS, * postE;
 		/// @endcond
 };
-typedef boost::intrusive_ptr<CurlHandle> CurlHandlePtr;
+typedef std::shared_ptr<CurlHandle> CurlHandlePtr;
 
 /// @cond
 template <>

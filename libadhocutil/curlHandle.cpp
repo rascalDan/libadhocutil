@@ -129,10 +129,10 @@ CurlException::ice_print(std::ostream & s) const
 {
 	if (httpcode) {
 		CurlExceptionMsgHttp::write(s, *httpcode, message, resultcode);
-	}	
+	}
 	else {
 		CurlExceptionMsg::write(s, message, resultcode);
-	}	
+	}
 }
 
 }

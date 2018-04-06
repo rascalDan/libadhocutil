@@ -1,10 +1,10 @@
 #ifndef ADHOCUTIL_CURLMULTIHANDLE_H
 #define ADHOCUTIL_CURLMULTIHANDLE_H
 
-#include <boost/function.hpp>
+#include <functional>
 #include <set>
 #include <map>
-#include "intrusivePtrBase.h"
+#include <memory>
 #include "visibility.h"
 #include "curlHandle.h"
 
@@ -12,13 +12,13 @@ namespace AdHoc {
 namespace Net {
 
 class RunningCurl;
-typedef boost::intrusive_ptr<RunningCurl> RunningCurlPtr;
+typedef std::shared_ptr<RunningCurl> RunningCurlPtr;
 
 /// Perform multiple CURL operations at once.
-class DLL_PUBLIC CurlMultiHandle : public IntrusivePtrBase {
+class DLL_PUBLIC CurlMultiHandle {
 	public:
 		/** A function that should consume the inbound byte stream. */
-		typedef boost::function<void(std::istream &)> Consumer;
+		typedef std::function<void(std::istream &)> Consumer;
 
 		CurlMultiHandle();
 		~CurlMultiHandle();
@@ -36,7 +36,7 @@ class DLL_PUBLIC CurlMultiHandle : public IntrusivePtrBase {
 
 		CURLs curls;
 };
-typedef boost::intrusive_ptr<CurlMultiHandle> CurlMultiHandlePtr;
+typedef std::shared_ptr<CurlMultiHandle> CurlMultiHandlePtr;
 
 }
 }

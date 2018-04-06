@@ -9,7 +9,7 @@ namespace Net {
 
 class RunningCurl : public CurlStreamSource {
 	public:
-		RunningCurl(const std::string & url, const boost::function<void(std::istream &)> & c) :
+		RunningCurl(const std::string & url, const std::function<void(std::istream &)> & c) :
 			CurlStreamSource(url),
 			consumer(c)
 		{
@@ -18,12 +18,12 @@ class RunningCurl : public CurlStreamSource {
 		void callback() override
 		{
 			typedef boost::reference_wrapper<RunningCurl> rc_ref;
-			boost::iostreams::stream<rc_ref> curlstrm(boost::ref(*this));
+			boost::iostreams::stream<rc_ref> curlstrm(std::ref(*this));
 			consumer(curlstrm);
 		}
 
 	private:
-		const boost::function<void(std::istream &)> consumer;
+		const std::function<void(std::istream &)> consumer;
 };
 
 CurlMultiHandle::CurlMultiHandle()
@@ -35,11 +35,9 @@ CurlMultiHandle::~CurlMultiHandle()
 }
 
 CurlHandlePtr
-CurlMultiHandle::addCurl(const std::string & url, const boost::function<void(std::istream &)> & c)
+CurlMultiHandle::addCurl(const std::string & url, const std::function<void(std::istream &)> & c)
 {
-	RunningCurl * css = new RunningCurl(url, c);
-	curls.insert(css);
-	return css;
+	return *curls.insert(std::make_shared<RunningCurl>(url, c)).first;
 }
 
 void
