@@ -8,7 +8,7 @@ namespace AdHoc {
 	void
 	Semaphore::notify()
 	{
-		boost::mutex::scoped_lock lock(mutex);
+		std::scoped_lock lock(mutex);
 		++count;
 		condition.notify_one();
 	}
@@ -16,7 +16,7 @@ namespace AdHoc {
 	void
 	Semaphore::wait()
 	{
-		boost::mutex::scoped_lock lock(mutex);
+		std::unique_lock lock(mutex);
 		while (!count) {
 			condition.wait(lock);
 		}
@@ -26,10 +26,10 @@ namespace AdHoc {
 	bool
 	Semaphore::wait(unsigned int timeout)
 	{
-		const boost::system_time expiry = boost::get_system_time() + boost::posix_time::milliseconds(timeout);
-		boost::mutex::scoped_lock lock(mutex);
+		const auto expiry = std::chrono::milliseconds(timeout);
+		std::unique_lock lock(mutex);
 		while (!count) {
-			if (!condition.timed_wait(lock, expiry)) {
+			if (condition.wait_for(lock, expiry) == std::cv_status::timeout) {
 				return false;
 			}
 		}

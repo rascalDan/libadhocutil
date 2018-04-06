@@ -4,8 +4,8 @@
 // Borrowed from StackOverflow
 // http://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
 
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
+#include <condition_variable>
+#include <mutex>
 #include "visibility.h"
 
 namespace AdHoc {
@@ -26,8 +26,8 @@ namespace AdHoc {
 			unsigned int freeCount() const;
 
 		private:
-			boost::mutex mutex;
-			boost::condition_variable condition;
+			std::mutex mutex;
+			std::condition_variable condition;
 			unsigned long count;
 	};
 }

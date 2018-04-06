@@ -108,7 +108,7 @@ run
 	<library>..//adhocutil
 	<library>boost_utf
 	<library>boost_system
-	<library>boost_thread
+	<library>pthread
 	:
 	testLocks
 	;
