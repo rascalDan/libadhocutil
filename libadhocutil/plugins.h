@@ -129,6 +129,21 @@ namespace AdHoc {
 			template<typename T> void add(const std::shared_ptr<T> & i, const std::string & n, const std::string & f, int l);
 
 			/**
+			 * Create and install a plugin
+			 * @tparam T Base type of plugin
+			 * @tparam I Implementation type of plugin
+			 * @tparam Args Constructor arguments types
+			 * @param n Name of plugin.
+			 * @param f Filename of plugin.
+			 * @param l Line number.
+			 * @param args Arguments to construct an instance of I with.
+			 */
+			template<typename T, typename I, typename ... Args> void create(const std::string & n, const std::string & f, int l, const Args & ... args)
+			{
+				add<T>(std::make_shared<I>(args...), n, f, l);
+			}
+
+			/**
 			 * Uninstall a plugin.
 			 * @param n Name of plugin.
 			 */

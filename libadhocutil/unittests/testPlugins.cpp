@@ -72,6 +72,16 @@ BOOST_AUTO_TEST_CASE( removeManual )
 	BOOST_REQUIRE(PluginManager::getDefault()->get<BaseThing>("ImplOfThing"));
 }
 
+BOOST_AUTO_TEST_CASE( createAndRemove )
+{
+	PluginManager::getDefault()->create<BaseThing, ImplOfThing>("custom1", __FILE__, __LINE__);
+	BOOST_REQUIRE_EQUAL(2, PluginManager::getDefault()->count());
+	auto c1 = PluginManager::getDefault()->get<BaseThing>("custom1");
+	BOOST_REQUIRE(c1);
+	PluginManager::getDefault()->remove<BaseThing>("custom1");
+	
+}
+
 BOOST_AUTO_TEST_CASE( nameAndTypeClash )
 {
 	// Same name, different type
