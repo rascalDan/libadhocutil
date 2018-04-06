@@ -51,7 +51,7 @@ class TRPCreateFail : public TRPSmall {
 
 class TRPReturnFail : public TRPSmall {
 	protected:
-		void returnTestResource(const std::shared_ptr<const MockResource> &) const override
+		void returnTestResource(MockResource const *) const override
 		{
 			throw std::exception();
 		}
@@ -296,11 +296,10 @@ BOOST_AUTO_TEST_CASE( threading2 )
 class TTRP : public TRP {
 	public:
 		TTRP() : n(0) { }
-		void testResource(const std::shared_ptr<const MockResource> &) const override
+		void testResource(MockResource const *) const override
 		{
 			n += 1;
 			if (n % 2) {
-				fprintf(stderr, "%d, so throwing\n", n);
 				throw std::exception();
 			}
 		}

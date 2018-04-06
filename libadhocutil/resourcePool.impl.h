@@ -123,29 +123,29 @@ namespace AdHoc {
 	ResourcePool<R>::~ResourcePool()
 	{
 		for (auto & r : available) {
-			destroyResource(r);
+			destroyResource(r.get());
 		}
 		for (auto & r : inUse) {
-			destroyResource(std::get<0>(*r.second));
+			destroyResource(std::get<0>(*r.second).get());
 			std::get<1>(*r.second) = nullptr;
 		}
 	}
 
 	template <typename R>
 	void
-	ResourcePool<R>::destroyResource(const std::shared_ptr<R> &) const throw()
+	ResourcePool<R>::destroyResource(R const *) const throw()
 	{
 	}
 
 	template <typename R>
 	void
-	ResourcePool<R>::testResource(const std::shared_ptr<const R> &) const
+	ResourcePool<R>::testResource(R const *) const
 	{
 	}
 
 	template <typename R>
 	void
-	ResourcePool<R>::returnTestResource(const std::shared_ptr<const R> &) const
+	ResourcePool<R>::returnTestResource(R const *) const
 	{
 	}
 
@@ -187,7 +187,7 @@ namespace AdHoc {
 	{
 		Lock(lock);
 		for (auto & r : available) {
-			destroyResource(r);
+			destroyResource(r.get());
 		}
 		available.clear();
 	}
@@ -228,16 +228,16 @@ namespace AdHoc {
 	{
 		Lock(lock);
 		while (!available.empty()) {
-			auto r = available.front();
+			auto & r = available.front();
 			try {
-				testResource(r);
+				testResource(r.get());
 				auto ro = std::make_shared<typename ResourceHandle<R>::Object>(r, this, 0);
 				available.pop_front();
 				inUse.insert({ std::this_thread::get_id(), ro });
 				return ro;
 			}
 			catch (...) {
-				destroyResource(r);
+				destroyResource(r.get());
 				available.pop_front();
 			}
 		}
@@ -253,16 +253,16 @@ namespace AdHoc {
 		Lock(lock);
 		removeFrom(r, inUse);
 		try {
-			returnTestResource(r);
+			returnTestResource(r.get());
 			if (available.size() < keep) {
 				available.push_back(r);
 			}
 			else {
-				destroyResource(r);
+				destroyResource(r.get());
 			}
 		}
 		catch (...) {
-			destroyResource(r);
+			destroyResource(r.get());
 		}
 		poolSize.notify();
 	}
@@ -273,7 +273,7 @@ namespace AdHoc {
 	{
 		Lock(lock);
 		removeFrom(r, inUse);
-		destroyResource(r);
+		destroyResource(r.get());
 		poolSize.notify();
 	}
 
