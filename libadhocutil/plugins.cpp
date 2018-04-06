@@ -91,14 +91,14 @@ namespace AdHoc {
 	void
 	PluginManager::remove(const std::string & n, const std::type_info & t)
 	{
-		auto r = plugins->get<2>().equal_range(boost::make_tuple(n, std::cref(t)));
+		auto r = plugins->get<2>().equal_range(std::make_tuple(n, std::cref(t)));
 		plugins->get<2>().erase(r.first, r.second);
 	}
 
 	PluginPtr
 	PluginManager::get(const std::string & n, const std::type_info & t) const
 	{
-		auto r = plugins->get<2>().equal_range(boost::make_tuple(n, std::cref(t)));
+		auto r = plugins->get<2>().equal_range(std::make_tuple(n, std::cref(t)));
 		if (r.first == r.second) {
 			auto tr = resolvers->find(t.hash_code());
 			if (tr != resolvers->end()) {
@@ -106,7 +106,7 @@ namespace AdHoc {
 					loadLibrary(*lib);
 				}
 			}
-			r = plugins->get<2>().equal_range(boost::make_tuple(n, std::cref(t)));
+			r = plugins->get<2>().equal_range(std::make_tuple(n, std::cref(t)));
 		}
 		if (r.first != r.second) {
 			return (*r.first);
