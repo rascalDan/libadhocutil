@@ -5,7 +5,8 @@
 #include <string>
 #include <map>
 #include <istream>
-#include <boost/function.hpp>
+#include <functional>
+#include <memory>
 #include <boost/lexical_cast.hpp>
 #ifndef yyFlexLexer
 #define yyFlexLexer nvpBaseFlexLexer
@@ -29,7 +30,7 @@ class NvpParse : public yyFlexLexer {
 				ValueNotFound(const std::string &);
 		};
 
-		typedef boost::function<void(const std::string &)> AssignFunc;
+		typedef std::function<void(const std::string &)> AssignFunc;
 		typedef std::map<std::string, AssignFunc> AssignMap;
 
 		template <typename T>
@@ -58,8 +59,8 @@ class NvpParse : public yyFlexLexer {
 		};
 		/// @endcond
 
-#define NvpTarget(T) std::map<std::string, boost::shared_ptr<::AdHoc::NvpParse::TargetBase<T>>>
-#define NvpValue(c, m) { #m, boost::shared_ptr<::AdHoc::NvpParse::Target<c, decltype(c::m)>>(new ::AdHoc::NvpParse::Target<c, decltype(c::m)>(&c::m)) }
+#define NvpTarget(T) std::map<std::string, std::shared_ptr<::AdHoc::NvpParse::TargetBase<T>>>
+#define NvpValue(c, m) { #m, std::shared_ptr<::AdHoc::NvpParse::Target<c, decltype(c::m)>>(new ::AdHoc::NvpParse::Target<c, decltype(c::m)>(&c::m)) }
 
 		/** Parse an input stream into the given object.
 		 * @param in The input stream.
