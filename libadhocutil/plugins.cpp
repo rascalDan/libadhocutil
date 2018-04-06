@@ -5,18 +5,13 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include "compileTimeFormatter.h"
 #include "globalStatic.impl.h"
+#include <cxxabi.h>
 
 namespace std {
 	bool
 	operator<(const std::type_info & a, const std::type_info & b)
 	{
 		return a.hash_code() < b.hash_code();
-	}
-
-	bool
-	operator<(const AdHoc::PluginManager::PluginResolver & a, const AdHoc::PluginManager::PluginResolver & b)
-	{
-		return a.boost::function_base::get_vtable() < b.boost::function_base::get_vtable();
 	}
 
 	std::ostream &
@@ -40,8 +35,6 @@ namespace AdHoc {
 		lineno(l)
 	{
 	}
-
-	Plugin::~Plugin() = default;
 
 	AdHocFormatter(NoSuchPluginExceptionMsg, "No such plugin: %? of type %?");
 	NoSuchPluginException::NoSuchPluginException(const std::string & n, const std::type_info & t) :
@@ -87,7 +80,7 @@ namespace AdHoc {
 	}
 
 	void
-	PluginManager::add(PluginPtr p)
+	PluginManager::add(const PluginPtr & p)
 	{
 		auto prev = plugins->insert(p);
 		if (!prev.second) {

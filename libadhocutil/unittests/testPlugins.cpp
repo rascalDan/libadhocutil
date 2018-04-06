@@ -31,10 +31,10 @@ BOOST_AUTO_TEST_CASE( getAll )
 {
 	auto all = PluginManager::getDefault()->getAll();
 	BOOST_REQUIRE_EQUAL(1, all.size());
-	auto base = (*all.begin())->implementation();
+	auto base = (*all.begin())->instance();
 	BOOST_REQUIRE(base);
-	BOOST_REQUIRE(dynamic_cast<const BaseThing *>(base));
-	BOOST_REQUIRE(dynamic_cast<const ImplOfThing *>(base));
+	BOOST_REQUIRE(std::dynamic_pointer_cast<const BaseThing>(base));
+	BOOST_REQUIRE(std::dynamic_pointer_cast<const ImplOfThing>(base));
 	auto allOf = PluginManager::getDefault()->getAll<BaseThing>();
 	BOOST_REQUIRE_EQUAL(1, allOf.size());
 }
@@ -42,10 +42,10 @@ BOOST_AUTO_TEST_CASE( getAll )
 BOOST_AUTO_TEST_CASE( addManual )
 {
 	auto o1 = PluginManager::getDefault()->get<BaseThing>("ImplOfThing");
-	PluginManager::getDefault()->add(PluginPtr(new PluginOf<BaseThing>(new ImplOfThing(), "custom1", __FILE__, __LINE__)));
+	PluginManager::getDefault()->add(std::make_shared<PluginOf<BaseThing>>(std::make_shared<ImplOfThing>(), "custom1", __FILE__, __LINE__));
 	BOOST_REQUIRE_EQUAL(2, PluginManager::getDefault()->count());
 	auto c1 = PluginManager::getDefault()->get<BaseThing>("custom1");
-	PluginManager::getDefault()->add<BaseThing>(new ImplOfThing(), "custom2", __FILE__, __LINE__);
+	PluginManager::getDefault()->add<BaseThing>(std::make_shared<ImplOfThing>(), "custom2", __FILE__, __LINE__);
 	BOOST_REQUIRE_EQUAL(3, PluginManager::getDefault()->count());
 	auto c2 = PluginManager::getDefault()->get<BaseThing>("custom2");
 	auto o2 = PluginManager::getDefault()->get<BaseThing>("ImplOfThing");
@@ -75,18 +75,18 @@ BOOST_AUTO_TEST_CASE( removeManual )
 BOOST_AUTO_TEST_CASE( nameAndTypeClash )
 {
 	// Same name, different type
-	PluginManager::getDefault()->add<OtherBase>(new OtherImpl(), "ImplOfThing", __FILE__, __LINE__);
+	PluginManager::getDefault()->add<OtherBase>(std::make_shared<OtherImpl>(), "ImplOfThing", __FILE__, __LINE__);
 	// Different name, same type
-	PluginManager::getDefault()->add<BaseThing>(new ImplOfThing(), "Different", __FILE__, __LINE__);
+	PluginManager::getDefault()->add<BaseThing>(std::make_shared<ImplOfThing>(), "Different", __FILE__, __LINE__);
 	// Same name, same thing, should error
-	BOOST_REQUIRE_THROW(PluginManager::getDefault()->add<BaseThing>(new OtherImplOfThing(), "ImplOfThing", __FILE__, __LINE__), DuplicatePluginException);
+	BOOST_REQUIRE_THROW(PluginManager::getDefault()->add<BaseThing>(std::make_shared<OtherImplOfThing>(), "ImplOfThing", __FILE__, __LINE__), DuplicatePluginException);
 	PluginManager::getDefault()->remove<OtherBase>("ImplOfThing");
 	PluginManager::getDefault()->remove<BaseThing>("Different");
 }
 
 BOOST_AUTO_TEST_CASE( otherTypes )
 {
-	PluginManager::getDefault()->add<OtherBase>(new OtherImpl(), "ImplOfThing", __FILE__, __LINE__);
+	PluginManager::getDefault()->add<OtherBase>(std::make_shared<OtherImpl>(), "ImplOfThing", __FILE__, __LINE__);
 	BOOST_REQUIRE_EQUAL(2, PluginManager::getDefault()->count());
 	BOOST_REQUIRE_EQUAL(2, PluginManager::getDefault()->getAll().size());
 	BOOST_REQUIRE_EQUAL(1, PluginManager::getDefault()->getAll<BaseThing>().size());

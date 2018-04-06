@@ -17,7 +17,7 @@ namespace AdHoc {
 			 * Create a new instance of Base, overridden in a subclass to construct a new specific class.
 			 * @param p The parameters passed to Impl constructor.
 			 */
-			virtual Base * create(const Params & ... p) const = 0;
+			virtual std::shared_ptr<Base> create(const Params & ... p) const = 0;
 
 			/**
 			 * A factory for a concrete implementation of Base
@@ -30,9 +30,9 @@ namespace AdHoc {
 					 * Create a new instance of Base implemented in Impl.
 					 * @param p The parameters passed to Impl constructor.
 					 */
-					Base * create(const Params & ... p) const override
+					std::shared_ptr<Base> create(const Params & ... p) const override
 					{
-						return new Impl(p...);
+						return std::make_shared<Impl>(p...);
 					}
 			};
 
@@ -40,13 +40,13 @@ namespace AdHoc {
 			 * Helper to get the factory for a specific implementation.
 			 * @param name The name of the implementation.
 			 */
-			static const Factory * get(const std::string & name);
+			static std::shared_ptr<const Factory> get(const std::string & name);
 			/**
 			 * Helper to create a new instance from a specific factory.
 			 * @param name The name of the implementation.
 			 * @param p The parameters to pass to the constructor.
 			 */
-			static Base * createNew(const std::string & name, const Params & ... p);
+			static std::shared_ptr<Base> createNew(const std::string & name, const Params & ... p);
 	};
 }
 

@@ -11,9 +11,9 @@ using namespace AdHoc;
 
 auto lib = rootDir / "bin" / buildVariant / "libutilTestClasses.so";
 
-static boost::optional<std::string> nullResolver(const std::type_info &, const std::string &);
-static boost::optional<std::string> badResolver(const std::type_info &, const std::string &);
-static boost::optional<std::string> goodResolver(const std::type_info &, const std::string &);
+static std::optional<std::string> nullResolver(const std::type_info &, const std::string &);
+static std::optional<std::string> badResolver(const std::type_info &, const std::string &);
+static std::optional<std::string> goodResolver(const std::type_info &, const std::string &);
 
 BOOST_AUTO_TEST_CASE( ready )
 {
@@ -35,19 +35,19 @@ BOOST_AUTO_TEST_CASE( loadAndUnloadlib )
 	BOOST_REQUIRE_EQUAL(0, AdHoc::PluginManager::getDefault()->getAll<BaseThing>().size());
 }
 
-boost::optional<std::string>
+std::optional<std::string>
 nullResolver(const std::type_info &, const std::string &)
 {
-	return boost::optional<std::string>();
+	return {};
 }
 
-boost::optional<std::string>
+std::optional<std::string>
 badResolver(const std::type_info &, const std::string &)
 {
 	return std::string("dontexist");
 }
 
-boost::optional<std::string>
+std::optional<std::string>
 goodResolver(const std::type_info & t, const std::string & n)
 {
 	BOOST_REQUIRE_EQUAL(typeid(BaseThing), t);

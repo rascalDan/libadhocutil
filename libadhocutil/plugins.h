@@ -1,9 +1,9 @@
 #ifndef ADHOCUTIL_PLUGINS_H
 #define ADHOCUTIL_PLUGINS_H
 
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
-#include <boost/optional.hpp>
+#include <memory>
+#include <functional>
+#include <optional>
 #include <boost/multi_index_container_fwd.hpp>
 #include <boost/multi_index/ordered_index_fwd.hpp>
 #include <boost/multi_index/member.hpp>
@@ -41,13 +41,13 @@ namespace AdHoc {
 		public:
 			/// Constructor taking name, filename and line of install.
 			Plugin(const std::string &, const std::string &, int);
-			virtual ~Plugin();
+			virtual ~Plugin() = default;
 
 			/// Get the plugin type from the subclass.
 			virtual const std::type_info & type() const = 0;
 
 			/// Get the abstract base plugin implementation.
-			virtual AbstractPluginImplementation * implementation() const = 0;
+			virtual std::shared_ptr<AbstractPluginImplementation> instance() const = 0;
 
 			/// The name the plugin was installed with.
 			const std::string name;
@@ -56,7 +56,7 @@ namespace AdHoc {
 			/// The line of file the plugin was installed in.
 			const int lineno;
 	};
-	typedef boost::shared_ptr<const Plugin> PluginPtr;
+	typedef std::shared_ptr<const Plugin> PluginPtr;
 
 	/// Thrown when a plugin with the same name and base is loaded into a manager.
 	class DuplicatePluginException : public std::runtime_error {
@@ -84,16 +84,18 @@ namespace AdHoc {
 	class DLL_PUBLIC PluginOf : public Plugin {
 		public:
 			/// Constructor taking an instance and name, filename and line of install for Plugin.
-			PluginOf(T * t, const std::string & n, const std::string & f, int l);
-			~PluginOf();
+			PluginOf(const std::shared_ptr<T> & t, const std::string & n, const std::string & f, int l);
+			~PluginOf() = default;
 
 			/// Get the type of this plugin.
 			const std::type_info & type() const override;
 			/// Get the implementation of this plugin.
-			T * implementation() const override;
+			std::shared_ptr<T> implementation() const;
+
+			std::shared_ptr<AbstractPluginImplementation> instance() const override;
 
 		private:
-			T * impl;
+			std::shared_ptr<T> impl;
 	};
 
 	/// Container for loaded plugins.
@@ -101,13 +103,13 @@ namespace AdHoc {
 		public:
 			/// Callback definition to resolve a plugin type and name to a potential library
 			/// containing an implementation.
-			typedef boost::function<boost::optional<std::string> (const std::type_info &, const std::string &)> PluginResolver;
+			typedef std::function<std::optional<std::string> (const std::type_info &, const std::string &)> PluginResolver;
 
 			PluginManager();
 			virtual ~PluginManager();
 
 			/// Install a plugin.
-			void add(PluginPtr);
+			void add(const PluginPtr &);
 			/// Uninstall a plugin.
 			void remove(const std::string &, const std::type_info &);
 			/// Get a specific plugin.
@@ -124,7 +126,7 @@ namespace AdHoc {
 			 * @param f Filename of plugin.
 			 * @param l Line number.
 			 */
-			template<typename T> void add(T * i, const std::string & n, const std::string & f, int l);
+			template<typename T> void add(const std::shared_ptr<T> & i, const std::string & n, const std::string & f, int l);
 
 			/**
 			 * Uninstall a plugin.
@@ -136,18 +138,18 @@ namespace AdHoc {
 			 * Get a specific plugin.
 			 * @param n Name of plugin.
 			 */
-			template<typename T> boost::shared_ptr<const PluginOf<T>> get(const std::string & n) const;
+			template<typename T> std::shared_ptr<const PluginOf<T>> get(const std::string & n) const;
 
 			/**
 			 * Get the implementation from specific plugin.
 			 * @param n Name of plugin.
 			 */
-			template<typename T> T * getImplementation(const std::string & n) const;
+			template<typename T> std::shared_ptr<T> getImplementation(const std::string & n) const;
 
 			/**
 			 * Get all plugins of a given time.
 			 */
-			template<typename T> std::set<boost::shared_ptr<const PluginOf<T>>> getAll() const;
+			template<typename T> std::set<std::shared_ptr<const PluginOf<T>>> getAll() const;
 
 			/**
 			 * The number of installed plugins.
@@ -214,7 +216,7 @@ namespace AdHoc {
 	namespace MAKE_UNIQUE(__plugin__) { \
 		static void InstallPlugin() __attribute__((constructor(102))); \
 		void InstallPlugin() { \
-			::AdHoc::PluginManager::getDefault()->add<Base>(new Implementation(), Name, __FILE__, __LINE__); \
+			::AdHoc::PluginManager::getDefault()->add<Base>(std::make_shared<Implementation>(), Name, __FILE__, __LINE__); \
 		} \
 		static void UninstallPlugin() __attribute__((destructor(102))); \
 		void UninstallPlugin() { \
