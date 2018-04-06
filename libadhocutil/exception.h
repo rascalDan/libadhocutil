@@ -3,7 +3,7 @@
 
 #include <exception>
 #include <string>
-#include <boost/optional.hpp>
+#include <optional>
 
 namespace AdHoc {
 	/// Helper class for lazy creation of exception message text.
@@ -27,7 +27,7 @@ namespace AdHoc {
 		private:
 			/// Message text provider.
 			virtual std::string message() const throw() = 0;
-			mutable boost::optional<std::string> msg;
+			mutable std::optional<std::string> msg;
 	};
 	typedef Exception<std::exception> StdException;
 }
