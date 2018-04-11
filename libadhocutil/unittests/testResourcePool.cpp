@@ -238,22 +238,21 @@ BOOST_AUTO_TEST_CASE( idle )
 	BOOST_REQUIRE_EQUAL(0, MockResource::count);
 }
 
-BOOST_AUTO_TEST_CASE( threading1 )
+BOOST_AUTO_TEST_CASE( threading1, * boost::unit_test::timeout(10) )
 {
 	TRPSmall pool;
-	std::list<std::thread *> threads;
+	std::list<std::thread> threads;
 	for (int x = 0; x < 100; x += 1) {
-		threads.push_back(new std::thread([&pool](){
+		threads.emplace_back([&pool](){
 			auto r = pool.get();
 			usleep(50000);
-		}));
+		});
 		usleep(5000);
 		// pool size never exceeds 3
 		BOOST_REQUIRE_LE(pool.inUseCount(), 3);
 	}
-	for(std::thread * thread : threads) {
-		thread->join();
-		delete thread;
+	for(auto & thread : threads) {
+		thread.join();
 	}
 	// pool keep returns to 1
 	BOOST_REQUIRE_EQUAL(1, pool.availableCount());
