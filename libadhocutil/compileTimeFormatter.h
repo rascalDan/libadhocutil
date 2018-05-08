@@ -5,7 +5,7 @@
 
 namespace AdHoc {
 	/// @cond
-	constexpr int WRAP_AT = 120;
+	inline constexpr int WRAP_AT = 120;
 
 	namespace FormatterImpl {
 		template <bool, char...> struct ParserBuffer { };
@@ -224,7 +224,7 @@ namespace AdHoc {
 }
 
 #define AdHocFormatterTypedef(name, str, id) \
-	extern constexpr auto id = str; \
+	inline extern constexpr auto id = str; \
 	typedef ::AdHoc::Formatter<id> name
 #define AdHocFormatter(name, str) \
 	AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
