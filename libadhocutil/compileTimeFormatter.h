@@ -1,3 +1,6 @@
+#ifndef ADHOCUTIL_COMPILE_TIME_FORMATTER_H
+#define ADHOCUTIL_COMPILE_TIME_FORMATTER_H
+
 #include <sstream>
 #include <string.h>
 #include <boost/preprocessor/variadic/size.hpp>
@@ -228,4 +231,6 @@ namespace AdHoc {
 	typedef ::AdHoc::Formatter<id> name
 #define AdHocFormatter(name, str) \
 	AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
+
+#endif
 
