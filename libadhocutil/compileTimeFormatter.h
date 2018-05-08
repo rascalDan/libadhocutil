@@ -1,6 +1,7 @@
 #include <sstream>
 #include <string.h>
 #include <boost/preprocessor/variadic/size.hpp>
+#include "unique.h"
 
 namespace AdHoc {
 	/// @cond
@@ -226,5 +227,5 @@ namespace AdHoc {
 	extern constexpr auto id = str; \
 	typedef ::AdHoc::Formatter<id> name
 #define AdHocFormatter(name, str) \
-	AdHocFormatterTypedef(name, str, name ## __COUNTER__)
+	AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
 
