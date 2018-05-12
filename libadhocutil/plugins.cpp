@@ -32,7 +32,7 @@ namespace AdHoc {
 
 	AbstractPluginImplementation::~AbstractPluginImplementation() = default;
 
-	Plugin::Plugin(const std::string & n, const std::string & f, int l) :
+	Plugin::Plugin(const std::string_view & n, const std::string_view & f, int l) :
 		name(n),
 		filename(f),
 		lineno(l)
@@ -40,7 +40,7 @@ namespace AdHoc {
 	}
 
 	AdHocFormatter(NoSuchPluginExceptionMsg, "No such plugin: %? of type %?");
-	NoSuchPluginException::NoSuchPluginException(const std::string & n, const std::type_info & t) :
+	NoSuchPluginException::NoSuchPluginException(const std::string_view & n, const std::type_info & t) :
 		std::runtime_error(NoSuchPluginExceptionMsg::get(n, t))
 	{
 	}
@@ -59,21 +59,21 @@ namespace AdHoc {
 	}
 
 	AdHocFormatter(LoadLibraryExceptionMsg, "Failed to load library [%?]; %?");
-	LoadLibraryException::LoadLibraryException(const std::string & f, const char * msg) :
+	LoadLibraryException::LoadLibraryException(const std::string_view & f, const std::string_view & msg) :
 		std::runtime_error(LoadLibraryExceptionMsg::get(f, msg))
 	{
 	}
 
 	class PluginManager::PluginStore : public boost::multi_index_container<PluginPtr,
 					boost::multi_index::indexed_by<
-						boost::multi_index::ordered_non_unique<boost::multi_index::member<Plugin, const std::string, &Plugin::name>>,
+						boost::multi_index::ordered_non_unique<boost::multi_index::member<Plugin, const std::string, &Plugin::name>, std::less<>>,
 						boost::multi_index::ordered_non_unique<boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>>,
 						boost::multi_index::ordered_unique<
 							boost::multi_index::composite_key<
 								Plugin,
 								boost::multi_index::member<Plugin, const std::string, &Plugin::name>,
 								boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>
-								>>
+								>, std::less<>>
 						>>
 	{
 	};
@@ -102,14 +102,14 @@ namespace AdHoc {
 	}
 
 	void
-	PluginManager::remove(const std::string & n, const std::type_info & t)
+	PluginManager::remove(const std::string_view & n, const std::type_info & t)
 	{
 		auto r = plugins->get<2>().equal_range(std::make_tuple(n, std::cref(t)));
 		plugins->get<2>().erase(r.first, r.second);
 	}
 
 	PluginPtr
-	PluginManager::get(const std::string & n, const std::type_info & t) const
+	PluginManager::get(const std::string_view & n, const std::type_info & t) const
 	{
 		auto r = plugins->get<2>().equal_range(std::make_tuple(n, std::cref(t)));
 		if (r.first == r.second) {
@@ -139,18 +139,14 @@ namespace AdHoc {
 	std::set<PluginPtr>
 	PluginManager::getAll() const
 	{
-		std::set<PluginPtr> all;
-		for(const auto & p : *plugins) {
-			all.insert(p);
-		}
-		return all;
+		return { plugins->begin(), plugins->end() };
 	}
 
 	std::set<PluginPtr>
 	PluginManager::getAll(const std::type_info & t) const
 	{
 		auto r = plugins->get<1>().equal_range(t);
-		return std::set<PluginPtr>(r.first, r.second);
+		return { r.first, r.second };
 	}
 
 	size_t

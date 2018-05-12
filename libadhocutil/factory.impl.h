@@ -10,14 +10,14 @@ namespace AdHoc {
 
 	template <typename Base, typename ... Params>
 	std::shared_ptr<const Factory<Base, Params...>>
-	Factory<Base, Params...>::get(const std::string & name)
+	Factory<Base, Params...>::get(const std::string_view & name)
 	{
 		return PluginManager::getDefault()->get<Factory>(name)->implementation();
 	}
 
 	template <typename Base, typename ... Params>
 	std::shared_ptr<Base>
-	Factory<Base, Params...>::createNew(const std::string & name, const Params & ... p)
+	Factory<Base, Params...>::createNew(const std::string_view & name, const Params & ... p)
 	{
 		return get(name)->create(p...);
 	}
