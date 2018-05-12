@@ -3,6 +3,9 @@
 #include <dlfcn.h>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/composite_key.hpp>
 #include "compileTimeFormatter.h"
 #include "globalStatic.impl.h"
 #include <cxxabi.h>
@@ -61,16 +64,26 @@ namespace AdHoc {
 	{
 	}
 
-	PluginManager::PluginManager() :
-		plugins(new PluginStore()),
-		resolvers(new TypePluginResolvers())
+	class PluginManager::PluginStore : public boost::multi_index_container<PluginPtr,
+					boost::multi_index::indexed_by<
+						boost::multi_index::ordered_non_unique<boost::multi_index::member<Plugin, const std::string, &Plugin::name>>,
+						boost::multi_index::ordered_non_unique<boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>>,
+						boost::multi_index::ordered_unique<
+							boost::multi_index::composite_key<
+								Plugin,
+								boost::multi_index::member<Plugin, const std::string, &Plugin::name>,
+								boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>
+								>>
+						>>
 	{
-	}
+	};
 
-	PluginManager::~PluginManager()
+	class PluginManager::TypePluginResolvers : public std::map<size_t, PluginResolver> { };
+
+	PluginManager::PluginManager() :
+		plugins(std::make_unique<PluginStore>()),
+		resolvers(std::make_unique<TypePluginResolvers>())
 	{
-		delete resolvers;
-		delete plugins;
 	}
 
 	PluginManager *

@@ -4,11 +4,6 @@
 #include <memory>
 #include <functional>
 #include <optional>
-#include <boost/multi_index_container_fwd.hpp>
-#include <boost/multi_index/ordered_index_fwd.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/mem_fun.hpp>
-#include <boost/multi_index/composite_key.hpp>
 #include <typeinfo>
 #include <set>
 #include <map>
@@ -106,7 +101,7 @@ namespace AdHoc {
 			typedef std::function<std::optional<std::string> (const std::type_info &, const std::string &)> PluginResolver;
 
 			PluginManager();
-			virtual ~PluginManager();
+			virtual ~PluginManager() = default;
 
 			/// Install a plugin.
 			void add(const PluginPtr &);
@@ -208,22 +203,10 @@ namespace AdHoc {
 		private:
 			static void loadLibrary(const std::string &);
 
-			typedef boost::multi_index_container<PluginPtr,
-							boost::multi_index::indexed_by<
-								boost::multi_index::ordered_non_unique<boost::multi_index::member<Plugin, const std::string, &Plugin::name>>,
-								boost::multi_index::ordered_non_unique<boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>>,
-								boost::multi_index::ordered_unique<
-									boost::multi_index::composite_key<
-										Plugin,
-										boost::multi_index::member<Plugin, const std::string, &Plugin::name>,
-										boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>
-										>>
-								>> PluginStore;
-
-			typedef std::map<size_t, PluginResolver> TypePluginResolvers;
-
-			PluginStore * plugins;
-			TypePluginResolvers * resolvers;
+			class PluginStore;
+			std::unique_ptr<PluginStore> plugins;
+			class TypePluginResolvers;
+			std::unique_ptr<TypePluginResolvers> resolvers;
 	};
 }
 
