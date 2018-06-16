@@ -227,7 +227,7 @@ namespace AdHoc {
 }
 
 #define AdHocFormatterTypedef(name, str, id) \
-	inline extern constexpr auto id = str; \
+	inline constexpr auto id = str; \
 	typedef ::AdHoc::Formatter<id> name
 #define AdHocFormatter(name, str) \
 	AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))

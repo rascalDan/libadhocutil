@@ -7,24 +7,24 @@
 
 using namespace AdHoc;
 
-extern constexpr const char * formatEdgeCaseEmpty = "";
-extern constexpr const char * formatEdgeCaseSingle = "1";
-extern constexpr const char * formatEdgeCaseFormatStart = "%? after";
-extern constexpr const char * formatEdgeCaseFormatEnd = "before %?";
-extern constexpr const char * formatEdgeCaseFormatLonely = "%?";
-extern constexpr const char * formatStringLiteral = "literal";
-extern constexpr const char * formatStringSingle = "single %?.";
-extern constexpr const char * formatStringMulti = "First %?, then %?.";
-extern constexpr const char * formatStringCustom = "custom %()";
-extern constexpr const char * formatStringCustomParam1 = "custom %(\x3)";
-extern constexpr const char * formatStringCustomParam2 = "custom %(\x9)";
-extern constexpr const char * formatStringCustomLong = "custom %(longname)";
-extern constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
-extern constexpr const char * formatStringMultiArg = "value%ra";
-extern constexpr const char * formatStringEscape1 = "literal %% percentage.";
-extern constexpr const char * formatStringEscape2 = "literal %%? percentage.";
-extern constexpr const char * formatStringEscape3 = "literal %%%? percentage.";
-extern constexpr const char * formatStringEscape4 = "literal %%%?%% percentage.";
+constexpr const char * formatEdgeCaseEmpty = "";
+constexpr const char * formatEdgeCaseSingle = "1";
+constexpr const char * formatEdgeCaseFormatStart = "%? after";
+constexpr const char * formatEdgeCaseFormatEnd = "before %?";
+constexpr const char * formatEdgeCaseFormatLonely = "%?";
+constexpr const char * formatStringLiteral = "literal";
+constexpr const char * formatStringSingle = "single %?.";
+constexpr const char * formatStringMulti = "First %?, then %?.";
+constexpr const char * formatStringCustom = "custom %()";
+constexpr const char * formatStringCustomParam1 = "custom %(\x3)";
+constexpr const char * formatStringCustomParam2 = "custom %(\x9)";
+constexpr const char * formatStringCustomLong = "custom %(longname)";
+constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
+constexpr const char * formatStringMultiArg = "value%ra";
+constexpr const char * formatStringEscape1 = "literal %% percentage.";
+constexpr const char * formatStringEscape2 = "literal %%? percentage.";
+constexpr const char * formatStringEscape3 = "literal %%%? percentage.";
+constexpr const char * formatStringEscape4 = "literal %%%?%% percentage.";
 
 namespace AdHoc {
 	// Custom stream writer formatter, formats as
