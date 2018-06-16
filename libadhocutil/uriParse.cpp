@@ -19,7 +19,7 @@ namespace AdHoc {
 
 		curstr = uri.c_str();
 
-		const char * tmpstr = strchr(curstr, ':');
+		const char * tmpstr = ::strchr(curstr, ':');
 		if (!tmpstr) {
 			throw InvalidUri("Schema marker not found", uri);
 		}

@@ -7,6 +7,33 @@
 #include "unique.h"
 
 namespace AdHoc {
+	// Template string utils
+	template<const auto & S>
+	static constexpr auto strlen()
+	{
+		auto off = 0;
+		while (S[off]) { ++off; }
+		return off;
+	}
+
+	template<const auto & S, auto n, auto start = 0, auto L = strlen<S>()>
+	static constexpr int strchr()
+	{
+		static_assert(start <= L);
+		decltype(start) off = start;
+		while (off < L && S[off] != n) { ++off; }
+		if (off == L) return -1;
+		return off;
+	}
+
+	template<const auto & S, auto n, auto start = 0, auto L = strlen<S>()>
+	static constexpr decltype(L) strchrnul()
+	{
+		decltype(start) off = start;
+		while (off < L && S[off] != n) { ++off; }
+		return off;
+	}
+
 	/// @cond
 	inline constexpr int WRAP_AT = 120;
 

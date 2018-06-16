@@ -73,6 +73,43 @@ namespace AdHoc {
 	};
 }
 
+// Compile string util assertions
+static_assert(strlen<formatEdgeCaseEmpty>() == 0);
+static_assert(strlen<formatEdgeCaseSingle>() == 1);
+static_assert(strlen<formatEdgeCaseFormatLonely>() == 2);
+static_assert(strlen<formatStringLiteral>() == 7);
+static_assert(strlen<formatStringLong>() == 246);
+
+static_assert(strchr<formatEdgeCaseEmpty, 't'>() == -1);
+static_assert(strchr<formatEdgeCaseSingle, 't'>() == -1);
+static_assert(strchr<formatEdgeCaseSingle, '1'>() == 0);
+static_assert(strchr<formatEdgeCaseFormatLonely, '%'>() == 0);
+static_assert(strchr<formatEdgeCaseFormatLonely, '?'>() == 1);
+static_assert(strchr<formatStringLiteral, 'e'>() == 3);
+static_assert(strchr<formatStringLiteral, 'f'>() == -1);
+static_assert(strchr<formatStringLiteral, 'e', 3>() == 3);
+static_assert(strchr<formatStringLiteral, 'e', 4>() == -1);
+static_assert(strchr<formatStringLiteral, 'f', 3>() == -1);
+
+static_assert(strchrnul<formatEdgeCaseEmpty, 't'>() == 0);
+static_assert(strchrnul<formatEdgeCaseSingle, 't'>() == 1);
+static_assert(strchrnul<formatEdgeCaseSingle, '1'>() == 0);
+static_assert(strchrnul<formatEdgeCaseFormatLonely, '%'>() == 0);
+static_assert(strchrnul<formatEdgeCaseFormatLonely, '?'>() == 1);
+static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
+static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
+static_assert(strchrnul<formatStringLiteral, 'e', 3>() == 3);
+static_assert(strchrnul<formatStringLiteral, 'e', 4>() == 7);
+static_assert(strchrnul<formatStringLiteral, 'f', 3>() == 7);
+
+static_assert(strchrnul<formatEdgeCaseEmpty, 't'>() == 0);
+static_assert(strchrnul<formatEdgeCaseSingle, 't'>() == 1);
+static_assert(strchrnul<formatEdgeCaseSingle, '1'>() == 0);
+static_assert(strchrnul<formatEdgeCaseFormatLonely, '%'>() == 0);
+static_assert(strchrnul<formatEdgeCaseFormatLonely, '?'>() == 1);
+static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
+static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
+
 BOOST_FIXTURE_TEST_SUITE( TestStreamWrite, std::stringstream )
 
 BOOST_AUTO_TEST_CASE ( empty )
