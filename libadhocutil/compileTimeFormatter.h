@@ -99,6 +99,7 @@ namespace AdHoc {
 			template<const auto &, auto, auto, typename> friend struct StreamWriterBase;
 
 		public:
+			typedef typename std::decay<decltype(*S)>::type char_type;
 			/**
 			 * Get a string containing the result of formatting.
 			 * @param pn the format arguments.
@@ -107,7 +108,7 @@ namespace AdHoc {
 			template<typename ... Pn>
 			static inline auto get(const Pn & ... pn)
 			{
-				std::basic_stringstream<typename std::decay<decltype(*S)>::type> s;
+				std::basic_stringstream<char_type> s;
 				return write(s, pn...).str();
 			}
 
