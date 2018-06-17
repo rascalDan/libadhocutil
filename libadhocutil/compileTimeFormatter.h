@@ -17,7 +17,7 @@ namespace AdHoc {
 	}
 
 	template<const auto & S, auto n, auto start = 0, auto L = strlen<S>()>
-	static constexpr int strchr()
+	static constexpr auto strchr()
 	{
 		static_assert(start <= L);
 		decltype(start) off = start;
@@ -34,13 +34,13 @@ namespace AdHoc {
 		return off;
 	}
 
-	template <const char * const &, auto> class Formatter;
+	template <const auto &, auto> class Formatter;
 
-	template<const char * const & S, auto L, auto pos, typename stream, char ...>
+	template<const auto & S, auto L, auto pos, typename stream, auto ...>
 	struct StreamWriter {
 	};
 
-	template<const char * const & S, auto L, auto pos, typename stream>
+	template<const auto & S, auto L, auto pos, typename stream>
 	struct StreamWriterBase {
 		template<typename ... Pn>
 		static inline void next(stream & s, const Pn & ... pn)
@@ -50,12 +50,12 @@ namespace AdHoc {
 	};
 
 #define StreamWriterT(C...) \
-	template<const char * const & S, auto L, auto pos, typename stream, char ... sn> \
+	template<const auto & S, auto L, auto pos, typename stream, auto ... sn> \
 	struct StreamWriter<S, L, pos, stream, '%', C, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
 
 #define StreamWriterTP(P, C...) \
-	template<const char * const & S, auto L, auto pos, typename stream, char P, char ... sn> \
+	template<const auto & S, auto L, auto pos, typename stream, auto P, auto ... sn> \
 	struct StreamWriter<S, L, pos, stream, '%', C, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
 
@@ -80,7 +80,7 @@ namespace AdHoc {
 	};
 
 	// Unknown stream writer formatter
-	template<const char * const & S, auto L, auto pos, typename stream, char ... sn>
+	template<const auto & S, auto L, auto pos, typename stream, auto ... sn>
 	struct StreamWriter<S, L, pos, stream, '%', sn...> {
 		template<typename ... Pn>
 		static void write(stream &, const Pn & ...)
@@ -94,10 +94,10 @@ namespace AdHoc {
 	 * Compile time string formatter.
 	 * @param S the format string.
 	 */
-	template <const char * const & S, auto L = strlen<S>()>
+	template <const auto & S, auto L = strlen<S>()>
 	class Formatter {
 		private:
-			template<const char * const &, auto, auto, typename> friend struct StreamWriterBase;
+			template<const auto &, auto, auto, typename> friend struct StreamWriterBase;
 
 		public:
 			/**
@@ -125,13 +125,13 @@ namespace AdHoc {
 			}
 
 		private:
-			template<typename stream, int pos, typename ... Pn>
+			template<typename stream, auto pos, typename ... Pn>
 			struct Parser {
 				static inline stream &
 				run(stream & s, const Pn & ... pn)
 				{
 					if (pos != L) {
-						constexpr int ph = strchrnul<S, '%', pos>();
+						constexpr auto ph = strchrnul<S, '%', pos>();
 						if constexpr (ph != pos) {
 							s.write((S + pos), ph - pos);
 						}
@@ -141,7 +141,7 @@ namespace AdHoc {
 					}
 					return s;
 				}
-				template<int ph, int off = 0, char ... Pck>
+				template<auto ph, auto off = 0, auto ... Pck>
 				static inline void packAndWrite(stream & s, const Pn & ... pn)
 				{
 					if constexpr (ph + off == L || sizeof...(Pck) == 32) {
