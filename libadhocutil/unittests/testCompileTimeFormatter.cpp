@@ -280,3 +280,31 @@ BOOST_AUTO_TEST_CASE( lorem_ipsum )
 	BOOST_CHECK_EQUAL_COLLECTIONS(s.begin(), s.end(), sv.begin(), sv.end());
 }
 
+namespace AdHoc {
+	template<>
+	inline void appendStream(FILE & strm, const char * const p, size_t n)
+	{
+		BOOST_VERIFY(fwrite(p, n, 1, &strm) == 1);
+	}
+}
+
+FILE &
+operator<<(FILE & strm, const char * const p)
+{
+	BOOST_VERIFY(fputs(p, &strm) != EOF);
+	return strm;
+}
+
+BOOST_AUTO_TEST_CASE( filestar )
+{
+	char * buf = NULL;
+	size_t len = 0;
+	FILE * strm = open_memstream(&buf, &len);
+	BOOST_REQUIRE(strm);
+	Formatter<formatStringMulti>::write(*strm, "file", "star");
+	fclose(strm);
+	BOOST_CHECK_EQUAL(len, 22);
+	BOOST_CHECK_EQUAL(buf, "First file, then star.");
+	free(buf);
+}
+

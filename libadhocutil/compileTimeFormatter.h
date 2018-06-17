@@ -89,6 +89,12 @@ namespace AdHoc {
 		}
 	};
 
+	template<typename stream, typename char_type>
+	static inline void appendStream(stream & s, const char_type * p, size_t n)
+	{
+		s.write(p, n);
+	}
+
 	/**
 	 * Compile time string formatter.
 	 * @param S the format string.
@@ -133,7 +139,7 @@ namespace AdHoc {
 					if (pos != L) {
 						constexpr auto ph = strchrnul<S, '%', pos, L>();
 						if constexpr (ph != pos) {
-							s.write((S + pos), ph - pos);
+							appendStream(s, (S + pos), ph - pos);
 						}
 						if constexpr (ph != L) {
 							packAndWrite<ph>(s, pn...);
