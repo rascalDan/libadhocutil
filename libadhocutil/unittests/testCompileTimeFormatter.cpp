@@ -2,6 +2,8 @@
 #include <boost/test/unit_test.hpp>
 
 #include <compileTimeFormatter.h>
+#include <fileUtils.h>
+#include <definedDirs.h>
 
 #include <boost/filesystem/path.hpp>
 
@@ -264,5 +266,17 @@ BOOST_AUTO_TEST_CASE ( get )
 {
 	auto s = Formatter<formatStringMultiArg>::get(20, "something else");
 	BOOST_CHECK_EQUAL(s, "value      something else");
+}
+
+constexpr
+#include <lorem-ipsum.h>
+BOOST_AUTO_TEST_CASE( lorem_ipsum )
+{
+	typedef Formatter<lorem_ipsum_txt, sizeof(lorem_ipsum_txt)> LIF;
+	auto s = LIF::get();
+	BOOST_CHECK_EQUAL(s.length(), lorem_ipsum_txt_len);
+	AdHoc::FileUtils::MemMap li(rootDir / "lorem-ipsum.txt");
+	auto sv = li.sv<std::decay<decltype(*lorem_ipsum_txt)>::type>();
+	BOOST_CHECK_EQUAL_COLLECTIONS(s.begin(), s.end(), sv.begin(), sv.end());
 }
 

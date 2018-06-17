@@ -1,6 +1,18 @@
 import testing ;
+import type ;
+import generators ;
 
 path-constant me : . ;
+type.register TEXT : txt ;
+
+generators.register-standard xxd.h : TEXT : H ;
+
+actions xxd.h
+{
+	( cd ./$(2:D) && xxd -i $(2:B).txt ) > $(1[1])
+}
+
+IMPORT $(__name__) : xxd.h : : xxd.h ;
 
 lib boost_utf : : <name>boost_unit_test_framework ;
 lib boost_filesystem ;
@@ -8,6 +20,8 @@ lib boost_system ;
 lib boost_thread ;
 lib pthread ;
 lib dl ;
+
+h lorem-ipsum : lorem-ipsum.txt ;
 
 run
 	testCompileTimeFormatter.cpp
@@ -18,6 +32,7 @@ run
 	<library>boost_system
 	<library>boost_filesystem
 	<library>boost_utf
+	<implicit-dependency>lorem-ipsum
 	;
 
 run

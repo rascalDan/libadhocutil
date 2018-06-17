@@ -34,7 +34,7 @@ namespace AdHoc {
 		return off;
 	}
 
-	template <const auto &, auto> class Formatter;
+	template <const auto &, int> class Formatter;
 
 	template<const auto & S, auto L, auto pos, typename stream, auto ...>
 	struct StreamWriter {
@@ -93,7 +93,7 @@ namespace AdHoc {
 	 * Compile time string formatter.
 	 * @param S the format string.
 	 */
-	template <const auto & S, auto L = strlen<S>()>
+	template <const auto & S, int L = strlen<S>()>
 	class Formatter {
 		private:
 			template<const auto &, auto, auto, typename> friend struct StreamWriterBase;
@@ -105,9 +105,9 @@ namespace AdHoc {
 			 * @return the formatted string.
 			 */
 			template<typename ... Pn>
-			static inline std::string get(const Pn & ... pn)
+			static inline auto get(const Pn & ... pn)
 			{
-				std::stringstream s;
+				std::basic_stringstream<typename std::decay<decltype(*S)>::type> s;
 				return write(s, pn...).str();
 			}
 
@@ -130,7 +130,7 @@ namespace AdHoc {
 				run(stream & s, const Pn & ... pn)
 				{
 					if (pos != L) {
-						constexpr auto ph = strchrnul<S, '%', pos>();
+						constexpr auto ph = strchrnul<S, '%', pos, L>();
 						if constexpr (ph != pos) {
 							s.write((S + pos), ph - pos);
 						}
