@@ -95,6 +95,12 @@ namespace AdHoc {
 		s.write(p, n);
 	}
 
+	template<typename stream>
+	static inline auto streamLength(stream & s)
+	{
+		return s.tellp();
+	}
+
 	/**
 	 * Compile time string formatter.
 	 * @param S the format string.
@@ -160,6 +166,8 @@ namespace AdHoc {
 			};
 	};
 }
+
+#include "detail/compileTimeFormatters.h"
 
 #define AdHocFormatterTypedef(name, str, id) \
 	inline constexpr auto id = str; \

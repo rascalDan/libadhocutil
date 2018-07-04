@@ -308,3 +308,108 @@ BOOST_AUTO_TEST_CASE( filestar )
 	free(buf);
 }
 
+// The following tests represent CTF's [partial] emulation of many
+// POSIX formatting features
+#define GLIBC_FMT_TEST(NAME, FMT, ...) \
+	AdHocFormatter(NAME ## fmtr, FMT); \
+	BOOST_AUTO_TEST_CASE(NAME ## t) { \
+		BOOST_TEST_CONTEXT(FMT) { \
+			auto str = NAME ## fmtr::get(__VA_ARGS__); \
+			char * buf = NULL; \
+			int len = asprintf(&buf, FMT, __VA_ARGS__); \
+			BOOST_REQUIRE(buf); \
+			BOOST_CHECK_EQUAL(str.length(), len); \
+			BOOST_CHECK_EQUAL(str, buf); \
+			free(buf); \
+		} \
+	}
+
+GLIBC_FMT_TEST(s1, "in %s.", "string");
+GLIBC_FMT_TEST(s2, "in %s %s.", "string", "other");
+GLIBC_FMT_TEST(s3, "in %.*s.", 3, "other");
+GLIBC_FMT_TEST(s4, "in %.*s.", 5, "other");
+GLIBC_FMT_TEST(s5, "in %.*s.", 7, "other");
+
+GLIBC_FMT_TEST(c1, "in %c.", 'b');
+GLIBC_FMT_TEST(c2, "in %c.", 'B');
+
+GLIBC_FMT_TEST(d1, "in %d.", 123);
+GLIBC_FMT_TEST(d2, "in %d.", 123456);
+GLIBC_FMT_TEST(d3, "in %hd.", -12345);
+GLIBC_FMT_TEST(d4, "in %hhd.", -123);
+GLIBC_FMT_TEST(d5, "in %ld.", -123456L);
+GLIBC_FMT_TEST(d6, "in %lld.", -123456LL);
+GLIBC_FMT_TEST(i1, "in %i.", 123);
+GLIBC_FMT_TEST(i2, "in %i.", -123);
+
+GLIBC_FMT_TEST(x1, "in %x.", 123);
+GLIBC_FMT_TEST(x2, "in %x %d.", 123, 256);
+GLIBC_FMT_TEST(x3, "in %d %x.", 123, 1024);
+GLIBC_FMT_TEST(x4, "in %X %x.", 123, 13);
+GLIBC_FMT_TEST(x5, "in %X %s.", 123, "miXED case after UPPER X");
+GLIBC_FMT_TEST(x6, "in %#x.", 123);
+GLIBC_FMT_TEST(x7, "in %#X.", 123);
+GLIBC_FMT_TEST(x8, "in %#X %x.", 123, 150);
+
+GLIBC_FMT_TEST(o1, "in %o.", 123);
+GLIBC_FMT_TEST(o2, "in %o %d.", 123, 256);
+GLIBC_FMT_TEST(o3, "in %d %o.", 123, 1024);
+
+GLIBC_FMT_TEST(a1, "in %a.", 123.456789);
+GLIBC_FMT_TEST(a2, "in %a.", -123.456789);
+GLIBC_FMT_TEST(a3, "in %a.", .123456789);
+GLIBC_FMT_TEST(a4, "in %a.", -.123456789);
+GLIBC_FMT_TEST(a5, "in %A.", -.123456789);
+GLIBC_FMT_TEST(a6, "in %A.", -123.456789);
+GLIBC_FMT_TEST(a7, "in %a.", 123456789.123);
+GLIBC_FMT_TEST(a8, "in %a.", -123456789.123);
+
+GLIBC_FMT_TEST(e1, "in %e.", 123.456789);
+GLIBC_FMT_TEST(e2, "in %e.", -123.456789);
+GLIBC_FMT_TEST(e3, "in %e.", .123456789);
+GLIBC_FMT_TEST(e4, "in %e.", -.123456789);
+GLIBC_FMT_TEST(e5, "in %E.", -.123456789);
+GLIBC_FMT_TEST(e6, "in %E.", -123.456789);
+GLIBC_FMT_TEST(e7, "in %e.", 123456789.123);
+GLIBC_FMT_TEST(e8, "in %e.", -123456789.123);
+
+GLIBC_FMT_TEST(f1, "in %f.", 123.456789);
+GLIBC_FMT_TEST(f2, "in %f.", -123.456789);
+GLIBC_FMT_TEST(f3, "in %f.", .123456789);
+GLIBC_FMT_TEST(f4, "in %f.", -.123456789);
+GLIBC_FMT_TEST(f5, "in %F.", -.123456789);
+GLIBC_FMT_TEST(f6, "in %F.", -123.456789);
+GLIBC_FMT_TEST(f7, "in %f.", 123456789.123);
+GLIBC_FMT_TEST(f8, "in %f.", -123456789.123);
+
+GLIBC_FMT_TEST(g1, "in %g.", 123.456789);
+GLIBC_FMT_TEST(g2, "in %g.", -123.456789);
+GLIBC_FMT_TEST(g3, "in %g.", .123456789);
+GLIBC_FMT_TEST(g4, "in %g.", -.123456789);
+GLIBC_FMT_TEST(g5, "in %G.", -.123456789);
+GLIBC_FMT_TEST(g6, "in %G.", -123.456789);
+GLIBC_FMT_TEST(g7, "in %g.", 123456789.123);
+GLIBC_FMT_TEST(g8, "in %g.", -123456789.123);
+
+AdHocFormatter(chars_written_fmt, "%n %s %n %d %n");
+BOOST_AUTO_TEST_CASE(chars_written)
+{
+	int a = -1, b = -1, c = -1;
+	auto s = chars_written_fmt::get(&a, "some string", &b, 10, &c);
+	BOOST_CHECK_EQUAL(s, " some string  10 ");
+	BOOST_CHECK_EQUAL(a, 0);
+	BOOST_CHECK_EQUAL(b, s.length() - 4);
+	BOOST_CHECK_EQUAL(c, s.length());
+}
+
+GLIBC_FMT_TEST(p2, "in %p.", this);
+
+AdHocFormatter(smartptr_fmt, "Address is %p.");
+BOOST_AUTO_TEST_CASE(smartptr)
+{
+	auto uni = std::make_unique<int>(42);
+	smartptr_fmt::get(uni);
+	auto shrd = std::make_shared<int>(42);
+	smartptr_fmt::get(shrd);
+}
+
