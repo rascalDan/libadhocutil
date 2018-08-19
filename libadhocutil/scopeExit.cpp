@@ -17,7 +17,7 @@ ScopeExit::ScopeExit(const Event & onexitpre, const Event & onsuccess, const Eve
 ScopeExit::~ScopeExit()
 {
 	for(const auto & e : onExitPre) e();
-	if (std::uncaught_exception()) {
+	if (std::uncaught_exceptions()) {
 		for(const auto & e : onFailure) e();
 	}
 	else {

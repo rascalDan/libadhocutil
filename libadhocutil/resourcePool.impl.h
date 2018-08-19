@@ -88,7 +88,7 @@ namespace AdHoc {
 		// InUse has one, we don't count that
 		if (resource.use_count() == 2) {
 			if (auto pool = std::get<1>(*resource)) {
-				if (std::uncaught_exception()) {
+				if (std::uncaught_exceptions()) {
 					pool->discard(std::get<0>(*resource));
 				}
 				else {
