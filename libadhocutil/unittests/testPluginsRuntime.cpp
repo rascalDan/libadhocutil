@@ -9,7 +9,15 @@
 
 using namespace AdHoc;
 
-auto lib = rootDir / "bin" / buildVariant / "libutilTestClasses.so";
+boost::filesystem::path lib;
+struct GetLibPath {
+	GetLibPath()
+	{
+		BOOST_REQUIRE_EQUAL(2, boost::unit_test::framework::master_test_suite().argc);
+		lib = boost::unit_test::framework::master_test_suite().argv[1];
+	}
+};
+BOOST_TEST_GLOBAL_FIXTURE(GetLibPath);
 
 static std::optional<std::string> nullResolver(const std::type_info &, const std::string &);
 static std::optional<std::string> badResolver(const std::type_info &, const std::string &);

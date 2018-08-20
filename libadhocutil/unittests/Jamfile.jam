@@ -196,7 +196,7 @@ run
 
 run
 	testPluginsRuntime.cpp
-	: : :
+	: : utilTestClasses :
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil

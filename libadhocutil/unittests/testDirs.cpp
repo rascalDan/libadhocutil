@@ -12,7 +12,5 @@ BOOST_AUTO_TEST_CASE( iexist )
 	BOOST_REQUIRE_EQUAL("unittests", rootDir.leaf().string());
 	BOOST_REQUIRE(boost::filesystem::is_directory(binDir));
 	BOOST_REQUIRE_EQUAL("libadhocutil", rootDir.parent_path().leaf().string());
-	BOOST_REQUIRE(buildVariant.is_relative());
-	BOOST_REQUIRE_EQUAL(selfExe, rootDir / "bin" / "testDirs.test" / buildVariant / "testDirs");
 }
 
