@@ -34,7 +34,7 @@ namespace AdHoc {
 		return off;
 	}
 
-	template <const auto &, int> class Formatter;
+	template <const auto & S, decltype(strlen<S>())> class Formatter;
 
 	template<const auto & S, auto L, auto pos, typename stream, auto ...>
 	struct StreamWriter {
@@ -105,9 +105,10 @@ namespace AdHoc {
 	 * Compile time string formatter.
 	 * @param S the format string.
 	 */
-	template <const auto & S, int L = strlen<S>()>
+	template <const auto & S, decltype(strlen<S>()) L = strlen<S>()>
 	class Formatter {
 		private:
+			typedef decltype(strlen<S>()) strlen_t;
 			template<const auto &, auto, auto, typename> friend struct StreamWriterBase;
 
 		public:
@@ -153,7 +154,7 @@ namespace AdHoc {
 					}
 					return s;
 				}
-				template<auto ph, auto off = 0, auto ... Pck>
+				template<strlen_t ph, strlen_t off = 0, auto ... Pck>
 				static inline void packAndWrite(stream & s, const Pn & ... pn)
 				{
 					if constexpr (ph + off == L || sizeof...(Pck) == 32) {
