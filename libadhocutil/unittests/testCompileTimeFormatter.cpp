@@ -335,8 +335,8 @@ GLIBC_FMT_TEST(c2, "in %c.", 'B');
 
 GLIBC_FMT_TEST(d1, "in %d.", 123);
 GLIBC_FMT_TEST(d2, "in %d.", 123456);
-GLIBC_FMT_TEST(d3, "in %hd.", -12345);
-GLIBC_FMT_TEST(d4, "in %hhd.", -123);
+GLIBC_FMT_TEST(d3, "in %hd.", (int16_t)-12345);
+GLIBC_FMT_TEST(d4, "in %hhd.", (int8_t)-123);
 GLIBC_FMT_TEST(d5, "in %ld.", -123456L);
 GLIBC_FMT_TEST(d6, "in %lld.", -123456LL);
 GLIBC_FMT_TEST(i1, "in %i.", 123);
