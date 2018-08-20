@@ -36,6 +36,7 @@ class NvpParse : public yyFlexLexer {
 		template <typename T>
 		class TargetBase {
 			public:
+				virtual ~TargetBase() = default;
 				virtual AssignFunc assign(T *) const = 0;
 		};
 

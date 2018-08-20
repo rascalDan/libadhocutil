@@ -19,6 +19,7 @@ class DLL_PUBLIC Cacheable {
 	public:
 		typedef const std::shared_ptr<const T> Value;
 		Cacheable(const K & k, time_t validUntil);
+		virtual ~Cacheable() = default;
 
 		const K key;
 		const time_t validUntil;
