@@ -413,3 +413,14 @@ BOOST_AUTO_TEST_CASE(smartptr)
 	smartptr_fmt::get(shrd);
 }
 
+// This tests scprintf macro, which in turn requires compiler support
+#ifdef scprintf
+BOOST_AUTO_TEST_CASE(scprintf)
+{
+	std::stringstream str;
+	auto & strret = scprintf(str, "Some literal format string (%d, %c).", 0, 'f');
+	BOOST_CHECK_EQUAL(&str, &strret); // We got back our original stream
+	BOOST_CHECK_EQUAL(str.str(), "Some literal format string (0, f).");
+}
+#endif
+
