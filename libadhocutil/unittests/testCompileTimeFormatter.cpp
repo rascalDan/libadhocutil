@@ -329,11 +329,18 @@ GLIBC_FMT_TEST(s2, "in %s %s.", "string", "other");
 GLIBC_FMT_TEST(s3, "in %.*s.", 3, "other");
 GLIBC_FMT_TEST(s4, "in %.*s.", 5, "other");
 GLIBC_FMT_TEST(s5, "in %.*s.", 7, "other");
+GLIBC_FMT_TEST(s35, "in %3s.", "other");
+GLIBC_FMT_TEST(s55, "in %5s.", "other");
+GLIBC_FMT_TEST(s115, "in %11s.", "other");
 
 GLIBC_FMT_TEST(c1, "in %c.", 'b');
 GLIBC_FMT_TEST(c2, "in %c.", 'B');
 
 GLIBC_FMT_TEST(d1, "in %d.", 123);
+GLIBC_FMT_TEST(d01, "in %0d.", 123);
+GLIBC_FMT_TEST(d051, "in %05d.", 123);
+GLIBC_FMT_TEST(d0511, "in % 50d.", 123);
+GLIBC_FMT_TEST(d05121, "in %0510d.", 123);
 GLIBC_FMT_TEST(d2, "in %d.", 123456);
 GLIBC_FMT_TEST(d3, "in %hd.", (int16_t)-12345);
 GLIBC_FMT_TEST(d4, "in %hhd.", (int8_t)-123);

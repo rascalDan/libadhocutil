@@ -4,6 +4,7 @@
 #include "../compileTimeFormatter.h"
 #include <boost/assert.hpp>
 #include <iomanip>
+#include <type_traits>
 
 namespace AdHoc {
 #define BASICCONV(PARAMTYPE, OP, ...) \
@@ -92,6 +93,42 @@ namespace AdHoc {
 			StreamWriter::next(s, pn...);
 		}
 	};
+
+	////
+	// Width/precision embedded in format string
+	// Limitted to 3 digits at the moment
+	template<const auto & S, auto L, auto pos, typename stream, auto n0, auto nn, auto ... sn>
+	struct StreamWriter<S, L, pos, stream, typename std::enable_if<ispositivedigit(n0) && !isdigit(nn)>::type, '%', n0, nn, sn...> {
+		template<typename ... Pn>
+		static inline void write(stream & s, const Pn & ... pn)
+		{
+			constexpr auto p = (n0 - '0');
+			s << std::setw(p) << std::setprecision(p);
+			StreamWriter<S, L, pos + 1, stream, void, '%', nn, sn...>::write(s, pn...);
+		}
+	};
+	template<const auto & S, auto L, auto pos, typename stream, auto n0, auto n1, auto nn, auto ... sn>
+	struct StreamWriter<S, L, pos, stream, typename std::enable_if<ispositivedigit(n0) && isdigit(n1) && !isdigit(nn)>::type, '%', n0, n1, nn, sn...> {
+		template<typename ... Pn>
+		static inline void write(stream & s, const Pn & ... pn)
+		{
+			constexpr auto p = ((n0 - '0') * 10) + (n1 - '0');
+			s << std::setw(p) << std::setprecision(p);
+			StreamWriter<S, L, pos + 2, stream, void, '%', nn, sn...>::write(s, pn...);
+		}
+	};
+	template<const auto & S, auto L, auto pos, typename stream, auto n0, auto n1, auto n2, auto nn, auto ... sn>
+	struct StreamWriter<S, L, pos, stream, typename std::enable_if<ispositivedigit(n0) && isdigit(n1) && isdigit(n2) && !isdigit(nn)>::type, '%', n0, n1, n2, nn, sn...> {
+		template<typename ... Pn>
+		static inline void write(stream & s, const Pn & ... pn)
+		{
+			constexpr auto p = ((n0 - '0') * 100) + ((n1 - '0') * 10) + (n2 - '0');
+			s << std::setw(p) << std::setprecision(p);
+			StreamWriter<S, L, pos + 3, stream, void, '%', nn, sn...>::write(s, pn...);
+		}
+	};
+	////
+
 	StreamWriterT('.', '*') {
 		template<typename ... Pn>
 		static inline void write(stream & s, int l, const Pn & ... pn)
