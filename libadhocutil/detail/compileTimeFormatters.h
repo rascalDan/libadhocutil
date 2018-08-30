@@ -102,7 +102,7 @@ namespace AdHoc {
 	};
 	StreamWriterT('.', '*', 's') {
 		template<typename ... Pn>
-		static inline void write(stream & s, int l, const std::string & p, const Pn & ... pn)
+		static inline void write(stream & s, int l, const std::string_view & p, const Pn & ... pn)
 		{
 			s << p.substr(0, l);
 			StreamWriter::next(s, pn...);
