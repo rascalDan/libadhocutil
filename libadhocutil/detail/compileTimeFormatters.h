@@ -97,7 +97,7 @@ namespace AdHoc {
 		static inline void write(stream & s, int l, const Pn & ... pn)
 		{
 			s << std::setw(l) << std::setprecision(l);
-			StreamWriter<S, L, pos + 2, stream, '%', sn...>::write(s, pn...);
+			StreamWriter<S, L, pos + 2, stream, void, '%', sn...>::write(s, pn...);
 		}
 	};
 	StreamWriterT('.', '*', 's') {
@@ -114,7 +114,7 @@ namespace AdHoc {
 	StreamWriterT(__VA_ARGS__) { \
 		template<typename ... Pn> static inline void write(stream & s, const Pn & ... pn) { \
 			OP; \
-			StreamWriter<S, L, pos + 1, stream, '%', sn...>::write(s, pn...); \
+			StreamWriter<S, L, pos + 1, stream, void, '%', sn...>::write(s, pn...); \
 		} \
 	};
 	FLAGCONV(s << std::showbase, '#');

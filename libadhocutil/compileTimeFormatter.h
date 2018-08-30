@@ -36,7 +36,7 @@ namespace AdHoc {
 
 	template <const auto & S, decltype(strlen<S>())> class Formatter;
 
-	template<const auto & S, auto L, auto pos, typename stream, auto ...>
+	template<const auto & S, auto L, auto pos, typename stream, typename, auto ...>
 	struct StreamWriter {
 		template<typename ... Pn>
 		static void write(stream &, const Pn & ...)
@@ -56,12 +56,12 @@ namespace AdHoc {
 
 #define StreamWriterT(C...) \
 	template<const auto & S, auto L, auto pos, typename stream, auto ... sn> \
-	struct StreamWriter<S, L, pos, stream, '%', C, sn...> : \
+	struct StreamWriter<S, L, pos, stream, void, '%', C, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
 
 #define StreamWriterTP(P, C...) \
 	template<const auto & S, auto L, auto pos, typename stream, auto P, auto ... sn> \
-	struct StreamWriter<S, L, pos, stream, '%', C, sn...> : \
+	struct StreamWriter<S, L, pos, stream, void, '%', C, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
 
 	// Default stream writer formatter
@@ -153,7 +153,7 @@ namespace AdHoc {
 				static inline void packAndWrite(stream & s, const Pn & ... pn)
 				{
 					if constexpr (ph + off == L || sizeof...(Pck) == 32) {
-						StreamWriter<S, L, ph, stream, Pck...>::write(s, pn...);
+						StreamWriter<S, L, ph, stream, void, Pck...>::write(s, pn...);
 					}
 					else if constexpr (ph + off < L) {
 						packAndWrite<ph, off + 1, Pck..., S[ph + off]>(s, pn...);
