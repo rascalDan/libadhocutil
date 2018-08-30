@@ -38,6 +38,11 @@ namespace AdHoc {
 
 	template<const auto & S, auto L, auto pos, typename stream, auto ...>
 	struct StreamWriter {
+		template<typename ... Pn>
+		static void write(stream &, const Pn & ...)
+		{
+			static_assert(!L, "invalid format string/arguments");
+		}
 	};
 
 	template<const auto & S, auto L, auto pos, typename stream>
@@ -76,16 +81,6 @@ namespace AdHoc {
 		{
 			s << '%';
 			StreamWriter::next(s, pn...);
-		}
-	};
-
-	// Unknown stream writer formatter
-	template<const auto & S, auto L, auto pos, typename stream, auto ... sn>
-	struct StreamWriter<S, L, pos, stream, '%', sn...> {
-		template<typename ... Pn>
-		static void write(stream & s, const Pn & ...)
-		{
-			static_assert(!&s, "invalid format string/arguments");
 		}
 	};
 
