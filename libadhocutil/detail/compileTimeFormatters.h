@@ -118,9 +118,9 @@ namespace AdHoc {
 		} \
 	};
 	FLAGCONV(s << std::showbase, '#');
-	FLAGCONV(s.setfill('0'), '0');
+	FLAGCONV(s << std::setfill('0'), '0');
 	FLAGCONV(s << std::left, '-');
-	FLAGCONV(s.setfill(' '), ' ');
+	FLAGCONV(s << std::setfill(' '), ' ');
 #undef FLAGCONV
 }
 
