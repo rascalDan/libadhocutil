@@ -7,6 +7,19 @@
 #include "unique.h"
 
 namespace AdHoc {
+	// Template char utils
+	template<typename char_type>
+	constexpr bool isdigit(const char_type & ch)
+	{
+		return (ch >= '0' && ch <= '9');
+	}
+
+	template<typename char_type>
+	constexpr bool ispositivedigit(const char_type & ch)
+	{
+		return (ch >= '1' && ch <= '9');
+	}
+
 	// Template string utils
 	template<const auto & S>
 	static constexpr auto strlen()
