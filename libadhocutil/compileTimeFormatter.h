@@ -176,8 +176,6 @@ namespace AdHoc {
 	};
 }
 
-#include "detail/compileTimeFormatters.h"
-
 #define AdHocFormatterTypedef(name, str, id) \
 	inline constexpr auto id = str; \
 	typedef ::AdHoc::Formatter<id> name

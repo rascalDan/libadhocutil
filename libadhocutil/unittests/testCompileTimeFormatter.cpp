@@ -308,6 +308,25 @@ BOOST_AUTO_TEST_CASE( filestar )
 	free(buf);
 }
 
+#include "ctf-impl/printf-compat.h"
+
+static_assert(isdigit('0'));
+static_assert(isdigit('9'));
+static_assert(!isdigit('.'));
+static_assert(!isdigit('a'));
+
+static_assert(!ispositivedigit('0'));
+static_assert(ispositivedigit('1'));
+static_assert(ispositivedigit('9'));
+static_assert(!ispositivedigit('.'));
+static_assert(!ispositivedigit('a'));
+
+static_assert(0 == decdigits<'0'>());
+static_assert(1 == decdigits<'1'>());
+static_assert(19 == decdigits<'1', '9'>());
+static_assert(419 == decdigits<'4', '1', '9'>());
+static_assert(419 == decdigits<'0', '4', '1', '9'>());
+
 // The following tests represent CTF's [partial] emulation of many
 // POSIX formatting features
 #define GLIBC_FMT_TEST(NAME, FMT, ...) \
@@ -332,6 +351,10 @@ GLIBC_FMT_TEST(s5, "in %.*s.", 7, "other");
 GLIBC_FMT_TEST(s35, "in %3s.", "other");
 GLIBC_FMT_TEST(s55, "in %5s.", "other");
 GLIBC_FMT_TEST(s115, "in %11s.", "other");
+//std::setw does not truncate strings
+//GLIBC_FMT_TEST(sd35, "in %.3s.", "other");
+GLIBC_FMT_TEST(sd55, "in %.5s.", "other");
+GLIBC_FMT_TEST(sd115, "in %.11s.", "other");
 
 GLIBC_FMT_TEST(c1, "in %c.", 'b');
 GLIBC_FMT_TEST(c2, "in %c.", 'B');
@@ -397,6 +420,9 @@ GLIBC_FMT_TEST(g5, "in %G.", -.123456789);
 GLIBC_FMT_TEST(g6, "in %G.", -123.456789);
 GLIBC_FMT_TEST(g7, "in %g.", 123456789.123);
 GLIBC_FMT_TEST(g8, "in %g.", -123456789.123);
+
+GLIBC_FMT_TEST(fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n",
+		1.234, 42, 3.13, "str", (void*)1000, (int)'X');
 
 AdHocFormatter(chars_written_fmt, "%n %s %n %d %n");
 BOOST_AUTO_TEST_CASE(chars_written)
