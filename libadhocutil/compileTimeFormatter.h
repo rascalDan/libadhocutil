@@ -49,8 +49,10 @@ namespace AdHoc {
 
 	template <const auto & S, decltype(strlen<S>())> class Formatter;
 
+	/// Template used to apply parameters to a stream.
 	template<const auto & S, auto L, auto pos, typename stream, typename, auto ...>
 	struct StreamWriter {
+		/// Write parameters to stream.
 		template<typename ... Pn>
 		static void write(stream &, const Pn & ...)
 		{
@@ -58,8 +60,10 @@ namespace AdHoc {
 		}
 	};
 
+	/// Helper to simplify implementations of StreamWriter.
 	template<const auto & S, auto L, auto pos, typename stream>
 	struct StreamWriterBase {
+		/// Continue processing parameters.
 		template<typename ... Pn>
 		static inline void next(stream & s, const Pn & ... pn)
 		{
@@ -120,6 +124,7 @@ namespace AdHoc {
 			template<const auto &, auto, auto, typename> friend struct StreamWriterBase;
 
 		public:
+			/// The derived charater type of the format string.
 			typedef typename std::decay<decltype(*S)>::type char_type;
 			/**
 			 * Get a string containing the result of formatting.
