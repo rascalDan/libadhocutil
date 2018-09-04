@@ -450,10 +450,10 @@ BOOST_AUTO_TEST_CASE(smartptr)
 #ifdef scprintf
 BOOST_AUTO_TEST_CASE(scprintf)
 {
-	std::stringstream str;
-	auto & strret = scprintf(str, "Some literal format string (%d, %c).", 0, 'f');
-	BOOST_CHECK_EQUAL(&str, &strret); // We got back our original stream
-	BOOST_CHECK_EQUAL(str.str(), "Some literal format string (0, f).");
+	auto str = std::make_unique<std::stringstream>();
+	auto & strret = scprintf(*str, "Some literal format string (%d, %c).", 0, 'f');
+	BOOST_CHECK_EQUAL(str.get(), &strret); // We got back our original stream
+	BOOST_CHECK_EQUAL(str->str(), "Some literal format string (0, f).");
 }
 #endif
 

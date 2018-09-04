@@ -190,11 +190,11 @@ namespace AdHoc {
 // As far as I know, only clang/llvm version 5+ can compile this
 // so long as std=c++17
 #if __clang_major__ >= 5 && __cplusplus >= 201703
-#define scprintf(strm, fmt, ...) \
-	([&strm]() -> decltype(strm) & { \
-		static constexpr const char * const __FMT = fmt; \
+#define scprintf(strmp, fmt, ...) \
+	([](decltype(strmp) & strm) -> auto & { \
+		static constexpr auto __FMT = fmt; \
 		return ::AdHoc::Formatter<__FMT>::write(strm, __VA_ARGS__); \
-	}())
+	}(strmp))
 #endif
 
 #endif
