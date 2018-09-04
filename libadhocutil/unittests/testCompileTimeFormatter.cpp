@@ -454,6 +454,7 @@ BOOST_AUTO_TEST_CASE(scprintf)
 	auto & strret = scprintf(*str, "Some literal format string (%d, %c).", 0, 'f');
 	BOOST_CHECK_EQUAL(str.get(), &strret); // We got back our original stream
 	BOOST_CHECK_EQUAL(str->str(), "Some literal format string (0, f).");
+	scprintf(*str, "Some literal format string, no args.");
 }
 #endif
 

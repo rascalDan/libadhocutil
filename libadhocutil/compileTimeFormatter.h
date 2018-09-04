@@ -193,7 +193,7 @@ namespace AdHoc {
 #define scprintf(strmp, fmt, ...) \
 	([](decltype(strmp) & strm) -> auto & { \
 		static constexpr auto __FMT = fmt; \
-		return ::AdHoc::Formatter<__FMT>::write(strm, __VA_ARGS__); \
+		return ::AdHoc::Formatter<__FMT>::write(strm, ##__VA_ARGS__); \
 	}(strmp))
 #endif
 
