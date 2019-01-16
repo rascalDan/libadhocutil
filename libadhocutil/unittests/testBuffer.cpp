@@ -9,8 +9,7 @@ BOOST_AUTO_TEST_CASE ( create )
 {
 	Buffer empty;
 	Buffer copy("const", Buffer::Copy);
-	auto nonconst = (char*)malloc(9);
-	strcpy(nonconst, "nonconst");
+	auto nonconst = strdup("nonconst");
 	Buffer use(nonconst, Buffer::Use);
 	Buffer fre(nonconst, Buffer::Free);
 

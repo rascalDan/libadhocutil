@@ -223,7 +223,6 @@ Buffer::writeto(char * buf, size_t bufSize, size_t off) const
 			*buf++ = (**f)[c++];
 		}
 		++f;
-		off = 0;
 	}
 	*buf = '\0';
 }

@@ -10,9 +10,9 @@ namespace AdHoc {
 					info(nullptr)
 				{
 					if (!regex) {
-						std::runtime_error e(std::string("Failed to create GRegex: ") + err->message);
+						auto msg = std::string("Failed to create GRegex: ") + err->message;
 						g_error_free(err);
-						throw e;
+						throw std::runtime_error(msg);
 					}
 				}
 
@@ -34,9 +34,9 @@ namespace AdHoc {
 					}
 					g_regex_match_full(regex, string, length, position, G_REGEX_MATCH_ANCHORED, &info, &err);
 					if (err) {
-						std::runtime_error e(std::string("Failed to execute regex: ") + err->message);
+						auto msg = std::string("Failed to create GRegex: ") + err->message;
 						g_error_free(err);
-						throw e;
+						throw std::runtime_error(msg);
 					}
 					str = string;
 					return g_match_info_matches(info);

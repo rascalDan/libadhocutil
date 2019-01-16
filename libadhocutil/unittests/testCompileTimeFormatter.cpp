@@ -55,6 +55,7 @@ namespace AdHoc {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
+			// NOLINTNEXTLINE(bugprone-string-constructor)
 			std::string d(dashes, '-');
 			s << d << "( " << p << " )" << d;
 			StreamWriter::next(s, pn...);
@@ -301,6 +302,7 @@ BOOST_AUTO_TEST_CASE( filestar )
 	size_t len = 0;
 	FILE * strm = open_memstream(&buf, &len);
 	BOOST_REQUIRE(strm);
+	// NOLINTNEXTLINE(misc-non-copyable-objects)
 	Formatter<formatStringMulti>::write(*strm, "file", "star");
 	fclose(strm);
 	BOOST_CHECK_EQUAL(len, 22);

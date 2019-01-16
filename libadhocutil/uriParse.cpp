@@ -168,7 +168,6 @@ namespace AdHoc {
 			}
 			len = tmpstr - curstr;
 			puri->fragment = std::string(curstr, len);
-			curstr = tmpstr;
 		}
 	}
 

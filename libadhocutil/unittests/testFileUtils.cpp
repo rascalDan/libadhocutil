@@ -44,15 +44,15 @@ T moveTest(P ... p)
 	return fh;
 }
 
-class X {
+class Base {
 	public:
-		X(AdHoc::FileUtils::FileHandle h) : fh(std::move(h)) { }
+		Base(AdHoc::FileUtils::FileHandle h) : fh(std::move(h)) { }
 		AdHoc::FileUtils::FileHandle fh;
 };
 
-class Y : public X {
+class Sub : public Base {
 	public:
-		Y(AdHoc::FileUtils::FileHandle h) : X(std::move(h)) { }
+		Sub(AdHoc::FileUtils::FileHandle h) : Base(std::move(h)) { }
 };
 
 BOOST_AUTO_TEST_CASE( movePassThrough )
@@ -60,9 +60,10 @@ BOOST_AUTO_TEST_CASE( movePassThrough )
 	auto f = openfh<AdHoc::FileUtils::FileHandle>();
 	int ffd = f.fh;
 	REQUIRE_VALID_FH(f.fh);
-	auto y = std::make_unique<Y>(std::move(f));
+	auto y = std::make_unique<Sub>(std::move(f));
 	BOOST_REQUIRE_EQUAL(y->fh, ffd);
 	REQUIRE_VALID_FH(y->fh);
+	// NOLINTNEXTLINE(bugprone-use-after-move)
 	BOOST_REQUIRE_EQUAL(f.fh, -1);
 	REQUIRE_INVALID_FH(f.fh);
 	y.reset();

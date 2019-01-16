@@ -151,6 +151,7 @@ BOOST_AUTO_TEST_CASE( discard )
 	TRP pool;
 	try {
 		auto r1 = pool.get();
+		BOOST_REQUIRE(r1);
 		BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 		BOOST_REQUIRE_EQUAL(1, pool.inUseCount());
 		throw std::exception();

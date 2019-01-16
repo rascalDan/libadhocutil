@@ -112,12 +112,11 @@ void
 CurlHandle::checkCurlCode(CURLcode res) const
 {
 	if (res != CURLE_OK) {
-		AdHoc::Net::CurlException ce(res, curl_easy_strerror(res), IceUtil::Optional<Ice::Short>());
 		long http_code = 0;
 		if (curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &http_code) == CURLE_OK) {
-			ce.httpcode = http_code;
+			throw AdHoc::Net::CurlException(res, curl_easy_strerror(res), http_code);
 		}
-		throw ce;
+		throw AdHoc::Net::CurlException(res, curl_easy_strerror(res), IceUtil::None);
 	}
 }
 

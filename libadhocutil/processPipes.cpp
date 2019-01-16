@@ -28,6 +28,9 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 	out(-1),
 	error(-1)
 {
+	if (args.empty()) {
+		throw std::invalid_argument("args is empty");
+	}
 	int ipipes[2], opipes[2], epipes[2];
 	ScopeExit tidyUp;
 	if (i) {
@@ -76,7 +79,9 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 				*w++ = strdup(p.c_str());
 			}
 			*w = NULL;
-			execv(buf[0], buf);
+			if (*buf) {
+				execv(buf[0], buf);
+			}
 			abort();
 			break;
 	}
