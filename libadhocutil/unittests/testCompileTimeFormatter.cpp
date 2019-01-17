@@ -229,7 +229,7 @@ BOOST_AUTO_TEST_CASE ( customParam2 )
 	BOOST_CHECK_EQUAL(this->str(), "custom ---------( some text here )---------");
 }
 
-typedef Formatter<formatStringCustom> TestFormat;
+using TestFormat = Formatter<formatStringCustom>;
 BOOST_AUTO_TEST_CASE ( typedefFormat )
 {
 	TestFormat::write(*this, "expr");
@@ -273,7 +273,7 @@ constexpr
 #include <lorem-ipsum.h>
 BOOST_AUTO_TEST_CASE( lorem_ipsum )
 {
-	typedef Formatter<lorem_ipsum_txt, sizeof(lorem_ipsum_txt)> LIF;
+	using LIF = Formatter<lorem_ipsum_txt, sizeof(lorem_ipsum_txt)>;
 	auto s = LIF::get();
 	BOOST_CHECK_EQUAL(s.length(), lorem_ipsum_txt_len);
 	AdHoc::FileUtils::MemMap li(rootDir / "lorem-ipsum.txt");
@@ -298,7 +298,7 @@ operator<<(FILE & strm, const char * const p)
 
 BOOST_AUTO_TEST_CASE( filestar )
 {
-	char * buf = NULL;
+	char * buf = nullptr;
 	size_t len = 0;
 	FILE * strm = open_memstream(&buf, &len);
 	BOOST_REQUIRE(strm);

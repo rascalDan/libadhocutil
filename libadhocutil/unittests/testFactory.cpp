@@ -26,7 +26,7 @@ class BaseThing {
 class ImplOfThing : public BaseThing {
 	public:
 		ImplOfThing(int i, std::string * s) : BaseThing(i, s) {}
-		void execute() const
+		void execute() const override
 		{
 			*name = typeid(this).name();
 		}
@@ -34,13 +34,13 @@ class ImplOfThing : public BaseThing {
 class OtherImplOfThing : public BaseThing {
 	public:
 		OtherImplOfThing(int i, std::string * s) : BaseThing(i, s) {}
-		void execute() const
+		void execute() const override
 		{
 			*name = typeid(this).name();
 		}
 };
 
-typedef AdHoc::Factory<BaseThing, int, std::string *> BaseThingFactory;
+using BaseThingFactory = AdHoc::Factory<BaseThing, int, std::string *>;
 
 NAMEDFACTORY("a", ImplOfThing, BaseThingFactory);
 FACTORY(OtherImplOfThing, BaseThingFactory);

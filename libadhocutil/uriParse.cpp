@@ -1,6 +1,7 @@
 #include "uriParse.h"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
+#include <utility>
 #include "compileTimeFormatter.h"
 
 namespace AdHoc {
@@ -171,17 +172,17 @@ namespace AdHoc {
 		}
 	}
 
-	InvalidUri::InvalidUri(const std::string & e, const std::string & u) :
+	InvalidUri::InvalidUri(std::string  e, std::string  u) :
 		Exception<std::invalid_argument>(std::string()),
-		err(e),
-		uri(u)
+		err(std::move(e)),
+		uri(std::move(u))
 	{
 	}
 
 	AdHocFormatter(InvalidUriMsg, "InvalidUri (%?) parsing [%?]");
 
 	std::string
-	InvalidUri::message() const throw()
+	InvalidUri::message() const noexcept
 	{
 		return InvalidUriMsg::get(err, uri);
 	}

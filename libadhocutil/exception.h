@@ -16,7 +16,7 @@ namespace AdHoc {
 			Exception(const T & ... t) : BaseException(t...) { }
 
 			/// Override of std::exception::what() to create text as required.
-			inline const char * what() const throw() override
+			inline const char * what() const noexcept override
 			{
 				if (!msg) {
 					msg = message();
@@ -26,10 +26,10 @@ namespace AdHoc {
 
 		private:
 			/// Message text provider.
-			virtual std::string message() const throw() = 0;
+			virtual std::string message() const noexcept = 0;
 			mutable std::optional<std::string> msg;
 	};
-	typedef Exception<std::exception> StdException;
+	using StdException = Exception<std::exception>;
 }
 
 #endif

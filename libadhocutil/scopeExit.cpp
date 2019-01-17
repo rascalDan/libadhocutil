@@ -2,9 +2,7 @@
 
 namespace AdHoc {
 
-ScopeExit::ScopeExit()
-{
-}
+ScopeExit::ScopeExit() = default;
 
 ScopeExit::ScopeExit(const Event & onexitpre, const Event & onsuccess, const Event & onfailure, const Event & onexitpost)
 {

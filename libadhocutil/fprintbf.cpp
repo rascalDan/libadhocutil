@@ -1,5 +1,5 @@
 #include "fprintbf.h"
-#include <stdio.h>
+#include <cstdio>
 #include <system_error>
 
 size_t

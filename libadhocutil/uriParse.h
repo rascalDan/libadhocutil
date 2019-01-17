@@ -42,9 +42,9 @@ namespace AdHoc {
 	class DLL_PUBLIC InvalidUri : public Exception<std::invalid_argument> {
 		public:
 			/// Constructor accepting what went wrong and the URI being parsed.
-			InvalidUri(const std::string & err, const std::string & uri);
+			InvalidUri(std::string  err, std::string  uri);
 
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 
 			/// The parse error.
 			const std::string err;

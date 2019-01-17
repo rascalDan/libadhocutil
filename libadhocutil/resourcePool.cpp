@@ -9,7 +9,7 @@ namespace AdHoc {
 
 	AdHocFormatter(TimeOutOnResourcePoolMsg, "Timeout getting a resource from pool of %?");
 	std::string
-	TimeOutOnResourcePool::message() const throw()
+	TimeOutOnResourcePool::message() const noexcept
 	{
 		return TimeOutOnResourcePoolMsg::get(name);
 	}
@@ -22,7 +22,7 @@ namespace AdHoc {
 
 	AdHocFormatter(NoCurrentResourceMsg, "Thread %? has no current resource handle of type %?");
 	std::string
-	NoCurrentResource::message() const throw()
+	NoCurrentResource::message() const noexcept
 	{
 		return NoCurrentResourceMsg::get(threadId, name);
 	}

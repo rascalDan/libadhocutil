@@ -78,7 +78,7 @@ namespace AdHoc {
 			/// Default constructor (empty rule set)
 			Lexer();
 			/// Construct with an initial set of rules.
-			Lexer(const Rules &);
+			Lexer(const Rules);
 			/// The lexer's current rule set.
 			Rules rules;
 

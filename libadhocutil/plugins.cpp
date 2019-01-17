@@ -1,5 +1,5 @@
 #include "plugins.h"
-#include <string.h>
+#include <cstring>
 #include <dlfcn.h>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
@@ -20,7 +20,7 @@ namespace std {
 	std::ostream &
 	operator<<(std::ostream & s, const std::type_info & t)
 	{
-		char * buf = __cxxabiv1::__cxa_demangle(t.name(), NULL, NULL, NULL);
+		char * buf = __cxxabiv1::__cxa_demangle(t.name(), nullptr, nullptr, nullptr);
 		s << buf;
 		free(buf);
 		return s;

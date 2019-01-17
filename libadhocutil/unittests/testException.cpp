@@ -11,7 +11,7 @@ class Ex1 : public AdHoc::StdException {
 		Ex1(const char * f, int l) : file(f), line(l) { }
 
 	private:
-		std::string message() const throw() override
+		std::string message() const noexcept override
 		{
 			return stringf("Something something at %s:%d", file, line);
 		}
@@ -27,7 +27,7 @@ class Ex2 : public AdHoc::Exception<OtherBaseException> {
 		Ex2(const char * f, int l) : file(f), line(l) { }
 
 	private:
-		std::string message() const throw() override
+		std::string message() const noexcept override
 		{
 			return stringf("Something other something at %s:%d", file, line);
 		}
@@ -39,7 +39,7 @@ class Ex2 : public AdHoc::Exception<OtherBaseException> {
 class Ex3 : public AdHoc::StdException {
 	private:
 		// LCOV_EXCL_START
-		std::string message() const throw() override
+		std::string message() const noexcept override
 		{
 			// Never called
 			std::abort();

@@ -15,7 +15,7 @@ static void cleanup()
 CurlHandle::CurlHandle(const std::string & url) :
 	curl_handle(curl_easy_init()),
 	curl_headers(nullptr),
-	postS(NULL), postE(NULL)
+	postS(nullptr), postE(nullptr)
 {
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);

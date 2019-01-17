@@ -295,7 +295,6 @@ BOOST_AUTO_TEST_CASE( threading2 )
 
 class TTRP : public TRP {
 	public:
-		TTRP() : n(0) { }
 		void testResource(MockResource const *) const override
 		{
 			n += 1;
@@ -304,7 +303,7 @@ class TTRP : public TRP {
 			}
 		}
 	private:
-		mutable int n;
+		mutable int n{0};
 };
 
 BOOST_AUTO_TEST_CASE( test )

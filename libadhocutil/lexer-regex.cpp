@@ -16,7 +16,7 @@ namespace AdHoc {
 					}
 				}
 
-				~Regex()
+				~Regex() override
 				{
 					if (err) {
 						g_error_free(err);

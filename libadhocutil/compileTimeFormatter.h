@@ -2,7 +2,7 @@
 #define ADHOCUTIL_COMPILE_TIME_FORMATTER_H
 
 #include <sstream>
-#include <string.h>
+#include <cstring>
 #include <boost/preprocessor/variadic/size.hpp>
 #include "unique.h"
 
@@ -120,12 +120,12 @@ namespace AdHoc {
 	template <const auto & S, decltype(strlen<S>()) L = strlen<S>()>
 	class Formatter {
 		private:
-			typedef decltype(strlen<S>()) strlen_t;
+			using strlen_t = decltype(strlen<S>());
 			template<const auto &, auto, auto, typename> friend struct StreamWriterBase;
 
 		public:
 			/// The derived charater type of the format string.
-			typedef typename std::decay<decltype(*S)>::type char_type;
+			using char_type = typename std::decay<decltype(*S)>::type;
 			/**
 			 * Get a string containing the result of formatting.
 			 * @param pn the format arguments.

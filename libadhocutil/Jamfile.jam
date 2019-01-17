@@ -8,8 +8,7 @@ lib curl ;
 lib dl ;
 
 lib adhocutil :
-	[ glob *.cpp *.ice : bin ]
-	[ obj nvpParse : nvpParse.ll : <include>.  <toolset>tidy:<checker>none ]
+	[ glob *.cpp *.ice *.ll : bin ]
 	:
 	<include>.
 	<library>Ice++11

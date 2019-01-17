@@ -1,7 +1,7 @@
 #include "processPipes.h"
 #include <unistd.h>
 #include <poll.h>
-#include <string.h>
+#include <cstring>
 #include <sys/resource.h>
 #include <stdexcept>
 #include <sys.h>
@@ -17,7 +17,7 @@ pipe(int pipes[2], ScopeExit & tidyUp)
 	if (::pipe(pipes)) {
 		throw SystemException("pipe(2) failed", strerror(errno), errno);
 	}
-	tidyUp.onFailure.push_back([pipes] {
+	tidyUp.onFailure.emplace_back([pipes] {
 			close(pipes[0]);
 			close(pipes[1]);
 		});
@@ -78,7 +78,7 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 			for (const auto & p : args) {
 				*w++ = strdup(p.c_str());
 			}
-			*w = NULL;
+			*w = nullptr;
 			if (*buf) {
 				execv(buf[0], buf);
 			}

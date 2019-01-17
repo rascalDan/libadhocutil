@@ -14,8 +14,8 @@ class Test {
 		const int val;
 };
 
-typedef LazyPointer<Test> TestLazyPointer;
-typedef LazyPointer<int, int *> RawLazyPointer;
+using TestLazyPointer = LazyPointer<Test>;
+using RawLazyPointer = LazyPointer<int, int *>;
 
 static
 TestLazyPointer::pointer_type

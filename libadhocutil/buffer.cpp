@@ -1,6 +1,6 @@
 #include "buffer.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 
 namespace AdHoc {
 
@@ -73,8 +73,8 @@ Buffer::CStringFragment::str() const
 // Std::String Fragment
 //
 
-Buffer::StringFragment::StringFragment(const std::string & str) :
-	buf(str)
+Buffer::StringFragment::StringFragment(const std::string str) :
+	buf(std::move(str))
 {
 }
 
@@ -106,9 +106,7 @@ Buffer::StringFragment::operator[](size_t x) const
 // Buffer :)
 //
 
-Buffer::Buffer()
-{
-}
+Buffer::Buffer() = default;
 
 Buffer::Buffer(const char * src, CStringHandling h)
 {
@@ -125,9 +123,7 @@ Buffer::Buffer(const std::string & str)
 	append(str);
 }
 
-Buffer::~Buffer()
-{
-}
+Buffer::~Buffer() = default;
 
 Buffer &
 Buffer::append(const char * str, CStringHandling h)
@@ -213,7 +209,7 @@ Buffer::getFormat(const std::string & msgfmt)
 void
 Buffer::writeto(char * buf, size_t bufSize, size_t off) const
 {
-	Content::const_iterator f = content.begin();
+	auto f = content.begin();
 	while (f != content.end() && (*f)->length() < off) {
 		off -= (*f)->length();
 		++f;
@@ -291,11 +287,7 @@ Buffer::operator=(const std::string & str)
 }
 
 Buffer &
-Buffer::operator=(const Buffer & buf)
-{
-	content = buf.content;
-	return *this;
-}
+Buffer::operator=(const Buffer & buf) = default;
 
 Buffer::operator bool() const
 {

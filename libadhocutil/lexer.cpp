@@ -4,11 +4,9 @@
 namespace AdHoc {
 	const Lexer::State Lexer::InitialState = "";
 
-	Lexer::Lexer()
-	{
-	}
+	Lexer::Lexer() = default;
 
-	Lexer::Lexer(const Rules & r) : rules(r)
+	Lexer::Lexer(const Rules r) : rules(std::move(r))
 	{
 	}
 
