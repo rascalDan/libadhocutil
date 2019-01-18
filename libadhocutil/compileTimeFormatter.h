@@ -137,6 +137,11 @@ namespace AdHoc {
 				std::basic_stringstream<char_type> s;
 				return write(s, pn...).str();
 			}
+			template<typename ... Pn>
+			inline auto operator()(const Pn & ... pn) const
+			{
+				return get(pn...);
+			}
 
 			/**
 			 * Write the result of formatting to the given stream.
@@ -148,6 +153,11 @@ namespace AdHoc {
 			static inline stream & write(stream & s, const Pn & ... pn)
 			{
 				return Parser<stream, 0, Pn...>::run(s, pn...);
+			}
+			template<typename stream, typename ... Pn>
+			inline stream & operator()(stream & s, const Pn & ... pn) const
+			{
+				return write(s, pn...);
 			}
 
 		private:
@@ -179,23 +189,31 @@ namespace AdHoc {
 				}
 			};
 	};
+
+	namespace literals {
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-string-literal-operator-template"
+#endif
+		template<typename T, T ... t> struct FMT
+		{
+			static constexpr char __FMT[] = {t...};
+		};
+		template<typename T, T ... t> inline auto operator""_fmt() noexcept
+		{
+			return AdHoc::Formatter<FMT<T, t...>::__FMT, sizeof...(t)>();
+		}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+	}
 }
 
 #define AdHocFormatterTypedef(name, str, id) \
-	inline constexpr auto id = str; \
-	typedef ::AdHoc::Formatter<id> name
+    inline constexpr auto id = str; \
+    typedef ::AdHoc::Formatter<id> name
 #define AdHocFormatter(name, str) \
-	AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
-
-// As far as I know, only clang/llvm version 5+ can compile this
-// so long as std=c++17
-#if __clang_major__ >= 5 && __cplusplus >= 201703
-#define scprintf(strmp, fmt, ...) \
-	([](decltype(strmp) & strm) -> auto & { \
-		static constexpr auto __FMT = fmt; \
-		return ::AdHoc::Formatter<__FMT>::write(strm, ##__VA_ARGS__); \
-	}(strmp))
-#endif
+    AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
 
 #endif
 

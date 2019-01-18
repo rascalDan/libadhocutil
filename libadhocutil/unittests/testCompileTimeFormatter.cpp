@@ -458,3 +458,17 @@ BOOST_AUTO_TEST_CASE(scprintf)
 }
 #endif
 
+using namespace AdHoc::literals;
+
+BOOST_AUTO_TEST_CASE(user_defined_literal_fmt_get)
+{
+	BOOST_CHECK_EQUAL("foo 42", "foo %?"_fmt(42));
+}
+
+BOOST_AUTO_TEST_CASE(user_defined_literal_fmt_write)
+{
+	std::stringstream str;
+	"foo %?"_fmt(str, 42);
+	BOOST_CHECK_EQUAL("foo 42", str.str());
+}
+
