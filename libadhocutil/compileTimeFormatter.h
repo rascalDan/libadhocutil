@@ -137,6 +137,11 @@ namespace AdHoc {
 				std::basic_stringstream<char_type> s;
 				return write(s, pn...).str();
 			}
+			/**
+			 * Get a string containing the result of formatting.
+			 * @param pn the format arguments.
+			 * @return the formatted string.
+			 */
 			template<typename ... Pn>
 			inline auto operator()(const Pn & ... pn) const
 			{
@@ -154,6 +159,12 @@ namespace AdHoc {
 			{
 				return Parser<stream, 0, Pn...>::run(s, pn...);
 			}
+			/**
+			 * Write the result of formatting to the given stream.
+			 * @param s the stream to write to.
+			 * @param pn the format arguments.
+			 * @return the stream.
+			 */
 			template<typename stream, typename ... Pn>
 			inline stream & operator()(stream & s, const Pn & ... pn) const
 			{
@@ -195,8 +206,10 @@ namespace AdHoc {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-string-literal-operator-template"
 #endif
+		/// CTF format string holder
 		template<typename T, T ... t> struct FMT
 		{
+			/// CTF format string
 			static constexpr char __FMT[] = {t...};
 		};
 		template<typename T, T ... t> inline auto operator""_fmt() noexcept
