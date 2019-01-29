@@ -4,13 +4,13 @@
 #include "visibility.h"
 #include "buffer.h"
 #include <boost/format.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 DLL_PUBLIC size_t fprintss(FILE *, const std::string &);
 
 DLL_PUBLIC size_t fprintbf(FILE *, const boost::format &);
 
-DLL_PUBLIC FILE * fopen(const boost::filesystem::path & path, const char * mode);
+DLL_PUBLIC FILE * fopen(const std::filesystem::path & path, const char * mode);
 
 template <typename ... Params>
 size_t inline fprintbf(FILE * f, const std::string & fmt, const Params & ... p)

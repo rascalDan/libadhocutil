@@ -9,7 +9,7 @@ using namespace AdHoc::System;
 
 BOOST_AUTO_TEST_CASE ( readfind )
 {
-	ProcessPipes pp({"/usr/bin/find", rootDir.string(), "-maxdepth", "1"}, false, true, true);
+	ProcessPipes pp({"/usr/bin/find", rootDir, "-maxdepth", "1"}, false, true, true);
 	BOOST_REQUIRE_EQUAL(pp.fdIn(), -1);
 	BOOST_REQUIRE_NE(pp.fdOut(), -1);
 	BOOST_REQUIRE_NE(pp.fdError(), -1);

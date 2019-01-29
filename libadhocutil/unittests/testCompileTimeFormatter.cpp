@@ -5,7 +5,7 @@
 #include <fileUtils.h>
 #include <definedDirs.h>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 using namespace AdHoc;
 
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE ( singleDouble )
 
 BOOST_AUTO_TEST_CASE ( singlePath )
 {
-	boost::filesystem::path p("/tmp/test/path");
+	std::filesystem::path p("/tmp/test/path");
 	Formatter<formatStringSingle>::write(*this, p);
 	BOOST_CHECK_EQUAL(this->str(), R"(single "/tmp/test/path".)");
 }

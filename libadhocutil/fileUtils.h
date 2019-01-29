@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_FILEUTILS_H
 #define ADHOCUTIL_FILEUTILS_H
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string_view>
@@ -15,7 +15,7 @@ namespace AdHoc {
 		 * @param n The index of the element to extract.
 		 * @return The path element.
 		 */
-		DLL_PUBLIC boost::filesystem::path operator/(const boost::filesystem::path & p, unsigned int n);
+		DLL_PUBLIC std::filesystem::path operator/(const std::filesystem::path & p, unsigned int n);
 
 		/**
 		 * File handle wrapper to ensure closure on scope exit
@@ -38,7 +38,7 @@ namespace AdHoc {
 				 * @param path Path of file to open.
 				 * @param flags File handle flags
 				 */
-				FileHandle(const boost::filesystem::path & path, int flags = O_RDONLY);
+				FileHandle(const std::filesystem::path & path, int flags = O_RDONLY);
 
 				/**
 				 * Open a new file handle.
@@ -46,7 +46,7 @@ namespace AdHoc {
 				 * @param flags File handle flags
 				 * @param mode File handle mode
 				 */
-				FileHandle(const boost::filesystem::path & path, int flags, int mode);
+				FileHandle(const std::filesystem::path & path, int flags, int mode);
 
 				virtual ~FileHandle();
 
@@ -84,7 +84,7 @@ namespace AdHoc {
 				 * @param path Path of file to open.
 				 * @param flags File handle flags
 				 */
-				FileHandleStat(const boost::filesystem::path & path, int flags = O_RDONLY);
+				FileHandleStat(const std::filesystem::path & path, int flags = O_RDONLY);
 
 				/**
 				 * Open a new file handle.
@@ -92,7 +92,7 @@ namespace AdHoc {
 				 * @param flags File handle flags
 				 * @param mode File handle mode
 				 */
-				FileHandleStat(const boost::filesystem::path & path, int flags, int mode);
+				FileHandleStat(const std::filesystem::path & path, int flags, int mode);
 
 				/**
 				 * Get the stat structure.
@@ -111,7 +111,7 @@ namespace AdHoc {
 				struct stat st;
 
 			private:
-				DLL_PRIVATE void refreshStat(const boost::filesystem::path & path);
+				DLL_PRIVATE void refreshStat(const std::filesystem::path & path);
 		};
 
 		/**
@@ -136,7 +136,7 @@ namespace AdHoc {
 				 * @param path Path of file to open.
 				 * @param flags File handle flags
 				 */
-				MemMap(const boost::filesystem::path & path, int flags = O_RDONLY);
+				MemMap(const std::filesystem::path & path, int flags = O_RDONLY);
 
 				/**
 				 * Open a new file handle.
@@ -144,7 +144,7 @@ namespace AdHoc {
 				 * @param flags File handle flags
 				 * @param mode File handle mode
 				 */
-				MemMap(const boost::filesystem::path & path, int flags, int mode);
+				MemMap(const std::filesystem::path & path, int flags, int mode);
 
 				~MemMap();
 
@@ -165,7 +165,7 @@ namespace AdHoc {
 			private:
 				DLL_PUBLIC void * setupMapInt(int flags) const;
 				DLL_PUBLIC void * setupMap(int flags) const;
-				DLL_PUBLIC void * setupMap(const boost::filesystem::path & path, int flags) const;
+				DLL_PUBLIC void * setupMap(const std::filesystem::path & path, int flags) const;
 		};
 	}
 }

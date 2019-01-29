@@ -116,12 +116,12 @@ BOOST_AUTO_TEST_CASE( memmap )
 
 BOOST_AUTO_TEST_CASE( openmode )
 {
-	boost::filesystem::remove(binDir / "test.file");
+	std::filesystem::remove(binDir / "test.file");
 	BOOST_REQUIRE_THROW({
 		AdHoc::FileUtils::FileHandle fh(binDir / "test.file", O_RDONLY, S_IRWXU);
 	}, AdHoc::SystemExceptionOn);
 	AdHoc::FileUtils::FileHandle fh(binDir / "test.file", O_CREAT, S_IRWXU);
-	boost::filesystem::remove(binDir / "test.file");
+	std::filesystem::remove(binDir / "test.file");
 }
 
 BOOST_AUTO_TEST_CASE( openfail )
@@ -159,12 +159,11 @@ BOOST_AUTO_TEST_CASE( msgOn )
 BOOST_AUTO_TEST_CASE( pathPart )
 {
 	using namespace AdHoc::FileUtils;
-	boost::filesystem::path p("/this/is/some/path");
+	std::filesystem::path p("/this/is/some/path");
 	BOOST_REQUIRE_EQUAL(p / 0, "/");
 	BOOST_REQUIRE_EQUAL(p / 1, "this");
 	BOOST_REQUIRE_EQUAL(p / 2, "is");
 	BOOST_REQUIRE_EQUAL(p / 3, "some");
 	BOOST_REQUIRE_EQUAL(p / 4, "path");
-	BOOST_REQUIRE_EQUAL(p / 5, "");
 }
 

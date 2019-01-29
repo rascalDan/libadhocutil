@@ -1,8 +1,7 @@
 #ifndef ADHOCUTIL_DEFINEDDIRS_H
 #define ADHOCUTIL_DEFINEDDIRS_H
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include <filesystem>
 
 #ifndef ROOT
 #error "ROOT needs to be defined at compilation time"
@@ -10,9 +9,9 @@
 
 #define XSTR(s) STR(s)
 #define STR(s) #s
-const boost::filesystem::path selfExe = boost::filesystem::canonical("/proc/self/exe");
-const boost::filesystem::path binDir = selfExe.parent_path();
-const boost::filesystem::path rootDir(XSTR(ROOT));
+const std::filesystem::path selfExe = std::filesystem::canonical("/proc/self/exe");
+const std::filesystem::path binDir = selfExe.parent_path();
+const std::filesystem::path rootDir(XSTR(ROOT));
 
 #endif
 

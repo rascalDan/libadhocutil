@@ -15,9 +15,7 @@ actions xxd.h
 IMPORT $(__name__) : xxd.h : : xxd.h ;
 
 lib boost_utf : : <name>boost_unit_test_framework ;
-lib boost_filesystem ;
-lib boost_system ;
-lib boost_thread ;
+lib stdc++fs ;
 lib pthread ;
 lib dl ;
 
@@ -29,8 +27,7 @@ run
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
-	<library>boost_system
-	<library>boost_filesystem
+	<library>stdc++fs
 	<library>boost_utf
 	<implicit-dependency>lorem-ipsum
 	;
@@ -41,8 +38,7 @@ run
 	<define>ROOT=\"$(me)\"
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
-	<library>boost_system
-	<library>boost_filesystem
+	<library>stdc++fs
 	<library>boost_utf
 	:
 	testUriParse
@@ -66,8 +62,7 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_filesystem
-	<library>boost_system
+	<library>stdc++fs
 	<implicit-dependency>..//adhocutil
 	:
 	testCurl
@@ -90,8 +85,7 @@ run
 	<define>ROOT=\"$(me)\"
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_filesystem
-	<library>boost_system
+	<library>stdc++fs
 	:
 	testProcessPipes
 	;
@@ -122,7 +116,6 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_system
 	<library>pthread
 	:
 	testLocks
@@ -154,7 +147,6 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_system
 	<library>pthread
 	:
 	testCache
@@ -177,8 +169,7 @@ run
 	<library>..//adhocutil
 	<library>boost_utf
 	<define>ROOT=\"$(me)\"
-	<library>boost_filesystem
-	<library>boost_system
+	<library>stdc++fs
 	:
 	testDirs
 	;
@@ -201,8 +192,7 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_filesystem
-	<library>boost_system
+	<library>stdc++fs
 	<library>dl
 	<dependency>utilTestClasses
 	:
@@ -225,7 +215,6 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_system
 	<library>pthread
 	:
 	testSemaphore
@@ -247,7 +236,6 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
-	<library>boost_system
 	<library>pthread
 	:
 	testResourcePool
@@ -260,8 +248,7 @@ run
 	<library>..//adhocutil
 	<library>boost_utf
 	<define>ROOT=\"$(me)\"
-	<library>boost_system
-	<library>boost_filesystem
+	<library>stdc++fs
 	:
 	testFprintbf
 	;
@@ -274,8 +261,7 @@ run
 	<implicit-dependency>..//adhocutil
 	<library>boost_utf
 	<define>ROOT=\"$(me)\"
-	<library>boost_system
-	<library>boost_filesystem
+	<library>stdc++fs
 	;
 
 run
@@ -285,8 +271,7 @@ run
 	<library>..//adhocutil
 	<library>boost_utf
 	<define>ROOT=\"$(me)\"
-	<library>boost_system
-	<library>boost_filesystem
+	<library>stdc++fs
 	;
 
 run

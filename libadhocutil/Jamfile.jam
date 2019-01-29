@@ -1,9 +1,7 @@
 import package ;
 import lex ;
 
-lib boost_system ;
-lib boost_filesystem ;
-lib boost_thread ;
+lib stdc++fs ;
 lib Ice++11 : ;
 lib pthread ;
 lib curl ;
@@ -14,9 +12,7 @@ lib adhocutil :
 	:
 	<include>.
 	<library>Ice++11
-	<library>boost_system
-	<library>boost_filesystem
-	<library>boost_thread
+	<library>stdc++fs
 	<library>curl
 	<library>..//glibmm
 	<library>dl

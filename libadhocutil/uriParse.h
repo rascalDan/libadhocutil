@@ -4,7 +4,7 @@
 #include "visibility.h"
 #include "exception.h"
 #include <optional>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <string>
 #include <map>
 
@@ -29,7 +29,7 @@ namespace AdHoc {
 			/// The optional port.
 			std::optional<uint16_t> port;
 			/// The optional path.
-			std::optional<boost::filesystem::path> path;
+			std::optional<std::filesystem::path> path;
 			/// The parsed components of the query string.
 			std::multimap<std::string, std::string> query;
 			/// The optional fragment.

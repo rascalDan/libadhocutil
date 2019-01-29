@@ -23,7 +23,7 @@ fprintbf(FILE * f, const boost::format & fmt)
 }
 
 FILE *
-fopen(const boost::filesystem::path & path, const char * mode)
+fopen(const std::filesystem::path & path, const char * mode)
 {
 	auto f = fopen(path.c_str(), mode);
 	if (!f) {

@@ -9,7 +9,7 @@
 
 using namespace AdHoc;
 
-boost::filesystem::path lib;
+std::filesystem::path lib;
 struct GetLibPath {
 	GetLibPath()
 	{
@@ -26,7 +26,7 @@ static std::optional<std::string> goodResolver(const std::type_info &, const std
 BOOST_AUTO_TEST_CASE( ready )
 {
 	BOOST_REQUIRE(PluginManager::getDefault());
-	BOOST_REQUIRE(boost::filesystem::exists(lib));
+	BOOST_REQUIRE(std::filesystem::exists(lib));
 }
 
 BOOST_AUTO_TEST_CASE( clean )
