@@ -5,6 +5,7 @@
 #include "curlHandle.h"
 #include "curlMultiHandle.h"
 #include "curlStream.h"
+#include "compileTimeFormatter.h"
 #include "definedDirs.h"
 #include "net.h"
 #include <boost/algorithm/string/predicate.hpp>
@@ -18,17 +19,22 @@ discard(void *, size_t sz, size_t nm, void *)
 	return sz * nm;
 }
 
+AdHocFormatter(FileUrl, "file://%?/%?");
+const auto urlGen = std::bind((std::string(*)(const std::string &, const std::string_view &))&FileUrl::get, rootDir, std::placeholders::_1);
+
 BOOST_AUTO_TEST_CASE( fetch_file )
 {
-	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
-	CurlHandle ch(url);
-	ch.setopt(CURLOPT_WRITEFUNCTION, discard);
-	ch.perform();
+	auto url = urlGen("testCurl.cpp");
+	BOOST_TEST_CONTEXT(url) {
+		CurlHandle ch(url);
+		ch.setopt(CURLOPT_WRITEFUNCTION, discard);
+		ch.perform();
+	}
 }
 
 BOOST_AUTO_TEST_CASE( setAndGetOptions )
 {
-	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
+	auto url = urlGen("testCurl.cpp");
 	CurlHandle ch(url);
 	// function
 	ch.setopt(CURLOPT_WRITEFUNCTION, discard);
@@ -52,7 +58,7 @@ BOOST_AUTO_TEST_CASE( setAndGetOptions )
 
 BOOST_AUTO_TEST_CASE( fetch_missing )
 {
-	auto url = "file://" + rootDir.string() + "/nothere";
+	auto url = urlGen("nothere");
 	CurlHandle ch(url);
 	BOOST_REQUIRE_THROW(ch.perform(), AdHoc::Net::CurlException);
 }
@@ -76,7 +82,7 @@ BOOST_AUTO_TEST_CASE( fetch_http_stream )
 
 BOOST_AUTO_TEST_CASE( fetch_file_stream )
 {
-	auto url = "file://" + rootDir.string() + "/testCurl.cpp";
+	auto url = urlGen("testCurl.cpp");
 	CurlStreamSource css(url);
 	CurlStream curlstrm(css);
 	std::string tok;
@@ -93,7 +99,7 @@ BOOST_AUTO_TEST_CASE( fetch_file_stream )
 
 BOOST_AUTO_TEST_CASE( fetch_missing_stream )
 {
-	auto url = "file://" + rootDir.string() + "/nothere";
+	auto url = urlGen("nothere");
 	CurlStreamSource css(url);
 	css.setopt(CURLOPT_FAILONERROR, 1L);
 	CurlStream curlstrm(css);
@@ -118,11 +124,11 @@ BOOST_AUTO_TEST_CASE( fetch_multi )
 	using std::placeholders::_1;
 	CurlMultiHandle cmh;
 	std::map<std::string, std::string> files;
-	cmh.addCurl("file://" + rootDir.string() + "/testBuffer.cpp",
+	cmh.addCurl(urlGen("/testBuffer.cpp"),
 			std::bind(&mapFileToName, std::ref(files), "testBuffer.cpp", _1));
-	cmh.addCurl("file://" + rootDir.string() + "/testCurl.cpp",
+	cmh.addCurl(urlGen("/testCurl.cpp"),
 			std::bind(&mapFileToName, std::ref(files), "testCurl.cpp", _1));
-	cmh.addCurl("file://" + rootDir.string() + "/testLocks.cpp",
+	cmh.addCurl(urlGen("/testLocks.cpp"),
 			std::bind(&mapFileToName, std::ref(files), "testLocks.cpp", _1));
 	cmh.performAll();
 	BOOST_REQUIRE_EQUAL(3, files.size());

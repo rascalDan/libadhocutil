@@ -60,7 +60,7 @@ goodResolver(const std::type_info & t, const std::string_view & n)
 {
 	BOOST_REQUIRE_EQUAL(typeid(BaseThing), t);
 	BOOST_REQUIRE_EQUAL("ImplOfThing", n);
-	return lib.string();
+	return lib;
 }
 
 BOOST_AUTO_TEST_CASE( addAndRemoveResolver )
