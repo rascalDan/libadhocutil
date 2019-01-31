@@ -71,7 +71,7 @@ namespace AdHoc {
 		Lexer::PatternPtr
 		regex(const Glib::ustring & pattern, GRegexCompileFlags compile, GRegexMatchFlags match)
 		{
-			return Lexer::PatternPtr(new Regex(pattern, compile, match));
+			return std::make_shared<Regex>(pattern, compile, match);
 		}
 	}
 }

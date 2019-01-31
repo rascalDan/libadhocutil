@@ -19,7 +19,7 @@ Cacheable<T, K>::Cacheable(const K & k, time_t vu) :
 template<typename T, typename K>
 ObjectCacheable<T, K>::ObjectCacheable(const T & t, const K & k, time_t vu) :
 	Cacheable<T, K>(k, vu),
-	value(new T(t))
+	value(std::make_shared<T>(t))
 {
 }
 
@@ -90,7 +90,7 @@ void
 Cache<T, K>::add(const K & k, const T & t, time_t validUntil)
 {
 	Lock(lock);
-	cached.insert(Element(new ObjectCacheable<T, K>(t, k, validUntil)));
+	cached.insert(std::make_shared<ObjectCacheable<T, K>>(t, k, validUntil));
 }
 
 template<typename T, typename K>
@@ -98,7 +98,7 @@ void
 Cache<T, K>::addPointer(const K & k, Value & t, time_t validUntil)
 {
 	Lock(lock);
-	cached.insert(Element(new ObjectCacheable<T, K>(t, k, validUntil)));
+	cached.insert(std::make_shared<ObjectCacheable<T, K>>(t, k, validUntil));
 }
 
 template<typename T, typename K>
@@ -106,7 +106,7 @@ void
 Cache<T, K>::addFactory(const K & k, const Factory & tf, time_t validUntil)
 {
 	Lock(lock);
-	cached.insert(Element(new CallCacheable<T, K>(tf, k, validUntil)));
+	cached.insert(std::make_shared<CallCacheable<T, K>>(tf, k, validUntil));
 }
 
 template<typename T, typename K>
@@ -114,7 +114,7 @@ void
 Cache<T, K>::addPointerFactory(const K & k, const PointerFactory & tf, time_t validUntil)
 {
 	Lock(lock);
-	cached.insert(Element(new PointerCallCacheable<T, K>(tf, k, validUntil)));
+	cached.insert(std::make_shared<PointerCallCacheable<T, K>>(tf, k, validUntil));
 }
 
 template<typename T, typename K>
