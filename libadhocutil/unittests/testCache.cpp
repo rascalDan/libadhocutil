@@ -4,13 +4,6 @@
 #include <functional>
 #include "cache.h"
 #include "cache.impl.h"
-#include <boost/version.hpp>
-
-// LCOV_EXCL_START
-#if (BOOST_VERSION < 106400)
-BOOST_TEST_DONT_PRINT_LOG_VALUE(std::nullptr_t);
-#endif
-// LCOV_EXCL_STOP
 
 class Obj {
 	public:
