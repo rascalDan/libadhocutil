@@ -166,7 +166,8 @@ namespace AdHoc {
 			 * @return the stream.
 			 */
 			template<typename stream, typename ... Pn>
-			inline stream & operator()(stream & s, const Pn & ... pn) const
+			inline typename std::enable_if<(bool)&stream::write, stream>::type &
+			operator()(stream & s, const Pn & ... pn) const
 			{
 				return write(s, pn...);
 			}

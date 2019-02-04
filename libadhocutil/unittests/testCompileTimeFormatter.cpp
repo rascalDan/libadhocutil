@@ -465,6 +465,12 @@ BOOST_AUTO_TEST_CASE(user_defined_literal_fmt_get)
 	BOOST_CHECK_EQUAL("foo 42", "foo %?"_fmt(42));
 }
 
+BOOST_AUTO_TEST_CASE(user_defined_literal_fmt_get_reference)
+{
+	int x = 42;
+	BOOST_CHECK_EQUAL("foo 42", "foo %?"_fmt(x));
+}
+
 BOOST_AUTO_TEST_CASE(user_defined_literal_fmt_write)
 {
 	std::stringstream str;
