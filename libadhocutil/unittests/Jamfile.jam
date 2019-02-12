@@ -7,6 +7,11 @@ type.register TEXT : txt ;
 
 generators.register-standard xxd.h : TEXT : H ;
 
+project
+	: requirements
+			<toolset>tidy:<xcheckxx>performance-*
+	;
+
 actions xxd.h
 {
 	( cd ./$(2:D) && xxd -i $(2:B).txt ) > $(1[1])

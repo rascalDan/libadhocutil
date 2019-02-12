@@ -24,7 +24,7 @@ project
 			<toolset>tidy:<checkxx>modernize-*
 #<toolset>tidy:<checkxx>cppcoreguidelines-*
 #<toolset>tidy:<checkxx>hicpp-*
-#<toolset>tidy:<checkxx>performance-*
+			<toolset>tidy:<checkxx>performance-*
 	;
 
 build-project libadhocutil ;
