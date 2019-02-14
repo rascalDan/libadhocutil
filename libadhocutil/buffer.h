@@ -145,7 +145,7 @@ class DLL_PUBLIC Buffer {
 
 		class DLL_PRIVATE StringFragment : public FragmentBase {
 			public:
-				StringFragment(const std::string);
+				StringFragment(std::string);
 
 				size_t length() const;
 				char operator[](size_t) const;

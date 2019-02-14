@@ -25,13 +25,13 @@ namespace AdHoc {
 				/**
 				 * Move constructor.
 				 */
-				FileHandle(FileHandle &&);
+				FileHandle(FileHandle &&) noexcept;
 
 				/**
 				 * Construct from an existing file descriptor.
 				 * @param fd An open file descriptor.
 				 */
-				FileHandle(int fd);
+				FileHandle(int fd) noexcept;
 
 				/**
 				 * Open a new file handle.
@@ -48,7 +48,7 @@ namespace AdHoc {
 				 */
 				FileHandle(const std::filesystem::path & path, int flags, int mode);
 
-				virtual ~FileHandle();
+				virtual ~FileHandle() noexcept;
 
 				FileHandle(const FileHandle &) = delete;
 				void operator=(const FileHandle &) = delete;
@@ -57,7 +57,7 @@ namespace AdHoc {
 				 * Implicit conversion back to raw Unix file descriptor.
 				 * @return The container file descriptor.
 				 */
-				operator int() const;
+				operator int() const noexcept;
 
 				/// The file handle.
 				const int fh;
@@ -98,7 +98,7 @@ namespace AdHoc {
 				 * Get the stat structure.
 				 * @return The stat structure.
 				 */
-				const struct stat & getStat() const;
+				const struct stat & getStat() const noexcept;
 
 				/**
 				 * Refresh and return the stat structure.
@@ -163,9 +163,9 @@ namespace AdHoc {
 #endif
 
 			private:
-				DLL_PUBLIC void * setupMapInt(int flags) const;
-				DLL_PUBLIC void * setupMap(int flags) const;
-				DLL_PUBLIC void * setupMap(const std::filesystem::path & path, int flags) const;
+				DLL_PRIVATE void * setupMapInt(int flags) const;
+				DLL_PRIVATE void * setupMap(int flags) const;
+				DLL_PRIVATE void * setupMap(const std::filesystem::path & path, int flags) const;
 		};
 	}
 }

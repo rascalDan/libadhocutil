@@ -31,16 +31,16 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 	if (args.empty()) {
 		throw std::invalid_argument("args is empty");
 	}
-	int ipipes[2], opipes[2], epipes[2];
+	std::array<int, 2> ipipes { -1, -1 }, opipes { -1, -1 }, epipes { -1, -1 };
 	ScopeExit tidyUp;
 	if (i) {
-		pipe(ipipes, tidyUp);
+		pipe(ipipes.data(), tidyUp);
 	}
 	if (o) {
-		pipe(opipes, tidyUp);
+		pipe(opipes.data(), tidyUp);
 	}
 	if (e) {
-		pipe(epipes, tidyUp);
+		pipe(epipes.data(), tidyUp);
 	}
 	switch (child = fork()) {
 		case -1: // fail
@@ -79,8 +79,8 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 				*w++ = strdup(p.c_str());
 			}
 			*w = nullptr;
-			if (*buf) {
-				execv(buf[0], buf);
+			if (buf[0]) {
+				execv(buf[0], (char * const *)buf);
 			}
 			abort();
 			break;
@@ -89,9 +89,15 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 
 ProcessPipes::~ProcessPipes()
 {
-	if (in) close(in);
-	if (out) close(out);
-	if (error) close(error);
+	if (in >= 0) {
+		close(in);
+	}
+	if (out >= 0) {
+		close(out);
+	}
+	if (error >= 0) {
+		close(error);
+	}
 }
 
 int
@@ -121,7 +127,7 @@ ProcessPipes::pid() const
 void
 ProcessPipes::closeAllOpenFiles()
 {
-	rlimit lim;
+	rlimit lim { };
 	getrlimit(RLIMIT_NOFILE, &lim);
 	std::vector<struct pollfd> fds;
 	fds.reserve(lim.rlim_max);

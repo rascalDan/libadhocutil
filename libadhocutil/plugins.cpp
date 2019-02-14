@@ -20,9 +20,8 @@ namespace std {
 	std::ostream &
 	operator<<(std::ostream & s, const std::type_info & t)
 	{
-		char * buf = __cxxabiv1::__cxa_demangle(t.name(), nullptr, nullptr, nullptr);
-		s << buf;
-		free(buf);
+		auto buf = std::unique_ptr<char, decltype(&std::free)>(__cxxabiv1::__cxa_demangle(t.name(), nullptr, nullptr, nullptr), std::free);
+		s << buf.get();
 		return s;
 	}
 }
@@ -46,7 +45,7 @@ namespace AdHoc {
 	}
 
 	AdHocFormatter(DuplicatePluginExceptionMsg, "Duplicate plugin %? for type %? at %?:%?, originally from %?:%?");
-	DuplicatePluginException::DuplicatePluginException(PluginPtr p1, PluginPtr p2) :
+	DuplicatePluginException::DuplicatePluginException(const PluginPtr & p1, const PluginPtr & p2) :
 		std::runtime_error(DuplicatePluginExceptionMsg::get(
 					p1->name, p1->type(), p2->filename, p2->lineno, p1->filename, p1->lineno))
 	{

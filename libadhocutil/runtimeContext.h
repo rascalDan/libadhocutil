@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <ucontext.h>
 #include "visibility.h"
+#include <vector>
 
 namespace AdHoc {
 namespace System {
@@ -19,7 +20,7 @@ class DLL_PUBLIC RuntimeContext {
 		 * @param stacksize The size in bytes of the new stack.
 		 */
 		RuntimeContext(size_t stacksize = 16384);
-		virtual ~RuntimeContext() = 0;
+		virtual ~RuntimeContext() = default;
 
 		/** Swap to/from the contained stack. */
 		void swapContext();
@@ -34,7 +35,7 @@ class DLL_PUBLIC RuntimeContext {
 	private:
 		DLL_PRIVATE static void callbackWrapper(RuntimeContext * rc);
 
-		void * stack;
+		std::vector<char> stack;
 		ucontext_t ctxInitial;
 		ucontext_t ctxCallback;
 		bool completed;

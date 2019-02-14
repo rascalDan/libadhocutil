@@ -6,7 +6,7 @@ namespace AdHoc {
 
 	Lexer::Lexer() = default;
 
-	Lexer::Lexer(const Rules r) : rules(std::move(r))
+	Lexer::Lexer(Rules r) : rules(std::move(r))
 	{
 	}
 

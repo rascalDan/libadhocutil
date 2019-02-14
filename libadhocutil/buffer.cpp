@@ -41,6 +41,7 @@ Buffer::CStringFragment::CStringFragment(char * b, CStringHandling h, size_t l) 
 Buffer::CStringFragment::~CStringFragment()
 {
 	if (handling != Use) { // Copy or Free
+		// NOLINTNEXTLINE(hicpp-no-malloc)
 		free(const_cast<char *>(buf));
 	}
 }
@@ -73,7 +74,7 @@ Buffer::CStringFragment::str() const
 // Std::String Fragment
 //
 
-Buffer::StringFragment::StringFragment(const std::string str) :
+Buffer::StringFragment::StringFragment(std::string str) :
 	buf(std::move(str))
 {
 }
@@ -166,8 +167,11 @@ Buffer &
 Buffer::appendf(const char * fmt, ...)
 {
 	va_list v;
+	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	va_start(v, fmt);
+	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	vappendf(fmt, v);
+	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	va_end(v);
 	return *this;
 }
@@ -181,6 +185,7 @@ Buffer::vappendf(const char * fmt, va_list args)
 		content.push_back(std::make_shared<CStringFragment>(frag, Free, len));
 	}
 	else {
+		// NOLINTNEXTLINE(hicpp-no-malloc)
 		free(frag);
 	}
 	return *this;

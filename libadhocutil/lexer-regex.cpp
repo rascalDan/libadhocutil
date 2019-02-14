@@ -7,7 +7,8 @@ namespace AdHoc {
 				Regex(const Glib::ustring & pattern, GRegexCompileFlags compile, GRegexMatchFlags match) :
 					err(nullptr),
 					regex(g_regex_new(pattern.c_str(), compile, match, &err)),
-					info(nullptr)
+					info(nullptr),
+					str(nullptr)
 				{
 					if (!regex) {
 						auto msg = std::string("Failed to create GRegex: ") + err->message;
@@ -15,6 +16,9 @@ namespace AdHoc {
 						throw std::runtime_error(msg);
 					}
 				}
+
+				Regex(const Regex &) = delete;
+				Regex(const Regex &&) = delete;
 
 				~Regex() override
 				{
@@ -26,6 +30,9 @@ namespace AdHoc {
 					}
 					g_regex_unref(regex);
 				}
+
+				void operator=(const Regex &) = delete;
+				void operator=(const Regex &&) = delete;
 
 				bool matches(const gchar * string, size_t length, size_t position) const override
 				{

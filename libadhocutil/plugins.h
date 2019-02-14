@@ -57,7 +57,7 @@ namespace AdHoc {
 	class DuplicatePluginException : public std::runtime_error {
 		public:
 			/// Constructor taking the original and offending plugin.
-			DuplicatePluginException(PluginPtr p1, PluginPtr p2);
+			DuplicatePluginException(const PluginPtr & p1, const PluginPtr & p2);
 	};
 
 	/// Thrown when a resolver function is added a second time.

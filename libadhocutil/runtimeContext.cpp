@@ -7,21 +7,19 @@ namespace AdHoc {
 namespace System {
 
 RuntimeContext::RuntimeContext(size_t stacksize) :
+	stack(stacksize),
+	ctxInitial({}),
+	ctxCallback({}),
 	completed(false),
 	swapped(false)
 {
-	stack = malloc(stacksize);
-	if (getcontext(&ctxCallback) == -1)
+	if (getcontext(&ctxCallback) == -1) {
 		throw SystemException("getcontext(3) failed", strerror(errno), errno);
-	ctxCallback.uc_stack.ss_sp = stack;
+	}
+	ctxCallback.uc_stack.ss_sp = &stack.front();
 	ctxCallback.uc_stack.ss_size = stacksize;
 	ctxCallback.uc_link = &ctxInitial;
 	makecontext(&ctxCallback, (void (*)())&RuntimeContext::callbackWrapper, 1, this);
-}
-
-RuntimeContext::~RuntimeContext()
-{
-	free(stack);
 }
 
 void
@@ -34,10 +32,6 @@ RuntimeContext::swapContext()
 	else {
 		if (!completed) {
 			swapcontext(&ctxCallback, &ctxInitial);
-			if (completed) {
-				free(stack);
-				stack = nullptr;
-			}
 		}
 	}
 }

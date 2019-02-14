@@ -12,16 +12,18 @@ namespace AdHoc {
 		std::filesystem::path operator/(const std::filesystem::path & p, unsigned int n)
 		{
 			auto pp = p.begin();
-			while (n--) ++pp;
+			while (n--) {
+				++pp;
+			}
 			return *pp;
 		}
 
-		FileHandle::FileHandle(int d) :
+		FileHandle::FileHandle(int d) noexcept :
 			fh(d)
 		{
 		}
 
-		FileHandle::FileHandle(FileHandle && o) :
+		FileHandle::FileHandle(FileHandle && o) noexcept :
 			fh(o.fh)
 		{
 			const_cast<int &>(o.fh) = -1;
@@ -43,38 +45,42 @@ namespace AdHoc {
 			}
 		}
 
-		FileHandle::~FileHandle()
+		FileHandle::~FileHandle() noexcept
 		{
 			if (fh >= 0) {
+				// NOLINTNEXTLINE(hicpp-no-array-decay)
 				BOOST_VERIFY(close(fh) == 0);
 			}
 		}
 
-		FileHandle::operator int() const
+		FileHandle::operator int() const noexcept
 		{
 			return fh;
 		}
 
 		FileHandleStat::FileHandleStat(int fd) :
-			FileHandle(fd)
+			FileHandle(fd),
+			st({})
 		{
 			refreshStat();
 		}
 
 		FileHandleStat::FileHandleStat(const std::filesystem::path & path, int flags) :
-			FileHandle(path, flags)
+			FileHandle(path, flags),
+			st({})
 		{
 			refreshStat(path);
 		}
 
 		FileHandleStat::FileHandleStat(const std::filesystem::path & path, int flags, int mode) :
-			FileHandle(path, flags, mode)
+			FileHandle(path, flags, mode),
+			st({})
 		{
 			refreshStat(path);
 		}
 
 		const struct stat &
-		FileHandleStat::getStat() const
+		FileHandleStat::getStat() const noexcept
 		{
 			return st;
 		}

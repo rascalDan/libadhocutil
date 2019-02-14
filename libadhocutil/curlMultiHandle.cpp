@@ -9,7 +9,7 @@ namespace Net {
 
 class RunningCurl : public CurlStreamSource {
 	public:
-		RunningCurl(const std::string & url, const std::function<void(std::istream &)> c) :
+		RunningCurl(const std::string & url, std::function<void(std::istream &)> c) :
 			CurlStreamSource(url),
 			consumer(std::move(c))
 		{
@@ -59,7 +59,7 @@ CurlMultiHandle::performAll()
 		CURLMcode code;
 		int act = running.size();
 		while (act) {
-			while ((code = curl_multi_perform(curlm, &act)) == CURLM_CALL_MULTI_PERFORM) ;
+			while ((code = curl_multi_perform(curlm, &act)) == CURLM_CALL_MULTI_PERFORM) {}
 			// Has anything finished
 			CURLMsg * msg;
 			int msgs = 0;
@@ -80,8 +80,11 @@ CurlMultiHandle::performAll()
 			fd_set r, w, e;
 			int maxfd = 0;
 			struct timeval to = { 0, 100000 };
+			// NOLINTNEXTLINE(hicpp-no-assembler)
 			FD_ZERO(&r);
+			// NOLINTNEXTLINE(hicpp-no-assembler)
 			FD_ZERO(&w);
+			// NOLINTNEXTLINE(hicpp-no-assembler)
 			FD_ZERO(&e);
 			curl_multi_fdset(curlm, &r, &w, &e, &maxfd);
 			select(act, &r, &w, &e, &to);
