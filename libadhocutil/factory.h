@@ -11,8 +11,6 @@ namespace AdHoc {
 	template <typename Base, typename ... Params>
 	class DLL_PUBLIC Factory : public virtual AbstractPluginImplementation {
 		public:
-			virtual ~Factory() = 0;
-
 			/**
 			 * Create a new instance of Base, overridden in a subclass to construct a new specific class.
 			 * @param p The parameters passed to Impl constructor.

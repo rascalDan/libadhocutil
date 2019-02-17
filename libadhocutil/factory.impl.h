@@ -6,9 +6,6 @@
 
 namespace AdHoc {
 	template <typename Base, typename ... Params>
-	Factory<Base, Params ...>::~Factory() = default;
-
-	template <typename Base, typename ... Params>
 	std::shared_ptr<const Factory<Base, Params...>>
 	Factory<Base, Params...>::get(const std::string_view & name)
 	{
