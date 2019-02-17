@@ -25,6 +25,13 @@ namespace AdHoc {
 	}
 
 	template <typename R>
+	ResourceHandle<R>::ResourceHandle(ResourceHandle && rh) :
+		resource(rh.resource)
+	{
+		rh.decRef();
+	}
+
+	template <typename R>
 	ResourceHandle<R>::~ResourceHandle()
 	{
 		if (resource) {
@@ -78,6 +85,17 @@ namespace AdHoc {
 			decRef();
 		}
 		resource = rh.resource;
+	}
+
+	template <typename R>
+	void
+	ResourceHandle<R>::operator=(ResourceHandle && rh)
+	{
+		if (resource) {
+			decRef();
+		}
+		resource = rh.resource;
+		rh.decRef();
 	}
 
 	template <typename R>

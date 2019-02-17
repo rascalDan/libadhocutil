@@ -146,6 +146,38 @@ BOOST_AUTO_TEST_CASE( getMineNoCurrent )
 	BOOST_REQUIRE_THROW(pool.getMine(), AdHoc::NoCurrentResource);
 }
 
+BOOST_AUTO_TEST_CASE( move )
+{
+	TRP pool;
+	{
+		auto r1 = pool.get();
+		BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
+		BOOST_CHECK(r1);
+		{
+			auto r2(std::move(r1));
+			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
+			BOOST_CHECK(!r1);
+			BOOST_CHECK(r2);
+
+			r1 = std::move(r2);
+			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
+			BOOST_CHECK(r1);
+			BOOST_CHECK(!r2);
+
+			r2 = pool.get();
+			BOOST_CHECK_EQUAL(pool.inUseCount(), 2);
+			BOOST_CHECK(r2);
+
+			r1 = std::move(r2);
+			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
+			BOOST_CHECK(r1);
+			BOOST_CHECK(!r2);
+		}
+		BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
+	}
+	BOOST_CHECK_EQUAL(pool.inUseCount(), 0);
+}
+
 BOOST_AUTO_TEST_CASE( discard )
 {
 	TRP pool;

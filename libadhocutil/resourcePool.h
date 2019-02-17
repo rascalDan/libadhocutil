@@ -26,10 +26,14 @@ namespace AdHoc {
 			ResourceHandle(const std::shared_ptr<Object> &);
 			/// Create a reference to an existing resource.
 			ResourceHandle(const ResourceHandle &);
+			/// Move reference to an existing resource.
+			ResourceHandle(ResourceHandle &&);
 			~ResourceHandle();
 
 			/// Reference to an existing resource.
 			void operator=(const ResourceHandle &);
+			/// Move reference to an existing resource.
+			void operator=(ResourceHandle &&);
 			/// Access to the resource.
 			Resource * operator->() const;
 			/// Access to the resource.
