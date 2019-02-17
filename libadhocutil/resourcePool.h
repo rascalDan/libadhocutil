@@ -60,6 +60,13 @@ namespace AdHoc {
 			ResourcePool(unsigned int maxSize, unsigned int keep);
 			virtual ~ResourcePool();
 
+			ResourcePool() = delete;
+			ResourcePool(const ResourcePool &) = delete;
+			ResourcePool(ResourcePool &&) = delete;
+
+			void operator=(const ResourcePool &) = delete;
+			void operator=(ResourcePool &&) = delete;
+
 			/// Get a resource from the pool (maybe cached, maybe constructed afresh)
 			ResourceHandle<Resource> get();
 			/// Get a resource from the pool (with timeout on max size of pool)
