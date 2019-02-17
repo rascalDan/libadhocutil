@@ -80,7 +80,6 @@ namespace AdHoc {
 		public:
 			/// Constructor taking an instance and name, filename and line of install for Plugin.
 			PluginOf(const std::shared_ptr<T> & t, const std::string_view & n, const std::string_view & f, int l);
-			~PluginOf() = default;
 
 			/// Get the type of this plugin.
 			const std::type_info & type() const override;
