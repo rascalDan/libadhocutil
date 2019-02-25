@@ -92,13 +92,13 @@ namespace AdHoc {
 
 #define INSTANTIATEPLUGINOF(...) \
 	template class AdHoc::PluginOf<__VA_ARGS__>; \
-	template void AdHoc::PluginManager::add<__VA_ARGS__>(const std::shared_ptr<__VA_ARGS__> &, const std::string_view &, const std::string_view &, int); \
-	template void AdHoc::PluginManager::remove<__VA_ARGS__>(const std::string_view &); \
-	template std::shared_ptr<const AdHoc::PluginOf<__VA_ARGS__>> AdHoc::PluginManager::get<__VA_ARGS__>(const std::string_view &) const; \
-	template std::shared_ptr<__VA_ARGS__> AdHoc::PluginManager::getImplementation<__VA_ARGS__>(const std::string_view &) const; \
-	template std::set<std::shared_ptr<const AdHoc::PluginOf<__VA_ARGS__>>> AdHoc::PluginManager::getAll<__VA_ARGS__>() const; \
-	template void AdHoc::PluginManager::addResolver<__VA_ARGS__>(const AdHoc::PluginManager::PluginResolver & f); \
-	template void AdHoc::PluginManager::removeResolver<__VA_ARGS__>(); \
+	template DLL_PUBLIC void AdHoc::PluginManager::add<__VA_ARGS__>(const std::shared_ptr<__VA_ARGS__> &, const std::string_view &, const std::string_view &, int); \
+	template DLL_PUBLIC void AdHoc::PluginManager::remove<__VA_ARGS__>(const std::string_view &); \
+	template DLL_PUBLIC std::shared_ptr<const AdHoc::PluginOf<__VA_ARGS__>> AdHoc::PluginManager::get<__VA_ARGS__>(const std::string_view &) const; \
+	template DLL_PUBLIC std::shared_ptr<__VA_ARGS__> AdHoc::PluginManager::getImplementation<__VA_ARGS__>(const std::string_view &) const; \
+	template DLL_PUBLIC std::set<std::shared_ptr<const AdHoc::PluginOf<__VA_ARGS__>>> AdHoc::PluginManager::getAll<__VA_ARGS__>() const; \
+	template DLL_PUBLIC void AdHoc::PluginManager::addResolver<__VA_ARGS__>(const AdHoc::PluginManager::PluginResolver & f); \
+	template DLL_PUBLIC void AdHoc::PluginManager::removeResolver<__VA_ARGS__>(); \
 
 #define PLUGINRESOLVER(T, F) \
 	namespace MAKE_UNIQUE(__plugin__) { \
