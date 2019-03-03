@@ -49,11 +49,13 @@ class Ex3 : public AdHoc::StdException {
 
 void failing1()
 {
+	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	throw Ex1(__PRETTY_FUNCTION__, 1);
 }
 
 void failing2()
 {
+	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	throw Ex2(__PRETTY_FUNCTION__, 2);
 }
 

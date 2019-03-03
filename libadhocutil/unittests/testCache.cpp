@@ -5,8 +5,10 @@
 #include "cache.h"
 #include "cache.impl.h"
 
+// NOLINTNEXTLINE(hicpp-special-member-functions)
 class Obj {
 	public:
+		// NOLINTNEXTLINE(hicpp-explicit-conversions)
 		Obj(int i) : v(i) { }
 		void operator=(const Obj &) = delete;
 		bool operator==(const int & i) const {

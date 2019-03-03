@@ -9,8 +9,8 @@ class TestTarget {
 	public:
 		std::string a;
 		std::string b;
-		int c;
-		double d;
+		int c {0};
+		double d {0};
 };
 
 NvpTarget(TestTarget) TestTargetMap {

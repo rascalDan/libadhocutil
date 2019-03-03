@@ -13,11 +13,11 @@ BOOST_AUTO_TEST_CASE ( readfind )
 	BOOST_REQUIRE_EQUAL(pp.fdIn(), -1);
 	BOOST_REQUIRE_NE(pp.fdOut(), -1);
 	BOOST_REQUIRE_NE(pp.fdError(), -1);
-	char buf[BUFSIZ];
-	ssize_t bytes = read(pp.fdOut(), buf, BUFSIZ);
+	std::string buf(BUFSIZ, '\0');
+	ssize_t bytes = read(pp.fdOut(), buf.data(), BUFSIZ);
 	BOOST_REQUIRE_MESSAGE(bytes > 0, "bytes = " << bytes);
 	buf[bytes] = '\0';
-	char * lnf = strstr(buf, "testProcessPipes.cpp");
+	const char * lnf = strstr(buf.data(), "testProcessPipes.cpp");
 	BOOST_REQUIRE_MESSAGE(lnf, buf);
 	int status;
 	waitpid(pp.pid(), &status, 0);

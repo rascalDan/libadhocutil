@@ -131,19 +131,9 @@ namespace AdHoc {
 	template <typename R>
 	ResourcePool<R>::~ResourcePool()
 	{
-		for (auto & r : available) {
-			destroyResource(r.get());
-		}
 		for (auto & r : inUse) {
-			destroyResource(std::get<0>(*r.second).get());
 			std::get<1>(*r.second) = nullptr;
 		}
-	}
-
-	template <typename R>
-	void
-	ResourcePool<R>::destroyResource(R const *) const throw()
-	{
 	}
 
 	template <typename R>
@@ -195,9 +185,6 @@ namespace AdHoc {
 	ResourcePool<R>::idle()
 	{
 		Lock(lock);
-		for (auto & r : available) {
-			destroyResource(r.get());
-		}
 		available.clear();
 	}
 
@@ -246,7 +233,6 @@ namespace AdHoc {
 				return ro;
 			}
 			catch (...) {
-				destroyResource(r.get());
 				available.pop_front();
 			}
 		}
@@ -266,12 +252,8 @@ namespace AdHoc {
 			if (available.size() < keep) {
 				available.push_back(r);
 			}
-			else {
-				destroyResource(r.get());
-			}
 		}
 		catch (...) {
-			destroyResource(r.get());
 		}
 		poolSize.notify();
 	}
@@ -282,7 +264,6 @@ namespace AdHoc {
 	{
 		Lock(lock);
 		removeFrom(r, inUse);
-		destroyResource(r.get());
 		poolSize.notify();
 	}
 

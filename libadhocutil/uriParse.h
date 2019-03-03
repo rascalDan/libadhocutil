@@ -16,7 +16,7 @@ namespace AdHoc {
 		public:
 			/// Constructor accepting a URI to parse.
 			/// @param uri the URI to parse.
-			Uri(const std::string & uri);
+			explicit Uri(const std::string & uri);
 
 			/// The scheme.
 			std::string scheme;

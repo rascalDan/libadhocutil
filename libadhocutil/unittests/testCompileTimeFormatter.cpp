@@ -35,6 +35,7 @@ namespace AdHoc {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
+			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << "-( " << p << " )-";
 			StreamWriter::next(s, pn...);
 		}
@@ -45,6 +46,7 @@ namespace AdHoc {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
+			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << "---( " << p << " )---";
 			StreamWriter::next(s, pn...);
 		}
@@ -57,6 +59,7 @@ namespace AdHoc {
 		{
 			// NOLINTNEXTLINE(bugprone-string-constructor)
 			std::string d(dashes, '-');
+			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << d << "( " << p << " )" << d;
 			StreamWriter::next(s, pn...);
 		}
@@ -68,6 +71,7 @@ namespace AdHoc {
 		static void write(stream & s, int width, const P & p, const Pn & ... pn)
 		{
 			std::stringstream buf;
+			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			buf << p;
 			std::string spaces(width - buf.str().length(), ' ');
 			s << spaces << buf.str();
@@ -277,7 +281,7 @@ BOOST_AUTO_TEST_CASE( lorem_ipsum )
 	auto s = LIF::get();
 	BOOST_CHECK_EQUAL(s.length(), lorem_ipsum_txt_len);
 	AdHoc::FileUtils::MemMap li(rootDir / "lorem-ipsum.txt");
-	auto sv = li.sv<std::decay<decltype(*lorem_ipsum_txt)>::type>();
+	auto sv = li.sv<std::decay<decltype(lorem_ipsum_txt[0])>::type>();
 	BOOST_CHECK_EQUAL_COLLECTIONS(s.begin(), s.end(), sv.begin(), sv.end());
 }
 
@@ -285,6 +289,7 @@ namespace AdHoc {
 	template<>
 	inline void appendStream(FILE & strm, const char * const p, size_t n)
 	{
+		// NOLINTNEXTLINE(hicpp-no-array-decay)
 		BOOST_VERIFY(fwrite(p, n, 1, &strm) == 1);
 	}
 }
@@ -292,7 +297,7 @@ namespace AdHoc {
 FILE &
 operator<<(FILE & strm, const char * const p)
 {
-	BOOST_VERIFY(fputs(p, &strm) != EOF);
+	BOOST_CHECK_NE(fputs(p, &strm), EOF);
 	return strm;
 }
 
@@ -307,6 +312,7 @@ BOOST_AUTO_TEST_CASE( filestar )
 	fclose(strm);
 	BOOST_CHECK_EQUAL(len, 22);
 	BOOST_CHECK_EQUAL(buf, "First file, then star.");
+	// NOLINTNEXTLINE(hicpp-no-malloc)
 	free(buf);
 }
 
@@ -338,10 +344,10 @@ static_assert(419 == decdigits<'0', '4', '1', '9'>());
 			auto str = NAME ## fmtr::get(__VA_ARGS__); \
 			char * buf = NULL; \
 			int len = asprintf(&buf, FMT, __VA_ARGS__); \
-			BOOST_REQUIRE(buf); \
+			auto bufp = std::unique_ptr<char, decltype(&std::free)>(buf, std::free); \
+			BOOST_REQUIRE(bufp); \
 			BOOST_CHECK_EQUAL(str.length(), len); \
 			BOOST_CHECK_EQUAL(str, buf); \
-			free(buf); \
 		} \
 	}
 

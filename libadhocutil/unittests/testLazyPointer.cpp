@@ -7,7 +7,7 @@ using namespace AdHoc;
 
 class Test {
 	public:
-		Test(int v) :
+		explicit Test(int v) :
 			val(v)
 		{
 		}

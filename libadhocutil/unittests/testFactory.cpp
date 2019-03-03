@@ -8,6 +8,7 @@
 
 using namespace AdHoc;
 
+// NOLINTNEXTLINE(hicpp-special-member-functions)
 class BaseThing {
 	public:
 		BaseThing(int, std::string * n) :

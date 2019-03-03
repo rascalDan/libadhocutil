@@ -11,7 +11,7 @@ using namespace AdHoc;
 
 class NotFound : std::runtime_error {
 	public:
-		NotFound(int key) :
+		explicit NotFound(int key) :
 			std::runtime_error(boost::lexical_cast<std::string>("Key not found: %d", key))
 		{
 		}

@@ -10,6 +10,9 @@
 #include "nvpParse.h"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#if __clang__
+#pragma GCC diagnostic ignored "-Wnull-conversion"
+#endif
 %}
 
 element [a-zA-Z][a-zA-Z0-9_-]*

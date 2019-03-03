@@ -13,7 +13,7 @@ namespace AdHoc {
 			/// Wrapper constructor to pass to BaseException
 			//@param t parameters to pass.
 			template <typename ... T>
-			Exception(const T & ... t) : BaseException(t...) { }
+			explicit Exception(const T & ... t) : BaseException(t...) { }
 
 			/// Override of std::exception::what() to create text as required.
 			inline const char * what() const noexcept override

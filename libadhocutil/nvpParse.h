@@ -1,7 +1,6 @@
 #ifndef ADHOCUTIL_REFLECTION_H
 #define ADHOCUTIL_REFLECTION_H
 
-#include <string.h>
 #include <string>
 #include <map>
 #include <istream>
@@ -30,8 +29,8 @@ class NvpParse : public yyFlexLexer {
 				ValueNotFound(const std::string &);
 		};
 
-		typedef std::function<void(const std::string &)> AssignFunc;
-		typedef std::map<std::string, AssignFunc> AssignMap;
+		using AssignFunc = std::function<void(const std::string &)>;
+		using AssignMap = std::map<std::string, AssignFunc>;
 
 		template <typename T>
 		class TargetBase {
@@ -60,6 +59,7 @@ class NvpParse : public yyFlexLexer {
 		};
 		/// @endcond
 
+		// NOLINTNEXTLINE(bugprone-macro-parentheses)
 #define NvpTarget(T) std::map<std::string, std::shared_ptr<::AdHoc::NvpParse::TargetBase<T>>>
 #define NvpValue(c, m) { #m, std::make_shared<::AdHoc::NvpParse::Target<c, decltype(c::m)>>(&c::m) }
 
@@ -85,7 +85,7 @@ class NvpParse : public yyFlexLexer {
 
 	private:
 		NvpParse(std::istream & in, const AssignMap &);
-		~NvpParse();
+		~NvpParse() override;
 
 		int yylex() override;
 		void LexerError(const char * msg) override;

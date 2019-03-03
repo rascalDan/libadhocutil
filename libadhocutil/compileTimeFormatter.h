@@ -180,9 +180,11 @@ namespace AdHoc {
 				{
 					if (pos != L) {
 						constexpr auto ph = strchrnul<S, '%', pos, L>();
+						// NOLINTNEXTLINE(hicpp-braces-around-statements,bugprone-suspicious-semicolon)
 						if constexpr (ph != pos) {
 							appendStream(s, (S + pos), ph - pos);
 						}
+						// NOLINTNEXTLINE(hicpp-braces-around-statements,bugprone-suspicious-semicolon)
 						if constexpr (ph != L) {
 							packAndWrite<ph>(s, pn...);
 						}
@@ -192,6 +194,7 @@ namespace AdHoc {
 				template<strlen_t ph, strlen_t off = 0, auto ... Pck>
 				static inline void packAndWrite(stream & s, const Pn & ... pn)
 				{
+					// NOLINTNEXTLINE(hicpp-braces-around-statements)
 					if constexpr (ph + off == L || sizeof...(Pck) == 32) {
 						StreamWriter<S, L, ph, stream, void, Pck...>::write(s, pn...);
 					}

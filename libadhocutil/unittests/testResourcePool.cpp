@@ -9,7 +9,9 @@ class MockResource {
 		~MockResource() { count -= 1; }
 
 		MockResource(const MockResource &) = delete;
+		MockResource(MockResource &&) = delete;
 		void operator=(const MockResource &) = delete;
+		void operator=(MockResource &&) = delete;
 
 		bool valid() const { return true; }
 
@@ -116,6 +118,7 @@ BOOST_AUTO_TEST_CASE( destroyPoolWhenInUse )
 	auto rp = new TRP();
 	auto rh1 = rp->get();
 	auto rh2 = rp->get();
+	// NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
 	auto rh3 = rh1;
 	delete rp;
 	BOOST_REQUIRE(rh1->valid());
@@ -156,12 +159,14 @@ BOOST_AUTO_TEST_CASE( move )
 		{
 			auto r2(std::move(r1));
 			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
+			// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 			BOOST_CHECK(!r1);
 			BOOST_CHECK(r2);
 
 			r1 = std::move(r2);
 			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
 			BOOST_CHECK(r1);
+			// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 			BOOST_CHECK(!r2);
 
 			r2 = pool.get();
@@ -171,6 +176,7 @@ BOOST_AUTO_TEST_CASE( move )
 			r1 = std::move(r2);
 			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
 			BOOST_CHECK(r1);
+			// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 			BOOST_CHECK(!r2);
 		}
 		BOOST_CHECK_EQUAL(pool.inUseCount(), 1);

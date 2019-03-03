@@ -78,9 +78,9 @@ BOOST_AUTO_TEST_CASE( writeto )
 		.append(std::string(" b"))
 		.appendf(" num %d", 1)
 		.appendbf(" num %d", 2);
-	char buf[23];
-	b.writeto(buf, 23, 0);
-	BOOST_REQUIRE_EQUAL(0, memcmp(buf, "string a b num 1 num 2", 23));
+	std::string buf(22, '\0');
+	b.writeto(buf.data(), 23, 0);
+	BOOST_REQUIRE_EQUAL(buf, "string a b num 1 num 2");
 }
 
 BOOST_AUTO_TEST_CASE( operators )

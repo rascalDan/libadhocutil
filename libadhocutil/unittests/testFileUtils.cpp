@@ -46,13 +46,13 @@ T moveTest(P ... p)
 
 class Base {
 	public:
-		Base(AdHoc::FileUtils::FileHandle h) : fh(std::move(h)) { }
+		explicit Base(AdHoc::FileUtils::FileHandle h) : fh(std::move(h)) { }
 		AdHoc::FileUtils::FileHandle fh;
 };
 
 class Sub : public Base {
 	public:
-		Sub(AdHoc::FileUtils::FileHandle h) : Base(std::move(h)) { }
+		explicit Sub(AdHoc::FileUtils::FileHandle h) : Base(std::move(h)) { }
 };
 
 BOOST_AUTO_TEST_CASE( movePassThrough )
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE( movePassThrough )
 	auto y = std::make_unique<Sub>(std::move(f));
 	BOOST_REQUIRE_EQUAL(y->fh, ffd);
 	REQUIRE_VALID_FH(y->fh);
-	// NOLINTNEXTLINE(bugprone-use-after-move)
+	// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 	BOOST_REQUIRE_EQUAL(f.fh, -1);
 	REQUIRE_INVALID_FH(f.fh);
 	y.reset();

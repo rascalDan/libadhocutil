@@ -91,8 +91,6 @@ namespace AdHoc {
 		protected:
 			/// Create a new resource instance to add to the pool.
 			virtual std::shared_ptr<Resource> createResource() const = 0;
-			/// Destroy an existing resource (defaults to delete).
-			virtual void destroyResource(Resource const *) const throw();
 			/// Test a cached resource is still suitable for use before re-use (defaults to no-op).
 			virtual void testResource(Resource const *) const;
 			/// Test a cached resource is still suitable for use on return (defaults to no-op).
