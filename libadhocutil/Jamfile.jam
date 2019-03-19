@@ -7,8 +7,18 @@ lib pthread ;
 lib curl ;
 lib dl ;
 
+rule genobj ( name : source : properties * )
+{
+	obj $(name) : $(source) : $(properties) <toolset>tidy:<checker>none ;
+}
+
+genobj net : net.ice ;
+genobj sys : sys.ice ;
+genobj nvpParse : nvpParse.ll : <include>. ;
+alias gen : net sys nvpParse ;
+
 lib adhocutil :
-	[ glob *.cpp *.ice *.ll : bin ]
+	[ glob *.cpp ] gen
 	:
 	<include>.
 	<library>Ice++11
@@ -16,6 +26,7 @@ lib adhocutil :
 	<library>curl
 	<library>..//glibmm
 	<library>dl
+	<implicit-dependency>gen
 	: :
 	<include>.
 	<library>Ice++11
