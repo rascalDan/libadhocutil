@@ -7,14 +7,16 @@
 #include <sys.h>
 #include "scopeExit.h"
 
+// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
 namespace AdHoc {
 namespace System {
 
+using PipePair = std::array<int, 2>;
 static
 void
-pipe(int pipes[2], ScopeExit & tidyUp)
+pipe(PipePair & pipes, ScopeExit & tidyUp)
 {
-	if (::pipe(pipes)) {
+	if (::pipe(pipes.data())) {
 		throw SystemException("pipe(2) failed", strerror(errno), errno);
 	}
 	tidyUp.onFailure.emplace_back([pipes] {
@@ -31,16 +33,16 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 	if (args.empty()) {
 		throw std::invalid_argument("args is empty");
 	}
-	std::array<int, 2> ipipes { -1, -1 }, opipes { -1, -1 }, epipes { -1, -1 };
+	PipePair ipipes { -1, -1 }, opipes { -1, -1 }, epipes { -1, -1 };
 	ScopeExit tidyUp;
 	if (i) {
-		pipe(ipipes.data(), tidyUp);
+		pipe(ipipes, tidyUp);
 	}
 	if (o) {
-		pipe(opipes.data(), tidyUp);
+		pipe(opipes, tidyUp);
 	}
 	if (e) {
-		pipe(epipes.data(), tidyUp);
+		pipe(epipes, tidyUp);
 	}
 	switch (child = fork()) {
 		case -1: // fail
@@ -73,14 +75,14 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 				dup2(epipes[1], 2);
 			}
 			closeAllOpenFiles();
-			char * buf[100];
-			char ** w = &buf[0];
+			std::vector<char *> buf(args.size() + 1);
+			auto w = buf.begin();
 			for (const auto & p : args) {
 				*w++ = strdup(p.c_str());
 			}
 			*w = nullptr;
 			if (buf[0]) {
-				execv(buf[0], (char * const *)buf);
+				execv(buf[0], buf.data());
 			}
 			abort();
 			break;

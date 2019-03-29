@@ -3,6 +3,7 @@
 #include <cstring>
 #include <sys.h>
 
+// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
 namespace AdHoc {
 namespace System {
 

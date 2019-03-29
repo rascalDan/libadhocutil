@@ -5,6 +5,7 @@
 #include <sys/mman.h>
 #include <boost/assert.hpp>
 
+// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
 namespace AdHoc {
 	namespace FileUtils {
 		AdHocFormatter(FD, "FD %?");

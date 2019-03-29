@@ -19,6 +19,11 @@ lib stdc++fs ;
 lib pthread ;
 lib dl ;
 
+project
+  : requirements
+			<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
+	;
+
 h lorem-ipsum : lorem-ipsum.txt ;
 
 run

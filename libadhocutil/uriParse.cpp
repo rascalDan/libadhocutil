@@ -14,7 +14,6 @@ namespace AdHoc {
 	{
 		auto * puri = this;
 		const char *curstr;
-		int i;
 		int userpass_flag;
 		int bracket_flag;
 
@@ -24,8 +23,8 @@ namespace AdHoc {
 		if (!tmpstr) {
 			throw InvalidUri("Schema marker not found", uri);
 		}
-		int len = tmpstr - curstr;
-		for (i = 0; i < len; i++) {
+		auto len = tmpstr - curstr;
+		for (decltype(len) i = 0; i < len; i++) {
 			if (!_is_scheme_char(curstr[i])) {
 				throw InvalidUri("Invalid format", uri);
 			}

@@ -4,6 +4,7 @@
 #include "runtimeContext.h"
 #include "curlStream.h"
 
+// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
 namespace AdHoc {
 namespace Net {
 
