@@ -1,5 +1,6 @@
 #include "lexer-regex.h"
 
+// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
 namespace AdHoc {
 	namespace LexerMatchers {
 		class Regex : public Lexer::Pattern {

@@ -3,6 +3,7 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include "compileTimeFormatter.h"
 
+// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
 namespace AdHoc {
 namespace Net {
 
