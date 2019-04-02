@@ -7,19 +7,20 @@ namespace AdHoc {
 	template<typename Object>
 	Object * GlobalStatic<Object>::get()
 	{
-		return instance().get();
+		return instance();
 	}
 
 	template<typename Object>
 	void GlobalStatic<Object>::createObject()
 	{
-		instance() = std::make_unique<Object>();
+		instance() = new Object();
 	}
 
 	template<typename Object>
 	void GlobalStatic<Object>::deleteObject()
 	{
-		instance().reset();
+		delete instance();
+		instance() = nullptr;
 	}
 
 	template<typename Object>

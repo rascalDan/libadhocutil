@@ -79,7 +79,6 @@ BOOST_AUTO_TEST_CASE( createAndRemove )
 	auto c1 = PluginManager::getDefault()->get<BaseThing>("custom1");
 	BOOST_REQUIRE(c1);
 	PluginManager::getDefault()->remove<BaseThing>("custom1");
-	
 }
 
 BOOST_AUTO_TEST_CASE( nameAndTypeClash )

@@ -18,7 +18,7 @@ namespace AdHoc {
 			static Object * get();
 
 		private:
-			typedef std::unique_ptr<Object> Ptr;
+			using Ptr = Object *;
 			static void createObject() __attribute__((constructor(101)));
 			static void deleteObject() __attribute__((destructor(101)));
 
