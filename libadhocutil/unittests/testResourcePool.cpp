@@ -13,7 +13,7 @@ class MockResource {
 		void operator=(const MockResource &) = delete;
 		void operator=(MockResource &&) = delete;
 
-		bool valid() const { return true; }
+		[[ nodiscard ]] bool valid() const { return true; }
 
 		const unsigned int id;
 		static std::atomic<unsigned int> ids;
