@@ -34,5 +34,11 @@ lib adhocutil :
 
 build-project unittests ;
 
-package.install install : <install-source-root>. : : adhocutil : [ glob *.h ctf-impl/*.h ] ;
+alias install : install-lib install-slice install-sub ;
+explicit install ;
+explicit install-lib ;
+explicit install-slice ;
+package.install install-lib : : : adhocutil : [ glob-tree *.h : ctf-impl ] ;
+package.install install-sub : <install-source-root>. : : adhocutil : [ glob ctf-impl/*.h ] ;
+package.install-data install-slice : adhocutil/ice : [ glob *.ice ] ;
 
