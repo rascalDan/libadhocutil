@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( fetch_missing )
 
 BOOST_AUTO_TEST_CASE( fetch_http_stream )
 {
-	CurlStreamSource css("http://sys.randomdan.homeip.net/env.cgi");
+	CurlStreamSource css("https://sys.randomdan.homeip.net/env.cgi");
 	css.appendHeader("X-POWERED-BY: mature-cheddar");
 	CurlStream curlstrm(css);
 	std::string tok;
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE( fetch_multi_fail )
 	CurlMultiHandle cmh;
 	bool errored = false;
 	bool finished = false;
-	cmh.addCurl("http://sys.randomdan.homeip.net/missing", [&finished, &errored](std::istream & s) {
+	cmh.addCurl("https://sys.randomdan.homeip.net/missing", [&finished, &errored](std::istream & s) {
 		std::string tok;
 		while (!s.eof()) {
 			if (!s.good()) {
