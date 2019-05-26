@@ -287,3 +287,11 @@ run
 	<library>boost_utf
 	;
 
+run
+	testMemStream.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	;
+
