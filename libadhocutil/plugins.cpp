@@ -85,6 +85,8 @@ namespace AdHoc {
 	{
 	}
 
+	PluginManager::~PluginManager() = default;
+
 	PluginManager *
 	PluginManager::getDefault()
 	{

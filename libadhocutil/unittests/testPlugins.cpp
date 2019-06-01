@@ -17,6 +17,11 @@ BOOST_AUTO_TEST_CASE( registered )
 	BOOST_REQUIRE_EQUAL(1, PluginManager::getDefault()->count());
 }
 
+BOOST_AUTO_TEST_CASE( private_instance )
+{
+	std::make_unique<PluginManager>();
+}
+
 BOOST_AUTO_TEST_CASE( get )
 {
 	auto implOfThingPlugin = PluginManager::getDefault()->get<BaseThing>("ImplOfThing");

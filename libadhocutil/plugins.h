@@ -100,7 +100,7 @@ namespace AdHoc {
 			typedef std::function<std::optional<std::string> (const std::type_info &, const std::string_view &)> PluginResolver;
 
 			PluginManager();
-			virtual ~PluginManager() = default;
+			virtual ~PluginManager();
 
 			/// Install a plugin.
 			void add(const PluginPtr &);
