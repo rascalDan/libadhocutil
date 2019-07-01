@@ -15,10 +15,12 @@ namespace AdHoc {
 			~MemStream();
 
 			MemStream(const MemStream &) = delete;
-			MemStream(MemStream &&) = delete;
+			/// Standard move constructor
+			MemStream(MemStream &&) noexcept;
 
 			void operator=(const MemStream &) = delete;
-			void operator=(MemStream &&) = delete;
+			/// Standard move assignment
+			MemStream & operator=(MemStream &&) noexcept;
 
 			/// Implicit conversion to use as FILE* for writes
 			operator FILE * ();

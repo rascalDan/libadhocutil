@@ -32,3 +32,16 @@ BOOST_AUTO_TEST_CASE(simple)
 
 BOOST_AUTO_TEST_SUITE_END();
 
+BOOST_AUTO_TEST_CASE(move_construct)
+{
+	MemStream ms1;
+	MemStream ms2(std::move(ms1));
+}
+
+BOOST_AUTO_TEST_CASE(move_assign)
+{
+	MemStream ms1;
+	MemStream ms2;
+	ms2 = std::move(ms1);
+}
+
