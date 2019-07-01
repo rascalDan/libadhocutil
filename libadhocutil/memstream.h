@@ -6,6 +6,9 @@
 #include <string_view>
 
 namespace AdHoc {
+	/**
+	 * Wrapper around open_memstream(3)
+	 */
 	class DLL_PUBLIC MemStream {
 		public:
 			MemStream();
@@ -17,12 +20,18 @@ namespace AdHoc {
 			void operator=(const MemStream &) = delete;
 			void operator=(MemStream &&) = delete;
 
+			/// Implicit conversion to use as FILE* for writes
 			operator FILE * ();
+			/// Implicit conversion to use as const char * for reads
 			operator const char * () const;
+			/// Implicit conversion to use as std::string_view for reads
 			operator std::string_view () const;
 
+			/// Get buffer contents
 			const char * buffer() const;
+			/// Get buffer contents view
 			std::string_view sv() const;
+			/// Get buffer length
 			size_t length() const;
 
 		private:

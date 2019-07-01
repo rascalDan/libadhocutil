@@ -12,6 +12,7 @@ namespace AdHoc {
 	MemStream::~MemStream()
 	{
 		fclose(strm);
+		// NOLINTNEXTLINE(hicpp-no-malloc)
 		free(buf);
 	}
 
