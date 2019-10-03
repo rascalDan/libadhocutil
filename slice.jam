@@ -7,7 +7,6 @@ import toolset ;
 
 type.register SLICE : ice ;
 
-feature slicer : no yes pure ;
 feature allow-ice : no yes ;
 feature ice-visibility : public hidden ;
 
@@ -23,36 +22,16 @@ scanner.register slice-scanner : include ;
 
 type.set-scanner SLICE : slice-scanner ;
 
-generators.register-standard slice.slice2cpp : SLICE : CPP H : <slicer>no ;
-generators.register-standard slice.slicer : SLICE : CPP CPP(slicer-%) H : <slicer>yes ;
-generators.register-standard slice.slicer.pure : SLICE : CPP(slicer-%) : <slicer>pure ;
+generators.register-standard slice.slice2cpp : SLICE : CPP H ;
 
 toolset.flags slice.slice2cpp INCLUDES <include> ;
 toolset.flags slice.slice2cpp DLLEXPORT <ice-visibility>public : --dll-export JAM_DLL_PUBLIC ;
 toolset.flags slice.slice2cpp ALLOWICE <allow-ice>yes : --ice ;
-toolset.flags slice.slicer INCLUDES <include> ;
-toolset.flags slice.slicer DLLEXPORT <ice-visibility>public : --dll-export JAM_DLL_PUBLIC ;
-toolset.flags slice.slicer ALLOWICE <allow-ice>yes : --ice ;
-toolset.flags slice.slicer.pure INCLUDES <include> ;
-toolset.flags slice.slicer.pure ALLOWICE <allow-ice>yes : --ice ;
 
 actions slice.slice2cpp
 {
   slice2cpp -I"$(INCLUDES)" --checksum --output-dir $(1[1]:D) $(2) $(DLLEXPORT) $(ALLOWICE[1])
 }
 
-actions slice.slicer
-{
-  slice2cpp -I"$(INCLUDES)" --checksum --output-dir $(1[1]:D) $(2) $(DLLEXPORT) $(ALLOWICE[1])
-	slicer -I"$(INCLUDES)" $(2) $(1[2]) $(ALLOWICE[1])
-}
-
-actions slice.slicer.pure
-{
-	slicer -I"$(INCLUDES)" $(2) $(1[1]) $(ALLOWICE[1])
-}
-
 IMPORT $(__name__) : slice.slice2cpp : : slice.slice2cpp ;
-IMPORT $(__name__) : slice.slicer : : slice.slicer ;
-IMPORT $(__name__) : slice.slicer.pure : : slice.slicer.pure ;
 
