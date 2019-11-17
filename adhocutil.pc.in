@@ -1,0 +1,11 @@
+prefix=/usr
+includedir=${prefix}/include
+name=adhocutil
+
+Name: PN
+Description: AdHoc colleciton of utility libraries
+Version: PV
+Requires: glibmm-2.4
+Libs: -l${name}
+Cflags: -I${includedir}/${name}
+
