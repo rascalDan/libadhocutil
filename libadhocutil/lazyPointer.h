@@ -19,27 +19,27 @@ template <typename T, typename P = std::shared_ptr<T>>
 class LazyPointer {
 	public:
 		/// @cond
-		typedef T element_type;
-		typedef P pointer_type;
-		typedef std::function<P()> Factory;
-		typedef std::variant<P, Factory> Source;
+		using element_type = T;
+		using pointer_type = P;
+		using Factory = std::function<P()>;
+		using Source = std::variant<P, Factory>;
 		/// @endcond
 
 		/** Construct pointer with a factory function. */
-		LazyPointer(const Factory & f) :
+		explicit LazyPointer(const Factory & f) :
 			source(f)
 		{
 		}
 
 		/** Construct pointer with an instance value. */
-		LazyPointer(const P & p) :
+		explicit LazyPointer(const P & p) :
 			source(p)
 		{
 		}
 
 		/** Construct pointer with an instance value. */
 		template <typename TT = T>
-		LazyPointer(T * p, typename std::enable_if<!std::is_same<TT *, P>::value>::type * = NULL) :
+		explicit LazyPointer(T * p, typename std::enable_if<!std::is_same<TT *, P>::value>::type * = nullptr) :
 			source(P(p))
 		{
 		}
@@ -52,23 +52,24 @@ class LazyPointer {
 
 		// Getters
 		/// @cond
-		operator P() const
+		explicit operator P() const
 		{
 			return deref();
 		}
 
-		T * operator->() const
+		[[nodiscard]] T * operator->() const
 		{
 			return get();
 		}
 
-		T & operator*() const
+		[[nodiscard]] T & operator*() const
 		{
 			return *get();
 		}
 
-		T * get() const
+		[[nodiscard]] T * get() const
 		{
+			// NOLINTNEXTLINE(hicpp-braces-around-statements)
 			if constexpr (std::is_pointer<P>::value) {
 				return deref();
 			}
@@ -77,7 +78,7 @@ class LazyPointer {
 			}
 		}
 
-		P deref() const
+		[[nodiscard]] P deref() const
 		{
 			if (Factory * f = std::get_if<Factory>(&source)) {
 				P p = (*f)();
@@ -94,7 +95,7 @@ class LazyPointer {
 			return get() == nullptr;
 		}
 
-		operator bool() const
+		explicit operator bool() const
 		{
 			return get() != nullptr;
 		}

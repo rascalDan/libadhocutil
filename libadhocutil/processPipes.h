@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 namespace System {
@@ -20,24 +21,23 @@ class DLL_PUBLIC ProcessPipes {
 		 * @param err Attach to stderr?
 		 */
 		ProcessPipes(const std::vector<std::string> & args, bool in, bool out, bool err);
+		/// Standard move/copy support
+		SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(ProcessPipes);
 		~ProcessPipes();
 
 		/** FD handle to child's stdin. */
-		int fdIn() const;
+		[[nodiscard]] int fdIn() const noexcept;
 		/** FD handle to child's stdout. */
-		int fdOut() const;
+		[[nodiscard]] int fdOut() const noexcept;
 		/** FD handle to child's stderr. */
-		int fdError() const;
+		[[nodiscard]] int fdError() const noexcept;
 		/** Process id of child. */
-		pid_t pid() const;
+		[[nodiscard]] pid_t pid() const noexcept;
 
 		/** Close all open file handles as determined by rlimit and poll. */
 		static void closeAllOpenFiles();
 
 	private:
-		ProcessPipes(const ProcessPipes &) = delete;
-		void operator=(const ProcessPipes &) = delete;
-
 		int in, out, error;
 		pid_t child;
 };

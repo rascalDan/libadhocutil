@@ -5,9 +5,9 @@
 
 namespace AdHoc {
 	template <typename T>
-	PluginOf<T>::PluginOf(const std::shared_ptr<T> & t, const std::string_view & n, const std::string_view & f, int l) :
+	PluginOf<T>::PluginOf(std::shared_ptr<T> t, const std::string_view & n, const std::string_view & f, int l) :
 		Plugin(n, f, l),
-		impl(t)
+		impl(std::move(t))
 	{
 	}
 

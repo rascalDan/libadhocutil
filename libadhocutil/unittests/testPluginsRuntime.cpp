@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE( null )
 {
 	auto pm = AdHoc::PluginManager::getDefault();
 	pm->addResolver<BaseThing>(nullResolver);
-	BOOST_REQUIRE_THROW(pm->get<BaseThing>("ImplOfThing"), AdHoc::NoSuchPluginException);
+	BOOST_REQUIRE_THROW((void)pm->get<BaseThing>("ImplOfThing"), AdHoc::NoSuchPluginException);
 	pm->removeResolver<BaseThing>();
 }
 
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE( bad )
 {
 	auto pm = AdHoc::PluginManager::getDefault();
 	pm->addResolver<BaseThing>(badResolver);
-	BOOST_REQUIRE_THROW(pm->get<BaseThing>("ImplOfThing"), AdHoc::LoadLibraryException);
+	BOOST_REQUIRE_THROW((void)pm->get<BaseThing>("ImplOfThing"), AdHoc::LoadLibraryException);
 	pm->removeResolver<BaseThing>();
 }
 

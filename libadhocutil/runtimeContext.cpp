@@ -8,11 +8,7 @@ namespace AdHoc {
 namespace System {
 
 RuntimeContext::RuntimeContext(size_t stacksize) :
-	stack(stacksize),
-	ctxInitial({}),
-	ctxCallback({}),
-	completed(false),
-	swapped(false)
+	stack(stacksize)
 {
 	if (getcontext(&ctxCallback) == -1) {
 		throw SystemException("getcontext(3) failed", strerror(errno), errno);

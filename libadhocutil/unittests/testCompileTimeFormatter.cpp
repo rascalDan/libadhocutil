@@ -35,7 +35,6 @@ namespace AdHoc {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << "-( " << p << " )-";
 			StreamWriter::next(s, pn...);
 		}
@@ -46,7 +45,6 @@ namespace AdHoc {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << "---( " << p << " )---";
 			StreamWriter::next(s, pn...);
 		}
@@ -59,7 +57,6 @@ namespace AdHoc {
 		{
 			// NOLINTNEXTLINE(bugprone-string-constructor)
 			std::string d(dashes, '-');
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << d << "( " << p << " )" << d;
 			StreamWriter::next(s, pn...);
 		}
@@ -71,7 +68,6 @@ namespace AdHoc {
 		static void write(stream & s, int width, const P & p, const Pn & ... pn)
 		{
 			std::stringstream buf;
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			buf << p;
 			std::string spaces(width - buf.str().length(), ' ');
 			s << spaces << buf.str();
@@ -289,7 +285,6 @@ namespace AdHoc {
 	template<>
 	inline void appendStream(FILE & strm, const char * const p, size_t n)
 	{
-		// NOLINTNEXTLINE(hicpp-no-array-decay)
 		BOOST_VERIFY(fwrite(p, n, 1, &strm) == 1);
 	}
 }

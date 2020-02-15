@@ -38,8 +38,7 @@ namespace AdHoc {
 		}
 	}
 
-	Lexer::ExecuteState::ExecuteState() :
-		pos(0)
+	Lexer::ExecuteState::ExecuteState()
 	{
 		stateStack.push_back(InitialState);
 	}

@@ -18,7 +18,7 @@ namespace AdHoc {
 		static inline void write(stream & s, const PARAMTYPE & p, const Pn & ... pn) \
 		{ \
 			OP; \
-			s.copyfmt(std::ios(NULL)); \
+			s.copyfmt(std::ios(nullptr)); \
 			StreamWriter::next(s, pn...); \
 		} \
 	}
@@ -72,7 +72,7 @@ namespace AdHoc {
 		static inline void write(stream & s, Obj * const ptr, const Pn & ... pn)
 		{
 			s << std::showbase << std::hex << (long unsigned int)ptr;
-			s.copyfmt(std::ios(NULL));
+			s.copyfmt(std::ios(nullptr));
 			StreamWriter::next(s, pn...);
 		}
 		template<typename Ptr, typename ... Pn>
@@ -87,7 +87,7 @@ namespace AdHoc {
 		static inline void write(stream & s, const Pn & ... pn)
 		{
 			s << strerror(errno);
-			s.copyfmt(std::ios(NULL));
+			s.copyfmt(std::ios(nullptr));
 			StreamWriter::next(s, pn...);
 		}
 	};
@@ -97,7 +97,7 @@ namespace AdHoc {
 		{
 			BOOST_ASSERT_MSG(n, "%n conversion requires non-null parameter");
 			*n = streamLength(s);
-			s.copyfmt(std::ios(NULL));
+			s.copyfmt(std::ios(nullptr));
 			StreamWriter::next(s, pn...);
 		}
 	};
@@ -157,7 +157,7 @@ namespace AdHoc {
 		static inline void write(stream & s, int l, const std::string_view & p, const Pn & ... pn)
 		{
 			s << p.substr(0, l);
-			s.copyfmt(std::ios(NULL));
+			s.copyfmt(std::ios(nullptr));
 			StreamWriter::next(s, pn...);
 		}
 	};

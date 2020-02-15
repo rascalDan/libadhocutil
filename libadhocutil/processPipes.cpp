@@ -103,25 +103,25 @@ ProcessPipes::~ProcessPipes()
 }
 
 int
-ProcessPipes::fdIn() const
+ProcessPipes::fdIn() const noexcept
 {
 	return in;
 }
 
 int
-ProcessPipes::fdOut() const
+ProcessPipes::fdOut() const noexcept
 {
 	return out;
 }
 
 int
-ProcessPipes::fdError() const
+ProcessPipes::fdError() const noexcept
 {
 	return error;
 }
 
 pid_t
-ProcessPipes::pid() const
+ProcessPipes::pid() const noexcept
 {
 	return child;
 }

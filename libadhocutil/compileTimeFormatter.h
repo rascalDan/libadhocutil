@@ -35,7 +35,9 @@ namespace AdHoc {
 		static_assert(start <= L);
 		decltype(start) off = start;
 		while (off < L && S[off] != n) { ++off; }
-		if (off == L) return -1;
+		if (off == L) {
+			return -1;
+		}
 		return off;
 	}
 
@@ -125,7 +127,7 @@ namespace AdHoc {
 
 		public:
 			/// The derived charater type of the format string.
-			using char_type = typename std::decay<decltype(*S)>::type;
+			using char_type = typename std::decay<decltype(S[0])>::type;
 			/**
 			 * Get a string containing the result of formatting.
 			 * @param pn the format arguments.
@@ -214,6 +216,7 @@ namespace AdHoc {
 		template<typename T, T ... t> struct FMT
 		{
 			/// CTF format string
+			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
 			static constexpr char __FMT[] = {t...};
 		};
 		template<typename T, T ... t> inline auto operator""_fmt() noexcept

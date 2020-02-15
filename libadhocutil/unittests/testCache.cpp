@@ -24,10 +24,12 @@ operator==(const int & i, const Obj & o)
 }
 
 namespace std {
+	/// LCOV_EXCL_START (diagnostics)
 	ostream & operator<<(ostream & s, const Obj & o)
 	{
 		return s << o.v;
 	}
+	/// LCOV_EXCL_STOP
 }
 
 namespace AdHoc {

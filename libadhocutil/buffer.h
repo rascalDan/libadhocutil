@@ -3,9 +3,10 @@
 
 #include <string>
 #include <vector>
-#include <stdarg.h>
+#include <cstdarg>
 #include <boost/format.hpp>
 #include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 	class DLL_PUBLIC Buffer;
@@ -31,19 +32,22 @@ class DLL_PUBLIC Buffer {
 		};
 
 		/// Pointer typedef.
-		typedef std::shared_ptr<Buffer> Ptr;
+		using Ptr = std::shared_ptr<Buffer>;
 		/// Const pointer typedef.
-		typedef std::shared_ptr<const Buffer> CPtr;
+		using CPtr = std::shared_ptr<const Buffer>;
 
 		/** Create an empty buffer */
-		Buffer();
+		Buffer() = default;
+		~Buffer() = default;
 		/** Create a buffer containing a single element from the given char * */
 		Buffer(const char * src, CStringHandling);
 		/** Create a buffer containing a single element from the given char * */
 		Buffer(char * src, CStringHandling);
 		/** Create a buffer containing a single element from the given std::string */
-		Buffer(const std::string &);
-		~Buffer();
+		explicit Buffer(const std::string &);
+
+		/// Standard move/copy support
+		SPECIAL_MEMBERS_DEFAULT(Buffer);
 
 		/** Append the given char * (will copy) */
 		Buffer & operator+=(const char * str);
@@ -53,15 +57,15 @@ class DLL_PUBLIC Buffer {
 		Buffer & operator=(const char * str);
 		/** Replace all current content with the given std::string */
 		Buffer & operator=(const std::string & str);
-		/** Replace all current content with the given Buffer's elements. Shallow copy as all elements are immutable. */
-		Buffer & operator=(const Buffer & str);
 		/** true if the buffer contains no elements (empty) */
 		bool operator!() const;
 		/** true if the buffer contains no elements (non-empty) */
-		operator bool() const;
+		explicit operator bool() const;
 		/** Converts all elements into a single flattened std::string */
+		// NOLINTNEXTLINE(hicpp-explicit-conversions)
 		operator std::string() const;
 		/** Converts all elements into a single flattened char * */
+		// NOLINTNEXTLINE(hicpp-explicit-conversions)
 		operator const char *() const;
 
 		/**
@@ -116,12 +120,14 @@ class DLL_PUBLIC Buffer {
 
 		class DLL_PRIVATE FragmentBase {
 			public:
-				virtual ~FragmentBase() = 0;
+				FragmentBase() = default;
+				virtual ~FragmentBase() = default;
+				SPECIAL_MEMBERS_DEFAULT(FragmentBase);
 
-				virtual size_t length() const = 0;
-				virtual char operator[](size_t) const = 0;
-				virtual const char * c_str() const = 0;
-				virtual std::string str() const = 0;
+				[[nodiscard]] virtual size_t length() const = 0;
+				[[nodiscard]] virtual char operator[](size_t) const = 0;
+				[[nodiscard]] virtual const char * c_str() const = 0;
+				[[nodiscard]] virtual std::string str() const = 0;
 		};
 
 		class DLL_PRIVATE CStringFragment : public FragmentBase {
@@ -130,12 +136,13 @@ class DLL_PUBLIC Buffer {
 				CStringFragment(const char *, CStringHandling, size_t);
 				CStringFragment(char *, CStringHandling);
 				CStringFragment(char *, CStringHandling, size_t);
-				~CStringFragment();
+				SPECIAL_MEMBERS_DELETE(CStringFragment);
+				~CStringFragment() override;
 
-				size_t length() const;
-				char operator[](size_t) const;
-				const char * c_str() const;
-				std::string str() const;
+				[[nodiscard]] size_t length() const override;
+				[[nodiscard]] char operator[](size_t) const override;
+				[[nodiscard]] const char * c_str() const override;
+				[[nodiscard]] std::string str() const override;
 
 			private:
 				const size_t len; // Excluding NULL term
@@ -145,19 +152,19 @@ class DLL_PUBLIC Buffer {
 
 		class DLL_PRIVATE StringFragment : public FragmentBase {
 			public:
-				StringFragment(std::string);
+				explicit StringFragment(std::string);
 
-				size_t length() const;
-				char operator[](size_t) const;
-				const char * c_str() const;
-				std::string str() const;
+				[[nodiscard]] size_t length() const override;
+				[[nodiscard]] char operator[](size_t) const override;
+				[[nodiscard]] const char * c_str() const override;
+				[[nodiscard]] std::string str() const override;
 
 			private:
 				const std::string buf;
 		};
 
-		typedef std::shared_ptr<FragmentBase> FragmentPtr;
-		typedef std::vector<FragmentPtr> Content;
+		using FragmentPtr = std::shared_ptr<FragmentBase>;
+		using Content = std::vector<FragmentPtr>;
 		mutable Content content;
 };
 

@@ -17,6 +17,11 @@ class Test {
 using TestLazyPointer = LazyPointer<Test>;
 using RawLazyPointer = LazyPointer<int, int *>;
 
+/// LCOV_EXCL_START (diagnostics)
+BOOST_TEST_DONT_PRINT_LOG_VALUE(TestLazyPointer);
+BOOST_TEST_DONT_PRINT_LOG_VALUE(RawLazyPointer);
+/// LCOV_EXCL_STOP
+
 static
 TestLazyPointer::pointer_type
 factory()
@@ -37,8 +42,7 @@ BOOST_AUTO_TEST_CASE ( islazy )
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	Test * t = p.get();
 	BOOST_REQUIRE(t);
-	bool pbool = p;
-	BOOST_REQUIRE(pbool);
+	BOOST_REQUIRE(p);
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
 	BOOST_REQUIRE_EQUAL(p, t);
 	BOOST_REQUIRE_EQUAL(3, t->val);
@@ -65,7 +69,7 @@ BOOST_AUTO_TEST_CASE ( reset )
 	BOOST_REQUIRE_EQUAL(true, !p);
 	p = std::bind(&factory);
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
-	p.get();
+	BOOST_REQUIRE(p.get());
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
 	BOOST_REQUIRE_EQUAL(3, p->val);
 }
@@ -93,9 +97,9 @@ BOOST_AUTO_TEST_CASE( rawPointerNonNull )
 	BOOST_REQUIRE(value);
 	BOOST_REQUIRE(value.get());
 	BOOST_REQUIRE_EQUAL(*value, 3);
-	int * x = value;
+	int * x = (int *)value;
 	BOOST_REQUIRE_EQUAL(*x, 3);
-	delete value;
+	delete x;
 }
 
 int *
@@ -110,6 +114,6 @@ BOOST_AUTO_TEST_CASE( rawPointerFactory )
 	BOOST_REQUIRE(!value.hasValue());
 	BOOST_REQUIRE_EQUAL(*value, 4);
 	BOOST_REQUIRE(value.hasValue());
-	delete value;
+	delete (int *)value;
 }
 

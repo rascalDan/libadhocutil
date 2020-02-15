@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_CACHE_H
 #define ADHOCUTIL_CACHE_H
 
-#include <time.h>
+#include <ctime>
 #include <memory>
 #include <functional>
 #include <boost/multi_index_container.hpp>
@@ -10,6 +10,7 @@
 #include <shared_mutex>
 #include <variant>
 #include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 
@@ -17,29 +18,25 @@ namespace AdHoc {
 template <typename T, typename K>
 class DLL_PUBLIC Cacheable {
 	public:
-		typedef const std::shared_ptr<const T> Value;
-		Cacheable(const K & k, time_t validUntil);
-		Cacheable(const Cacheable &) = delete;
-		Cacheable(Cacheable &&) = default;
+		using Value = const std::shared_ptr<const T>;
+		Cacheable(K k, time_t validUntil);
+		SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(Cacheable);
 
 		virtual ~Cacheable() = default;
-
-		void operator=(const Cacheable &) = delete;
-		void operator=(Cacheable &&) = delete;
 
 		const K key;
 		const time_t validUntil;
 
-		virtual Value item() const = 0;
+		[[nodiscard]] virtual Value item() const = 0;
 };
 
 template <typename T, typename K>
 class DLL_PUBLIC ObjectCacheable : public Cacheable<T, K> {
 	public:
 		ObjectCacheable(const T & t, const K & k, time_t validUtil);
-		ObjectCacheable(typename Cacheable<T, K>::Value & t, const K & k, time_t validUtil);
+		ObjectCacheable(typename Cacheable<T, K>::Value t, const K & k, time_t validUtil);
 
-		virtual typename Cacheable<T, K>::Value item() const override;
+		[[nodiscard]] typename Cacheable<T, K>::Value item() const override;
 
 	private:
 		typename Cacheable<T, K>::Value value;
@@ -48,10 +45,10 @@ class DLL_PUBLIC ObjectCacheable : public Cacheable<T, K> {
 template <typename T, typename K>
 class DLL_PUBLIC CallCacheable : public Cacheable<T, K> {
 	public:
-		typedef std::function<T()> Factory;
+		using Factory = std::function<T()>;
 		CallCacheable(const Factory & t, const K & k, time_t validUtil);
 
-		virtual typename Cacheable<T, K>::Value item() const override;
+		[[nodiscard]] typename Cacheable<T, K>::Value item() const override;
 
 	private:
 		mutable std::variant<std::shared_ptr<const T>, Factory> value;
@@ -61,10 +58,10 @@ class DLL_PUBLIC CallCacheable : public Cacheable<T, K> {
 template <typename T, typename K>
 class DLL_PUBLIC PointerCallCacheable : public Cacheable<T, K> {
 	public:
-		typedef std::function<typename Cacheable<T, K>::Value()> Factory;
+		using Factory = std::function<typename Cacheable<T, K>::Value()>;
 		PointerCallCacheable(const Factory & t, const K & k, time_t validUtil);
 
-		virtual typename Cacheable<T, K>::Value item() const override;
+		[[nodiscard]] typename Cacheable<T, K>::Value item() const override;
 
 	private:
 		mutable std::variant<std::shared_ptr<const T>, Factory> value;
@@ -80,12 +77,12 @@ template <typename T, typename K>
 class DLL_PUBLIC Cache {
 	public:
 		/// @cond
-		typedef K Key;
-		typedef const std::shared_ptr<const T> Value;
-		typedef std::function<T()> Factory;
-		typedef std::function<Value()> PointerFactory;
-		typedef Cacheable<T, K> Item;
-		typedef std::shared_ptr<Item> Element;
+		using Key = K;
+		using Value = const std::shared_ptr<const T>;
+		using Factory = std::function<T()>;
+		using PointerFactory = std::function<Value()>;
+		using Item = Cacheable<T, K>;
+		using Element = std::shared_ptr<Item>;
 		/// @endcond
 
 		/** Construct a default empty cache. */
@@ -142,13 +139,13 @@ class DLL_PUBLIC Cache {
 
 		mutable std::shared_mutex lock;
 
-		typedef boost::multi_index::multi_index_container<Element,
+		using Cached = boost::multi_index::multi_index_container<Element,
 						boost::multi_index::indexed_by<
 						boost::multi_index::ordered_unique<
 							boost::multi_index::tag<byKey>, BOOST_MULTI_INDEX_MEMBER(Item, const K, key)>,
 						boost::multi_index::ordered_non_unique<
 							boost::multi_index::tag<byValidity>,  BOOST_MULTI_INDEX_MEMBER(Item, const time_t, validUntil)>
-							> > Cached;
+							> >;
 		mutable Cached cached;
 };
 

@@ -21,7 +21,8 @@ lib dl ;
 
 project
   : requirements
-			<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
+			<toolset>tidy:<xcheckxx>bugprone-use-after-move
+			<toolset>tidy:<xcheckxx>hicpp-invalid-access-moved
 	;
 
 h lorem-ipsum : lorem-ipsum.txt ;

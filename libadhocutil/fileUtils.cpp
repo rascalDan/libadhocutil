@@ -30,6 +30,14 @@ namespace AdHoc {
 			const_cast<int &>(o.fh) = -1;
 		}
 
+		FileHandle &
+		FileHandle::operator=(FileHandle && o) noexcept
+		{
+			const_cast<int &>(fh) = o.fh;
+			const_cast<int &>(o.fh) = -1;
+			return *this;
+		}
+
 		FileHandle::FileHandle(const std::filesystem::path & path, int flags) :
 			fh(open(path.c_str(), flags))
 		{
@@ -49,7 +57,6 @@ namespace AdHoc {
 		FileHandle::~FileHandle() noexcept
 		{
 			if (fh >= 0) {
-				// NOLINTNEXTLINE(hicpp-no-array-decay)
 				BOOST_VERIFY(close(fh) == 0);
 			}
 		}
@@ -127,7 +134,7 @@ namespace AdHoc {
 
 		MemMap::~MemMap()
 		{
-			munmap(data, st.st_size);
+			munmap(const_cast<void *>(data), st.st_size);
 		}
 
 		void *
@@ -140,7 +147,7 @@ namespace AdHoc {
 		MemMap::setupMap(int flags) const
 		{
 			auto data = setupMapInt(flags);
-			if (data == (void*)-1) {
+			if (data == reinterpret_cast<void *>(-1)) {
 				throw SystemExceptionOn("mmap(2) failed", strerror(errno), errno, FD::get(fh));
 			}
 			return data;
@@ -150,7 +157,7 @@ namespace AdHoc {
 		MemMap::setupMap(const std::filesystem::path & path, int flags) const
 		{
 			auto data = setupMapInt(flags);
-			if (data == (void*)-1) {
+			if (data == reinterpret_cast<void *>(-1)) {
 				throw SystemExceptionOn("mmap(2) failed", strerror(errno), errno, path);
 			}
 			return data;

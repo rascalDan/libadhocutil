@@ -9,6 +9,7 @@
 #include <memory>
 #include <optional>
 #include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 	/// An extensible lexer.
@@ -17,21 +18,24 @@ namespace AdHoc {
 			/// Pattern matcher interface.
 			class Pattern {
 				public:
+					Pattern() = default;
 					virtual ~Pattern() = default;
+					/// Standard move/copy support
+					SPECIAL_MEMBERS_DEFAULT(Pattern);
 
 					/// Test the pattern against the given input.
-					virtual bool matches(const gchar *, size_t, size_t) const = 0;
+					[[nodiscard]] virtual bool matches(const gchar *, size_t, size_t) const = 0;
 					/// Get the total amount of input matched.
-					virtual size_t matchedLength() const = 0;
+					[[nodiscard]] virtual size_t matchedLength() const = 0;
 					/// Get an extracted value from the pattern.
-					virtual std::optional<Glib::ustring> match(int) const = 0;
+					[[nodiscard]] virtual std::optional<Glib::ustring> match(int) const = 0;
 			};
 			/// Smart pointer to Pattern.
-			typedef std::shared_ptr<Pattern> PatternPtr;
+			using PatternPtr = std::shared_ptr<Pattern>;
 			/// Lexer state identifiers.
-			typedef std::string State;
+			using State = std::string;
 			/// Collection of States.
-			typedef std::set<State> States;
+			using States = std::set<State>;
 
 			/// Class representing the runtime execution of the lexer.
 			class ExecuteState {
@@ -46,39 +50,39 @@ namespace AdHoc {
 					/// Replace the current top of the state stack.
 					void setState(const State &);
 					/// Get the current state.
-					const State & getState() const;
+					[[nodiscard]] const State & getState() const;
 					/// Get the state stack depth.
-					size_t depth() const;
+					[[nodiscard]] size_t depth() const;
 					/// Get the current position.
-					size_t position() const;
+					[[nodiscard]] size_t position() const;
 					/// Get the currently matched pattern.
-					PatternPtr pattern() const;
+					[[nodiscard]] PatternPtr pattern() const;
 
 				private:
 					friend class Lexer;
-					size_t pos;
+					size_t pos { 0 };
 					PatternPtr pat;
 
 					std::vector<State> stateStack;
 			};
 
 			/// Callback for handling matched patterns.
-			typedef std::function<void(ExecuteState *)> Handler;
+			using Handler = std::function<void(ExecuteState *)>;
 			/**
 			 * Rule definition:
 			 * States: in which states should the rule be considered?
 			 * Pattern: the pattern matcher to test against the input.
 			 * Handler: the callback to execute when a match succeeds.
 			 */
-			typedef std::tuple<States, PatternPtr, Handler> Rule;
+			using Rule = std::tuple<States, PatternPtr, Handler>;
 			/// Collection of Rules that make up the lexer configuration.
-			typedef std::vector<Rule> Rules;
+			using Rules = std::vector<Rule>;
 			/// The initial state of applied to the lexer.
 			static const State InitialState;
 			/// Default constructor (empty rule set)
 			Lexer();
 			/// Construct with an initial set of rules.
-			Lexer(Rules);
+			explicit Lexer(Rules);
 			/// The lexer's current rule set.
 			Rules rules;
 

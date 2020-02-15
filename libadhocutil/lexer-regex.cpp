@@ -18,8 +18,7 @@ namespace AdHoc {
 					}
 				}
 
-				Regex(const Regex &) = delete;
-				Regex(const Regex &&) = delete;
+				SPECIAL_MEMBERS_DELETE(Regex);
 
 				~Regex() override
 				{
@@ -31,9 +30,6 @@ namespace AdHoc {
 					}
 					g_regex_unref(regex);
 				}
-
-				void operator=(const Regex &) = delete;
-				void operator=(const Regex &&) = delete;
 
 				bool matches(const gchar * string, size_t length, size_t position) const override
 				{

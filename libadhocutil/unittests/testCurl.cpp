@@ -151,7 +151,9 @@ BOOST_AUTO_TEST_CASE( fetch_multi_fail )
 			}
 			s >> tok;
 		}
+		/// LCOV_EXCL_START (should not occur)
 		finished = true;
+		/// LCOV_EXCL_STOP
 	});
 	cmh.performAll();
 	BOOST_REQUIRE(!finished);

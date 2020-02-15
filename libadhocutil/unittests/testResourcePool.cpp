@@ -8,10 +8,7 @@ class MockResource {
 		MockResource() : id(ids++) { count += 1; }
 		~MockResource() { count -= 1; }
 
-		MockResource(const MockResource &) = delete;
-		MockResource(MockResource &&) = delete;
-		void operator=(const MockResource &) = delete;
-		void operator=(MockResource &&) = delete;
+		SPECIAL_MEMBERS_DELETE(MockResource);
 
 		[[ nodiscard ]] bool valid() const { return true; }
 
@@ -98,7 +95,6 @@ BOOST_AUTO_TEST_CASE ( get )
 				BOOST_REQUIRE(true);
 			}
 			BOOST_REQUIRE(!r1a);
-			BOOST_REQUIRE_THROW(r1a.get(), std::runtime_error);
 			r1a = r2;
 			BOOST_REQUIRE(r1a);
 			BOOST_REQUIRE_EQUAL(r2.get(), r1a.get());
@@ -159,14 +155,12 @@ BOOST_AUTO_TEST_CASE( move )
 		{
 			auto r2(std::move(r1));
 			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
-			// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 			BOOST_CHECK(!r1);
 			BOOST_CHECK(r2);
 
 			r1 = std::move(r2);
 			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
 			BOOST_CHECK(r1);
-			// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 			BOOST_CHECK(!r2);
 
 			r2 = pool.get();
@@ -176,7 +170,6 @@ BOOST_AUTO_TEST_CASE( move )
 			r1 = std::move(r2);
 			BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
 			BOOST_CHECK(r1);
-			// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 			BOOST_CHECK(!r2);
 		}
 		BOOST_CHECK_EQUAL(pool.inUseCount(), 1);
@@ -401,5 +394,11 @@ BOOST_AUTO_TEST_CASE( returnFail )
 	BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
 	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
+}
+
+BOOST_AUTO_TEST_CASE( exception_msgs )
+{
+	BOOST_CHECK_NO_THROW(AdHoc::TimeOutOnResourcePool("foo").message());
+	BOOST_CHECK_NO_THROW(AdHoc::NoCurrentResource(std::this_thread::get_id(), "foo").message());
 }
 

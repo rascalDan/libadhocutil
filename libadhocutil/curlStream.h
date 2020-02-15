@@ -7,6 +7,7 @@
 #include <curl/curl.h>
 #include "visibility.h"
 #include "curlHandle.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 namespace Net {
@@ -15,8 +16,10 @@ namespace Net {
 class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public CurlHandle, ::AdHoc::System::RuntimeContext {
 	public:
 		/** Construct a new stream source for the given URL. */
-		CurlStreamSource(const std::string & url);
-		virtual ~CurlStreamSource();
+		explicit CurlStreamSource(const std::string & url);
+		/// Standard move/copy support
+		SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(CurlStreamSource);
+		~CurlStreamSource() override;
 
 		/** Required member function for reading of the stream source by boost::iostreams::stream. */
 		std::streamsize read(char * target, std::streamsize targetSize);
@@ -33,7 +36,7 @@ class DLL_PUBLIC CurlStreamSource : public boost::iostreams::source, public Curl
 		CURLcode res;
 };
 
-typedef boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>> CurlStream;
+using CurlStream = boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>>;
 
 }
 }

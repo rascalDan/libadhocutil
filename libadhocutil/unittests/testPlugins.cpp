@@ -68,12 +68,12 @@ BOOST_AUTO_TEST_CASE( removeManual )
 	BOOST_REQUIRE_EQUAL(3, PluginManager::getDefault()->count());
 	PluginManager::getDefault()->remove<BaseThing>("custom1");
 	BOOST_REQUIRE_EQUAL(2, PluginManager::getDefault()->count());
-	BOOST_REQUIRE_THROW(PluginManager::getDefault()->get<BaseThing>("custom1"), NoSuchPluginException);
+	BOOST_REQUIRE_THROW((void)PluginManager::getDefault()->get<BaseThing>("custom1"), NoSuchPluginException);
 	BOOST_REQUIRE(PluginManager::getDefault()->get<BaseThing>("custom2"));
 	BOOST_REQUIRE(PluginManager::getDefault()->get<BaseThing>("ImplOfThing"));
 	PluginManager::getDefault()->remove<BaseThing>("custom2");
 	BOOST_REQUIRE_EQUAL(1, PluginManager::getDefault()->count());
-	BOOST_REQUIRE_THROW(PluginManager::getDefault()->get<BaseThing>("custom2"), NoSuchPluginException);
+	BOOST_REQUIRE_THROW((void)PluginManager::getDefault()->get<BaseThing>("custom2"), NoSuchPluginException);
 	BOOST_REQUIRE(PluginManager::getDefault()->get<BaseThing>("ImplOfThing"));
 }
 

@@ -63,7 +63,6 @@ BOOST_AUTO_TEST_CASE( movePassThrough )
 	auto y = std::make_unique<Sub>(std::move(f));
 	BOOST_REQUIRE_EQUAL(y->fh, ffd);
 	REQUIRE_VALID_FH(y->fh);
-	// NOLINTNEXTLINE(bugprone-use-after-move,hicpp-invalid-access-moved)
 	BOOST_REQUIRE_EQUAL(f.fh, -1);
 	REQUIRE_INVALID_FH(f.fh);
 	y.reset();
