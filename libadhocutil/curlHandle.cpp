@@ -3,9 +3,7 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include "compileTimeFormatter.h"
 
-// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
-namespace AdHoc {
-namespace Net {
+namespace AdHoc::Net {
 
 static void cleanup() __attribute__((destructor));
 static void cleanup()
@@ -135,6 +133,5 @@ CurlException::ice_print(std::ostream & s) const
 	}
 }
 
-}
 }
 

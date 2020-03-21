@@ -38,7 +38,7 @@ paramFactory(const std::string & str)
 
 BOOST_AUTO_TEST_CASE ( islazy )
 {
-	TestLazyPointer p(std::bind(&factory));
+	TestLazyPointer p([]{ return factory(); });
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	Test * t = p.get();
 	BOOST_REQUIRE(t);
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE ( reset )
 	p = nullptr;
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
 	BOOST_REQUIRE_EQUAL(true, !p);
-	p = std::bind(&factory);
+	p = []{ return factory(); };
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	BOOST_REQUIRE(p.get());
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE ( reset )
 
 BOOST_AUTO_TEST_CASE ( nondefault )
 {
-	TestLazyPointer p(std::bind(&paramFactory, "some string"));
+	TestLazyPointer p([]{ return paramFactory("some string"); });
 	BOOST_REQUIRE_EQUAL(false, p.hasValue());
 	BOOST_REQUIRE_EQUAL(11, (*p).val);
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
@@ -110,7 +110,7 @@ rawFactory(const std::string & s)
 
 BOOST_AUTO_TEST_CASE( rawPointerFactory )
 {
-	RawLazyPointer value(std::bind(&rawFactory, std::string("four")));
+	RawLazyPointer value([]{ return rawFactory(std::string("four")); });
 	BOOST_REQUIRE(!value.hasValue());
 	BOOST_REQUIRE_EQUAL(*value, 4);
 	BOOST_REQUIRE(value.hasValue());

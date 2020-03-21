@@ -4,6 +4,7 @@
 #include <compileTimeFormatter.h>
 #include <fileUtils.h>
 #include <definedDirs.h>
+#include "memstream.h"
 
 #include <filesystem>
 
@@ -298,17 +299,11 @@ operator<<(FILE & strm, const char * const p)
 
 BOOST_AUTO_TEST_CASE( filestar )
 {
-	char * buf = nullptr;
-	size_t len = 0;
-	FILE * strm = open_memstream(&buf, &len);
-	BOOST_REQUIRE(strm);
+	MemStream strm;
 	// NOLINTNEXTLINE(misc-non-copyable-objects)
-	Formatter<formatStringMulti>::write(*strm, "file", "star");
-	fclose(strm);
-	BOOST_CHECK_EQUAL(len, 22);
-	BOOST_CHECK_EQUAL(buf, "First file, then star.");
-	// NOLINTNEXTLINE(hicpp-no-malloc)
-	free(buf);
+	Formatter<formatStringMulti>::write(*strm.operator FILE *(), "file", "star");
+	BOOST_CHECK_EQUAL(strm.length(), 22);
+	BOOST_CHECK_EQUAL(strm.sv(), "First file, then star.");
 }
 
 #include "ctf-impl/printf-compat.h"

@@ -69,7 +69,6 @@ class LazyPointer {
 
 		[[nodiscard]] T * get() const
 		{
-			// NOLINTNEXTLINE(hicpp-braces-around-statements)
 			if constexpr (std::is_pointer<P>::value) {
 				return deref();
 			}

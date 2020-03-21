@@ -4,9 +4,7 @@
 #include "runtimeContext.h"
 #include "curlStream.h"
 
-// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
-namespace AdHoc {
-namespace Net {
+namespace AdHoc::Net {
 
 class RunningCurl : public CurlStreamSource {
 	public:
@@ -57,10 +55,9 @@ CurlMultiHandle::performAll()
 		while (!curls.empty() && running.size() < 5) {
 			addRunner(curlm, running, curls);
 		}
-		CURLMcode code;
 		int act = running.size();
 		while (act) {
-			while ((code = curl_multi_perform(curlm, &act)) == CURLM_CALL_MULTI_PERFORM) {}
+			while (curl_multi_perform(curlm, &act) == CURLM_CALL_MULTI_PERFORM) {}
 			// Has anything finished
 			CURLMsg * msg;
 			int msgs = 0;
@@ -94,6 +91,5 @@ CurlMultiHandle::performAll()
 	}
 }
 
-}
 }
 

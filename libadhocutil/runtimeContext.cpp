@@ -3,9 +3,7 @@
 #include <cstring>
 #include <sys.h>
 
-// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
-namespace AdHoc {
-namespace System {
+namespace AdHoc::System {
 
 RuntimeContext::RuntimeContext(size_t stacksize) :
 	stack(stacksize)
@@ -46,6 +44,5 @@ RuntimeContext::callbackWrapper(RuntimeContext * rc)
 	rc->completed = true;
 }
 
-}
 }
 

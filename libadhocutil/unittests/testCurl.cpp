@@ -20,7 +20,9 @@ discard(void *, size_t sz, size_t nm, void *)
 }
 
 AdHocFormatter(FileUrl, "file://%?/%?");
-const auto urlGen = std::bind((std::string(*)(const std::string &, const std::string_view &))&FileUrl::get, rootDir, std::placeholders::_1);
+const auto urlGen = [](const std::string_view & url) {
+	return FileUrl::get(rootDir.string(), url);
+};
 
 BOOST_AUTO_TEST_CASE( fetch_file )
 {
@@ -125,11 +127,11 @@ BOOST_AUTO_TEST_CASE( fetch_multi )
 	CurlMultiHandle cmh;
 	std::map<std::string, std::string> files;
 	cmh.addCurl(urlGen("/testBuffer.cpp"),
-			std::bind(&mapFileToName, std::ref(files), "testBuffer.cpp", _1));
+			[&files](auto && PH1) { return mapFileToName(files, "testBuffer.cpp", PH1); });
 	cmh.addCurl(urlGen("/testCurl.cpp"),
-			std::bind(&mapFileToName, std::ref(files), "testCurl.cpp", _1));
+			[&files](auto && PH1) { return mapFileToName(files, "testCurl.cpp", PH1); });
 	cmh.addCurl(urlGen("/testLocks.cpp"),
-			std::bind(&mapFileToName, std::ref(files), "testLocks.cpp", _1));
+			[&files](auto && PH1) { return mapFileToName(files, "testLocks.cpp", PH1); });
 	cmh.performAll();
 	BOOST_REQUIRE_EQUAL(3, files.size());
 	BOOST_REQUIRE_EQUAL("Locks", files["testLocks.cpp"]);
