@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <cstring>
+#include <optional>
 #include <array>
 #include <boost/preprocessor/variadic/size.hpp>
 #include "unique.h"
@@ -26,24 +27,32 @@ namespace AdHoc {
 	template<CtfString S>
 	static constexpr auto strlen()
 	{
-		auto off = 0;
+		auto off = 0U;
 		while (S[off]) { ++off; }
 		return off;
 	}
 
-	template<CtfString S, auto n, auto start = 0, auto L = strlen<S>()>
-	static constexpr auto strchr()
+	template<typename char_type>
+	static constexpr auto strlen(const char_type * S)
+	{
+		auto off = 0U;
+		while (S[off]) { ++off; }
+		return off;
+	}
+
+	template<CtfString S, auto n, auto start = 0U, auto L = strlen<S>()>
+	static constexpr std::optional<decltype(start)> strchr()
 	{
 		static_assert(start <= L);
 		decltype(start) off = start;
 		while (off < L && S[off] != n) { ++off; }
 		if (off == L) {
-			return -1;
+			return {};
 		}
 		return off;
 	}
 
-	template<CtfString S, auto n, auto start = 0, auto L = strlen<S>()>
+	template<CtfString S, auto n, auto start = 0U, auto L = strlen<S>()>
 	static constexpr decltype(L) strchrnul()
 	{
 		decltype(start) off = start;
@@ -51,7 +60,7 @@ namespace AdHoc {
 		return off;
 	}
 
-	template<CtfString S, decltype(strlen<S>())> class Formatter;
+	template<CtfString S, const auto L> class FormatterDetail;
 
 	/// Template used to apply parameters to a stream.
 	template<CtfString S, auto L, auto pos, typename stream, typename, auto ...>
@@ -71,7 +80,7 @@ namespace AdHoc {
 		template<typename ... Pn>
 		static inline void next(stream & s, const Pn & ... pn)
 		{
-			Formatter<S, L>::template Parser<stream, pos + 1, Pn...>::run(s, pn...);
+			FormatterDetail<S, L>::template Parser<stream, pos + 1, Pn...>::run(s, pn...);
 		}
 	};
 
@@ -121,8 +130,8 @@ namespace AdHoc {
 	 * Compile time string formatter.
 	 * @param S the format string.
 	 */
-	template <CtfString S, decltype(strlen<S>()) L = strlen<S>()>
-	class Formatter {
+	template <CtfString S, const auto L>
+	class FormatterDetail {
 		private:
 			using strlen_t = decltype(strlen<S>());
 			template<CtfString, auto, auto, typename> friend struct StreamWriterBase;
@@ -161,7 +170,7 @@ namespace AdHoc {
 			template<typename stream, typename ... Pn>
 			static inline stream & write(stream & s, const Pn & ... pn)
 			{
-				return Parser<stream, 0, Pn...>::run(s, pn...);
+				return Parser<stream, 0U, Pn...>::run(s, pn...);
 			}
 			/**
 			 * Write the result of formatting to the given stream.
@@ -193,7 +202,7 @@ namespace AdHoc {
 					}
 					return s;
 				}
-				template<strlen_t ph, strlen_t off = 0, auto ... Pck>
+				template<strlen_t ph, strlen_t off = 0U, auto ... Pck>
 				static inline void packAndWrite(stream & s, const Pn & ... pn)
 				{
 					if constexpr (ph + off == L || sizeof...(Pck) == 32) {
@@ -220,12 +229,15 @@ namespace AdHoc {
 		};
 		template<typename T, T ... t> inline auto operator""_fmt() noexcept
 		{
-			return AdHoc::Formatter<FMT<T, t...>::__FMT, sizeof...(t)>();
+			return AdHoc::FormatterDetail<FMT<T, t...>::__FMT, sizeof...(t)>();
 		}
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
 	}
+
+	template <const auto & S, decltype(strlen<S>()) L = strlen<S>()>
+	class Formatter : public FormatterDetail<S, L> { };
 }
 
 #define AdHocFormatterTypedef(name, str, id) \
