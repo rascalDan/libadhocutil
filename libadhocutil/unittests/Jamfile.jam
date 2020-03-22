@@ -39,6 +39,21 @@ run
 	;
 
 run
+	testCompileTimeFormatter.cpp
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>stdc++fs
+	<library>boost_utf
+	-<cxxstd>17
+	<cxxstd>2a
+	<implicit-dependency>lorem-ipsum
+	:
+	testCompileTimeFormatter20
+	;
+
+run
 	testUriParse.cpp
 	: : :
 	<define>ROOT=\"$(me)\"

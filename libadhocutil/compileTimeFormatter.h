@@ -6,10 +6,17 @@
 #include <optional>
 #include <array>
 #include <boost/preprocessor/variadic/size.hpp>
-#include "unique.h"
 
 namespace AdHoc {
+#ifdef __cpp_nontype_template_parameter_class
+#define USE_FIXED_STRING
+#endif
+
+#ifdef USE_FIXED_STRING
+#define CtfString const auto
+#else
 #define CtfString const auto &
+#endif
 	// Template char utils
 	template<typename char_type>
 	constexpr bool isdigit(const char_type & ch)
@@ -236,15 +243,54 @@ namespace AdHoc {
 #endif
 	}
 
+#ifdef USE_FIXED_STRING
+	// New C++20 implementation
+	namespace support {
+		template<typename CharT, std::size_t N>
+		class basic_fixed_string : public std::array<CharT, N> {
+			public:
+				constexpr basic_fixed_string(const CharT (&str)[N + 1])
+				{
+					for (decltype(N) x = 0; x < N; x++) {
+						this->at(x) = str[x];
+					}
+				}
+				constexpr basic_fixed_string(const CharT * str, decltype(N) len)
+				{
+					for (decltype(N) x = 0; x < len; x++) {
+						this->at(x) = str[x];
+					}
+				}
+		};
+
+		template<typename CharT, std::size_t N>
+		basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
+	}
+
+	template<const support::basic_fixed_string Str>
+	class LiteralFormatter : public FormatterDetail<Str, Str.size()> { };
+
+	template <const auto & S, decltype(strlen(S)) L = strlen(S)>
+	class Formatter : public FormatterDetail<support::basic_fixed_string<
+										typename std::decay<decltype(S[0])>::type, L>(S, L), L> { };
+
+#define AdHocFormatter(name, str) \
+	using name = LiteralFormatter<str>
+
+#else
+	// Classic pre-C++20 implementation
+#include "unique.h"
 	template <const auto & S, decltype(strlen<S>()) L = strlen<S>()>
 	class Formatter : public FormatterDetail<S, L> { };
-}
 
 #define AdHocFormatterTypedef(name, str, id) \
     inline constexpr auto id = str; \
     using name = ::AdHoc::Formatter<id>
 #define AdHocFormatter(name, str) \
     AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
+
+#endif
+}
 
 #endif
 

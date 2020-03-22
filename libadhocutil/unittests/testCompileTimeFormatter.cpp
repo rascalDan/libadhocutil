@@ -77,6 +77,7 @@ namespace AdHoc {
 	};
 }
 
+#ifndef __cpp_nontype_template_parameter_class
 // Compile string util assertions
 static_assert(strlen<formatEdgeCaseEmpty>() == 0);
 static_assert(strlen<formatEdgeCaseSingle>() == 1);
@@ -113,6 +114,7 @@ static_assert(strchrnul<formatEdgeCaseFormatLonely, '%'>() == 0);
 static_assert(strchrnul<formatEdgeCaseFormatLonely, '?'>() == 1);
 static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
 static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
+#endif
 
 BOOST_FIXTURE_TEST_SUITE( TestStreamWrite, std::stringstream )
 
