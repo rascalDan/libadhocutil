@@ -8,6 +8,7 @@
 #include "unique.h"
 
 namespace AdHoc {
+#define CtfString const auto &
 	// Template char utils
 	template<typename char_type>
 	constexpr bool isdigit(const char_type & ch)
@@ -22,7 +23,7 @@ namespace AdHoc {
 	}
 
 	// Template string utils
-	template<const auto & S>
+	template<CtfString S>
 	static constexpr auto strlen()
 	{
 		auto off = 0;
@@ -30,7 +31,7 @@ namespace AdHoc {
 		return off;
 	}
 
-	template<const auto & S, auto n, auto start = 0, auto L = strlen<S>()>
+	template<CtfString S, auto n, auto start = 0, auto L = strlen<S>()>
 	static constexpr auto strchr()
 	{
 		static_assert(start <= L);
@@ -42,7 +43,7 @@ namespace AdHoc {
 		return off;
 	}
 
-	template<const auto & S, auto n, auto start = 0, auto L = strlen<S>()>
+	template<CtfString S, auto n, auto start = 0, auto L = strlen<S>()>
 	static constexpr decltype(L) strchrnul()
 	{
 		decltype(start) off = start;
@@ -50,10 +51,10 @@ namespace AdHoc {
 		return off;
 	}
 
-	template <const auto & S, decltype(strlen<S>())> class Formatter;
+	template<CtfString S, decltype(strlen<S>())> class Formatter;
 
 	/// Template used to apply parameters to a stream.
-	template<const auto & S, auto L, auto pos, typename stream, typename, auto ...>
+	template<CtfString S, auto L, auto pos, typename stream, typename, auto ...>
 	struct StreamWriter {
 		/// Write parameters to stream.
 		template<typename ... Pn>
@@ -64,7 +65,7 @@ namespace AdHoc {
 	};
 
 	/// Helper to simplify implementations of StreamWriter.
-	template<const auto & S, auto L, auto pos, typename stream>
+	template<CtfString S, auto L, auto pos, typename stream>
 	struct StreamWriterBase {
 		/// Continue processing parameters.
 		template<typename ... Pn>
@@ -75,12 +76,12 @@ namespace AdHoc {
 	};
 
 #define StreamWriterT(C...) \
-	template<const auto & S, auto L, auto pos, typename stream, auto ... sn> \
+	template<CtfString S, auto L, auto pos, typename stream, auto ... sn> \
 	struct StreamWriter<S, L, pos, stream, void, '%', C, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
 
 #define StreamWriterTP(P, C...) \
-	template<const auto & S, auto L, auto pos, typename stream, auto P, auto ... sn> \
+	template<CtfString S, auto L, auto pos, typename stream, auto P, auto ... sn> \
 	struct StreamWriter<S, L, pos, stream, void, '%', C, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
 
@@ -120,11 +121,11 @@ namespace AdHoc {
 	 * Compile time string formatter.
 	 * @param S the format string.
 	 */
-	template <const auto & S, decltype(strlen<S>()) L = strlen<S>()>
+	template <CtfString S, decltype(strlen<S>()) L = strlen<S>()>
 	class Formatter {
 		private:
 			using strlen_t = decltype(strlen<S>());
-			template<const auto &, auto, auto, typename> friend struct StreamWriterBase;
+			template<CtfString, auto, auto, typename> friend struct StreamWriterBase;
 
 		public:
 			/// The derived charater type of the format string.
@@ -229,7 +230,7 @@ namespace AdHoc {
 
 #define AdHocFormatterTypedef(name, str, id) \
     inline constexpr auto id = str; \
-    typedef ::AdHoc::Formatter<id> name
+    using name = ::AdHoc::Formatter<id>
 #define AdHocFormatter(name, str) \
     AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
 
