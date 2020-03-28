@@ -446,15 +446,52 @@ BOOST_AUTO_TEST_CASE(smartptr)
 	smartptr_fmt::get(shrd);
 }
 
-// This tests scprintf macro, which in turn requires compiler support
-#ifdef scprintf
-BOOST_AUTO_TEST_CASE(scprintf)
+#ifdef __cpp_nontype_template_parameter_class
+BOOST_AUTO_TEST_CASE(literal_format_string)
 {
-	auto str = std::make_unique<std::stringstream>();
-	auto & strret = scprintf(*str, "Some literal format string (%d, %c).", 0, 'f');
-	BOOST_CHECK_EQUAL(str.get(), &strret); // We got back our original stream
-	BOOST_CHECK_EQUAL(str->str(), "Some literal format string (0, f).");
-	scprintf(*str, "Some literal format string, no args.");
+	std::stringstream str;
+	LiteralFormatter<"literal format string %?.">::write(str, 42);
+	BOOST_CHECK_EQUAL("literal format string 42.", str.str());
+}
+
+BOOST_AUTO_TEST_CASE(cprintf_args)
+{
+	auto & strret = cprintf<"Some literal format string (%d, %c).">(0, 'f');
+	BOOST_CHECK_EQUAL(&std::cout, &strret);
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_strm_args)
+{
+	std::stringstream str;
+	auto & strret = scprintf<"Some literal format string (%d, %c).">(str, 0, 'f');
+	BOOST_CHECK_EQUAL(&str, &strret);
+	BOOST_CHECK_EQUAL(str.str(), "Some literal format string (0, f).");
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_get_args)
+{
+	auto stng = scprintf<"Some literal format string (%d, %c).">(0, 'f');
+	BOOST_CHECK_EQUAL(stng, "Some literal format string (0, f).");
+}
+
+BOOST_AUTO_TEST_CASE(cprintf_no_args)
+{
+	auto & strret = cprintf<"Some literal format string.">();
+	BOOST_CHECK_EQUAL(&std::cout, &strret);
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_strm_no_args)
+{
+	std::stringstream str;
+	auto & strret = scprintf<"Some literal format string.">(str);
+	BOOST_CHECK_EQUAL(&str, &strret);
+	BOOST_CHECK_EQUAL(str.str(), "Some literal format string.");
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_get_no_args)
+{
+	auto stng = scprintf<"Some literal format string.">();
+	BOOST_CHECK_EQUAL(stng, "Some literal format string.");
 }
 #endif
 

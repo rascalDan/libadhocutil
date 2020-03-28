@@ -277,6 +277,24 @@ namespace AdHoc {
 #define AdHocFormatter(name, str) \
 	using name = LiteralFormatter<str>
 
+	template<const support::basic_fixed_string Str, typename ... Pn>
+	inline auto scprintf(const Pn & ... pn)
+	{
+		return FormatterDetail<Str, Str.size()>::get(pn...);
+	}
+
+	template<const support::basic_fixed_string Str, typename stream, typename ... Pn>
+	inline auto & scprintf(stream & strm, const Pn & ... pn)
+	{
+		return FormatterDetail<Str, Str.size()>::write(strm, pn...);
+	}
+
+	template<const support::basic_fixed_string Str, typename ... Pn>
+	inline auto & cprintf(const Pn & ... pn)
+	{
+		return scprintf<Str>(std::cout, pn...);
+	}
+
 #else
 	// Classic pre-C++20 implementation
 #include "unique.h"
