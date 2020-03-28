@@ -222,27 +222,6 @@ namespace AdHoc {
 			};
 	};
 
-	namespace literals {
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu-string-literal-operator-template"
-#endif
-		/// CTF format string holder
-		template<typename T, T ... t> struct FMT
-		{
-			/// CTF format string
-			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
-			static constexpr char __FMT[] = {t...};
-		};
-		template<typename T, T ... t> inline auto operator""_fmt() noexcept
-		{
-			return AdHoc::FormatterDetail<FMT<T, t...>::__FMT, sizeof...(t)>();
-		}
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-	}
-
 #ifdef USE_FIXED_STRING
 	// New C++20 implementation
 	namespace support {
@@ -308,6 +287,35 @@ namespace AdHoc {
     AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
 
 #endif
+
+	namespace literals {
+#ifdef USE_FIXED_STRING
+		template<const support::basic_fixed_string Str>
+		constexpr inline auto operator""_fmt() noexcept
+		{
+			return AdHoc::FormatterDetail<Str, Str.size()>();
+		}
+#else
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-string-literal-operator-template"
+#endif
+		/// CTF format string holder
+		template<typename T, T ... t> struct FMT
+		{
+			/// CTF format string
+			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
+			static constexpr char __FMT[] = {t...};
+		};
+		template<typename T, T ... t> inline auto operator""_fmt() noexcept
+		{
+			return AdHoc::FormatterDetail<FMT<T, t...>::__FMT, sizeof...(t)>();
+		}
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+	}
 }
 
 #endif
