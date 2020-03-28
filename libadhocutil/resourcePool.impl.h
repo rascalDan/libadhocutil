@@ -1,6 +1,7 @@
 #ifndef ADHOCUTIL_RESOURCEPOOL_IMPL_H
 #define ADHOCUTIL_RESOURCEPOOL_IMPL_H
 
+#include <boost/assert.hpp>
 #include "resourcePool.h"
 #include "lockHelpers.h"
 #include "safeMapFind.h"
