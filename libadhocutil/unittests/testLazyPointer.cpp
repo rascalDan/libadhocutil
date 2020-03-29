@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE ( islazy )
 BOOST_AUTO_TEST_CASE ( preinit )
 {
 	Test * t = new Test(4);
-	TestLazyPointer p(t);
+	TestLazyPointer p(TestLazyPointer::pointer_type{ t });
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
 	BOOST_REQUIRE_EQUAL(p, t);
 	BOOST_REQUIRE_EQUAL(4, p->val);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE ( preinit )
 BOOST_AUTO_TEST_CASE ( reset )
 {
 	Test * t = new Test(4);
-	TestLazyPointer p(t);
+	TestLazyPointer p(TestLazyPointer::pointer_type{ t });
 	BOOST_REQUIRE_EQUAL(true, p.hasValue());
 	BOOST_REQUIRE_EQUAL(4, p->val);
 	p = nullptr;

@@ -26,21 +26,16 @@ class LazyPointer {
 		/// @endcond
 
 		/** Construct pointer with a factory function. */
-		explicit LazyPointer(const Factory & f) :
+		// NOLINTNEXTLINE(hicpp-explicit-conversions)
+		LazyPointer(Factory f) :
 			source(f)
 		{
 		}
 
 		/** Construct pointer with an instance value. */
-		explicit LazyPointer(const P & p) :
+		// NOLINTNEXTLINE(hicpp-explicit-conversions)
+		LazyPointer(P p) :
 			source(p)
-		{
-		}
-
-		/** Construct pointer with an instance value. */
-		template <typename TT = T>
-		explicit LazyPointer(T * p, typename std::enable_if<!std::is_same<TT *, P>::value>::type * = nullptr) :
-			source(P(p))
 		{
 		}
 
