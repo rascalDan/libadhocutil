@@ -13,7 +13,7 @@ namespace AdHoc {
 	class DLL_PUBLIC Semaphore {
 		public:
 			/// Construct a new semaphore with optional initial count.
-			Semaphore(unsigned int initial = 0);
+			explicit Semaphore(unsigned int initial = 0);
 
 			/// Notify one waiting thread.
 			void notify();
@@ -23,7 +23,7 @@ namespace AdHoc {
 			/// @param ms Timeout in milliseconds.
 			bool wait(unsigned int ms);
 			/// Free
-			unsigned int freeCount() const;
+			[[nodiscard]] unsigned int freeCount() const;
 
 		private:
 			std::mutex mutex;

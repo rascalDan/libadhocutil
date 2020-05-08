@@ -1,8 +1,6 @@
 #include "curlStream.h"
 
-// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
-namespace AdHoc {
-namespace Net {
+namespace AdHoc::Net {
 
 CurlStreamSource::CurlStreamSource(const std::string & url) :
 	CurlHandle(url),
@@ -57,6 +55,5 @@ CurlStreamSource::recv(void * data, size_t datalen)
 	return datalen;
 }
 
-}
 }
 

@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <string_view>
 #include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 	namespace FileUtils {
@@ -31,14 +32,14 @@ namespace AdHoc {
 				 * Construct from an existing file descriptor.
 				 * @param fd An open file descriptor.
 				 */
-				FileHandle(int fd) noexcept;
+				explicit FileHandle(int fd) noexcept;
 
 				/**
 				 * Open a new file handle.
 				 * @param path Path of file to open.
 				 * @param flags File handle flags
 				 */
-				FileHandle(const std::filesystem::path & path, int flags = O_RDONLY);
+				explicit FileHandle(const std::filesystem::path & path, int flags = O_RDONLY);
 
 				/**
 				 * Open a new file handle.
@@ -50,13 +51,17 @@ namespace AdHoc {
 
 				virtual ~FileHandle() noexcept;
 
-				FileHandle(const FileHandle &) = delete;
-				void operator=(const FileHandle &) = delete;
+				/// Standard move/copy support
+				SPECIAL_MEMBERS_COPY(FileHandle, delete);
+
+				/// Standard move/copy support
+				FileHandle & operator=(FileHandle &&) noexcept;
 
 				/**
 				 * Implicit conversion back to raw Unix file descriptor.
 				 * @return The container file descriptor.
 				 */
+				// NOLINTNEXTLINE(hicpp-explicit-conversions)
 				operator int() const noexcept;
 
 				/// The file handle.
@@ -68,23 +73,20 @@ namespace AdHoc {
 		 */
 		class DLL_PUBLIC FileHandleStat : public FileHandle {
 			public:
-				/**
-				 * Move constructor.
-				 */
-				FileHandleStat(FileHandleStat &&) = default;
+				~FileHandleStat() override = default;
 
 				/**
 				 * Construct from an existing file descriptor.
 				 * @param fd An open file descriptor.
 				 */
-				FileHandleStat(int fd);
+				explicit FileHandleStat(int fd);
 
 				/**
 				 * Open a new file handle (with the default flags).
 				 * @param path Path of file to open.
 				 * @param flags File handle flags
 				 */
-				FileHandleStat(const std::filesystem::path & path, int flags = O_RDONLY);
+				explicit FileHandleStat(const std::filesystem::path & path, int flags = O_RDONLY);
 
 				/**
 				 * Open a new file handle.
@@ -94,11 +96,14 @@ namespace AdHoc {
 				 */
 				FileHandleStat(const std::filesystem::path & path, int flags, int mode);
 
+				/// Standard move/copy support
+				SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(FileHandleStat);
+
 				/**
 				 * Get the stat structure.
 				 * @return The stat structure.
 				 */
-				const struct stat & getStat() const noexcept;
+				[[nodiscard]] const struct stat & getStat() const noexcept;
 
 				/**
 				 * Refresh and return the stat structure.
@@ -122,21 +127,21 @@ namespace AdHoc {
 				/**
 				 * Move constructor.
 				 */
-				MemMap(MemMap &&) = default;
+				MemMap(MemMap &&) noexcept = default;
 
 				/**
 				 * Construct from an existing file descriptor.
 				 * @param fd An open file descriptor.
 				 * @param flags File handle flags
 				 */
-				MemMap(int fd, int flags = O_RDONLY);
+				explicit MemMap(int fd, int flags = O_RDONLY);
 
 				/**
 				 * Open a new file handle (with the default flags).
 				 * @param path Path of file to open.
 				 * @param flags File handle flags
 				 */
-				MemMap(const std::filesystem::path & path, int flags = O_RDONLY);
+				explicit MemMap(const std::filesystem::path & path, int flags = O_RDONLY);
 
 				/**
 				 * Open a new file handle.
@@ -146,26 +151,31 @@ namespace AdHoc {
 				 */
 				MemMap(const std::filesystem::path & path, int flags, int mode);
 
-				~MemMap();
+				~MemMap() override;
+
+				/// Standard move/copy support
+				SPECIAL_MEMBERS_COPY(MemMap, delete);
+
+				MemMap & operator=(MemMap &&) = delete;
 
 				/// The file data.
-				void * const data;
+				const void * const data;
 
 #ifdef __cpp_lib_string_view
 				/**
 				 * Create a std::string_view of the mapped data.
 				 */
 				template<typename T = char>
-				auto sv() const
+				[[nodiscard]] auto sv() const
 				{
 					return std::basic_string_view<T>((const T *)data, st.st_size / sizeof(T));
 				}
 #endif
 
 			private:
-				DLL_PRIVATE void * setupMapInt(int flags) const;
-				DLL_PRIVATE void * setupMap(int flags) const;
-				DLL_PRIVATE void * setupMap(const std::filesystem::path & path, int flags) const;
+				[[nodiscard]] DLL_PRIVATE void * setupMapInt(int flags) const;
+				[[nodiscard]] DLL_PRIVATE void * setupMap(int flags) const;
+				[[nodiscard]] DLL_PRIVATE void * setupMap(const std::filesystem::path & path, int flags) const;
 		};
 	}
 }

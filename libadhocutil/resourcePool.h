@@ -10,6 +10,7 @@
 #include "semaphore.h"
 #include "exception.h"
 #include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 	template <typename Resource>
@@ -20,34 +21,32 @@ namespace AdHoc {
 	class DLL_PUBLIC ResourceHandle {
 		public:
 			/// Handle to an allocated resource, the pool it belongs to and a count of active references.
-			typedef std::tuple<std::shared_ptr<Resource>, ResourcePool<Resource> *> Object;
+			using Object = std::tuple<std::shared_ptr<Resource>, ResourcePool<Resource> *>;
 
 			/// Create a reference to a new resource.
-			ResourceHandle(const std::shared_ptr<Object> &);
-			/// Create a reference to an existing resource.
-			ResourceHandle(const ResourceHandle &);
-			/// Move reference to an existing resource.
-			ResourceHandle(ResourceHandle &&);
-			~ResourceHandle();
+			explicit ResourceHandle(std::shared_ptr<Object>) noexcept;
+			/// Standard move/copy support
+			SPECIAL_MEMBERS_CONS(ResourceHandle, default);
+			~ResourceHandle() noexcept;
 
 			/// Reference to an existing resource.
-			void operator=(const ResourceHandle &);
+			ResourceHandle & operator=(const ResourceHandle &) noexcept;
 			/// Move reference to an existing resource.
-			void operator=(ResourceHandle &&);
+			ResourceHandle & operator=(ResourceHandle &&) noexcept;
 			/// Access to the resource.
-			Resource * operator->() const;
+			Resource * operator->() const noexcept;
 			/// Access to the resource.
-			Resource * get() const;
+			Resource * get() const noexcept;
 			/// Release the resource back to the pool.
-			void release();
+			void release() noexcept;
 			/// Cast to bool.
-			operator bool() const;
+			explicit operator bool() const noexcept;
 
 			/// Get number of handles to this resource.
-			unsigned int handleCount() const;
+			[[nodiscard]] unsigned int handleCount() const;
 
 		private:
-			DLL_PRIVATE void decRef();
+			DLL_PRIVATE void decRef() noexcept;
 			std::shared_ptr<Object> resource;
 	};
 
@@ -64,12 +63,8 @@ namespace AdHoc {
 			ResourcePool(unsigned int maxSize, unsigned int keep);
 			virtual ~ResourcePool();
 
-			ResourcePool() = delete;
-			ResourcePool(const ResourcePool &) = delete;
-			ResourcePool(ResourcePool &&) = delete;
-
-			void operator=(const ResourcePool &) = delete;
-			void operator=(ResourcePool &&) = delete;
+			/// Standard move/copy support
+			SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(ResourcePool);
 
 			/// Get a resource from the pool (maybe cached, maybe constructed afresh)
 			ResourceHandle<Resource> get();
@@ -97,8 +92,8 @@ namespace AdHoc {
 			virtual void returnTestResource(Resource const *) const;
 
 		private:
-			typedef std::list<std::shared_ptr<Resource>> Available;
-			typedef std::multimap<std::thread::id, std::shared_ptr<typename ResourceHandle<Resource>::Object>> InUse;
+			using Available = std::list<std::shared_ptr<Resource>>;
+			using InUse = std::multimap<std::thread::id, std::shared_ptr<typename ResourceHandle<Resource>::Object>>;
 
 			void putBack(const std::shared_ptr<Resource> &);
 			void discard(const std::shared_ptr<Resource> &);
@@ -117,9 +112,9 @@ namespace AdHoc {
 	class DLL_PUBLIC TimeOutOnResourcePool : public AdHoc::StdException {
 		public:
 			/// Constrcut a new timeout exception for the given resource type.
-			TimeOutOnResourcePool(const char * const type);
+			explicit TimeOutOnResourcePool(const char * const type);
 
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 
 		private:
 			const char * const name;
@@ -139,7 +134,7 @@ namespace AdHoc {
 			/// Construct for a specific thread and resource type.
 			NoCurrentResource(const std::thread::id &, const char * const type);
 
-			std::string message() const throw() override;
+			std::string message() const noexcept override;
 
 		private:
 			const std::thread::id threadId;
@@ -152,7 +147,7 @@ namespace AdHoc {
 	class DLL_PUBLIC NoCurrentResourceT : public NoCurrentResource {
 		public:
 			/// Construct for a specific thread and resource type R.
-			NoCurrentResourceT(const std::thread::id &);
+			explicit NoCurrentResourceT(const std::thread::id &);
 	};
 
 }

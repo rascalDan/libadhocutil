@@ -6,8 +6,6 @@
 
 namespace AdHoc {
 	MemStream::MemStream() :
-		buf(nullptr),
-		len(0),
 		strm(open_memstream(&buf, &len))
 	{
 		if (!strm) {
@@ -55,34 +53,33 @@ namespace AdHoc {
 		return *this;
 	}
 
-	MemStream::operator FILE * ()
+	MemStream::operator FILE * () noexcept
 	{
 		return strm;
 	}
 
-	MemStream::operator const char * () const
+	MemStream::operator const char * () const noexcept
+	{
+		return buffer();
+	}
+
+	MemStream::operator std::string_view() const noexcept
+	{
+		return { buffer(), len };
+	}
+
+	const char * MemStream::buffer() const noexcept
 	{
 		fflush(strm);
 		return buf;
 	}
 
-	MemStream::operator std::string_view() const
+	std::string_view MemStream::sv() const noexcept
 	{
-		fflush(strm);
-		return { buf, len };
+		return { buffer(), len };
 	}
 
-	const char * MemStream::buffer() const
-	{
-		return *this;
-	}
-
-	std::string_view MemStream::sv() const
-	{
-		return *this;
-	}
-
-	size_t MemStream::length() const
+	size_t MemStream::length() const noexcept
 	{
 		fflush(strm);
 		return len;

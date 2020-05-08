@@ -1,11 +1,10 @@
 #ifndef ADHOCUTIL_RESOURCEPOOL_IMPL_H
 #define ADHOCUTIL_RESOURCEPOOL_IMPL_H
 
+#include <boost/assert.hpp>
 #include "resourcePool.h"
 #include "lockHelpers.h"
 #include "safeMapFind.h"
-
-#define ASSERT(expr) if(!expr) throw std::runtime_error(#expr)
 
 namespace AdHoc {
 	//
@@ -13,26 +12,13 @@ namespace AdHoc {
 	//
 
 	template <typename R>
-	ResourceHandle<R>::ResourceHandle(const std::shared_ptr<Object> & o) :
-		resource(o)
+	ResourceHandle<R>::ResourceHandle(std::shared_ptr<Object> o) noexcept :
+		resource(std::move(o))
 	{
 	}
 
 	template <typename R>
-	ResourceHandle<R>::ResourceHandle(const ResourceHandle & rh) :
-		resource(rh.resource)
-	{
-	}
-
-	template <typename R>
-	ResourceHandle<R>::ResourceHandle(ResourceHandle && rh) :
-		resource(rh.resource)
-	{
-		rh.decRef();
-	}
-
-	template <typename R>
-	ResourceHandle<R>::~ResourceHandle()
+	ResourceHandle<R>::~ResourceHandle() noexcept
 	{
 		if (resource) {
 			decRef();
@@ -43,66 +29,71 @@ namespace AdHoc {
 	unsigned int
 	ResourceHandle<R>::handleCount() const
 	{
-		ASSERT(resource);
+		BOOST_ASSERT(resource);
 		// InUse has one, we don't count that
 		return resource.use_count() - 1;
 	}
 
 	template <typename R>
 	R *
-	ResourceHandle<R>::get() const
+	ResourceHandle<R>::get() const noexcept
 	{
-		ASSERT(resource);
+		BOOST_ASSERT(resource);
 		return std::get<0>(*resource).get();
 	}
 
 	template <typename R>
 	void
-	ResourceHandle<R>::release()
+	ResourceHandle<R>::release() noexcept
 	{
 		decRef();
 	}
 
 	template <typename R>
-	ResourceHandle<R>::operator bool() const
+	ResourceHandle<R>::operator bool() const noexcept
 	{
 		return (bool)resource;
 	}
 
 	template <typename R>
 	R *
-	ResourceHandle<R>::operator->() const
+	ResourceHandle<R>::operator->() const noexcept
 	{
-		ASSERT(resource);
+		BOOST_ASSERT(resource);
 		return std::get<0>(*resource).get();
 	}
 
 	template <typename R>
-	void
-	ResourceHandle<R>::operator=(const ResourceHandle & rh)
+	ResourceHandle<R> &
+	ResourceHandle<R>::operator=(const ResourceHandle & rh) noexcept
 	{
-		if (resource) {
-			decRef();
+		if (&rh != this) {
+			if (resource) {
+				decRef();
+			}
+			resource = rh.resource;
 		}
-		resource = rh.resource;
+		return *this;
+	}
+
+	template <typename R>
+	ResourceHandle<R> &
+	ResourceHandle<R>::operator=(ResourceHandle && rh) noexcept
+	{
+		if (&rh != this) {
+			if (resource) {
+				decRef();
+			}
+			resource = std::move(rh.resource);
+		}
+		return *this;
 	}
 
 	template <typename R>
 	void
-	ResourceHandle<R>::operator=(ResourceHandle && rh)
+	ResourceHandle<R>::decRef() noexcept
 	{
-		if (resource) {
-			decRef();
-		}
-		resource = rh.resource;
-		rh.decRef();
-	}
-
-	template <typename R>
-	void
-	ResourceHandle<R>::decRef()
-	{
-		ASSERT(resource);
+		BOOST_ASSERT(resource);
 		// InUse has one, we don't count that
 		if (resource.use_count() == 2) {
 			if (auto pool = std::get<1>(*resource)) {
@@ -177,7 +168,7 @@ namespace AdHoc {
 	ResourcePool<R>::getMine()
 	{
 		Lock(lock);
-		return safeMapLookup<NoCurrentResourceT<R>>(inUse, std::this_thread::get_id());
+		return ResourceHandle(safeMapLookup<NoCurrentResourceT<R>>(inUse, std::this_thread::get_id()));
 	}
 
 	template <typename R>
@@ -194,7 +185,7 @@ namespace AdHoc {
 	{
 		poolSize.wait();
 		try {
-			return getOne();
+			return ResourceHandle(getOne());
 		}
 		catch(...) {
 			poolSize.notify();
@@ -230,7 +221,7 @@ namespace AdHoc {
 				auto ro = std::make_shared<typename ResourceHandle<R>::Object>(r, this);
 				available.pop_front();
 				inUse.insert({ std::this_thread::get_id(), ro });
-				return ro;
+				return ResourceHandle(ro);
 			}
 			catch (...) {
 				available.pop_front();
@@ -238,7 +229,7 @@ namespace AdHoc {
 		}
 		auto ro = std::make_shared<typename ResourceHandle<R>::Object>(createResource(), this);
 		inUse.insert({ std::this_thread::get_id(), ro });
-		return ro;
+		return ResourceHandle(ro);
 	}
 
 	template <typename R>

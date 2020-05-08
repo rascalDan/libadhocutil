@@ -3,9 +3,13 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 #include "visibility.h"
+#include "c++11Helpers.h"
+#include "handle.h"
 
 namespace AdHoc {
+
 namespace System {
 
 /// Spawn a process and attach to its IO handles.
@@ -20,26 +24,35 @@ class DLL_PUBLIC ProcessPipes {
 		 * @param err Attach to stderr?
 		 */
 		ProcessPipes(const std::vector<std::string> & args, bool in, bool out, bool err);
-		~ProcessPipes();
+
+		/// Close input pipe to process
+		int closeIn();
 
 		/** FD handle to child's stdin. */
-		int fdIn() const;
+		[[nodiscard]] int fdIn() const noexcept;
 		/** FD handle to child's stdout. */
-		int fdOut() const;
+		[[nodiscard]] int fdOut() const noexcept;
 		/** FD handle to child's stderr. */
-		int fdError() const;
+		[[nodiscard]] int fdError() const noexcept;
 		/** Process id of child. */
-		pid_t pid() const;
-
-		/** Close all open file handles as determined by rlimit and poll. */
-		static void closeAllOpenFiles();
+		[[nodiscard]] pid_t pid() const noexcept;
 
 	private:
-		ProcessPipes(const ProcessPipes &) = delete;
-		void operator=(const ProcessPipes &) = delete;
+		using PipePair = std::pair<int, int>;
+		using InitPipe = std::optional<PipePair>;
 
-		int in, out, error;
-		pid_t child;
+		ProcessPipes(const std::vector<std::string> & args, InitPipe &&, InitPipe &&, InitPipe &&);
+
+		static InitPipe pipeSetup(bool setup, bool swap);
+		static void closeChild(const InitPipe & child) noexcept;
+		static void dupChild(int, const InitPipe & child) noexcept;
+		static void closeAllOpenFiles() noexcept;
+
+		using FHandle = ::AdHoc::Handle<int, int(*)(int)>;
+		using OFHandle = std::optional<FHandle>;
+		const pid_t child;
+		OFHandle in;
+		const OFHandle out, error;
 };
 
 }

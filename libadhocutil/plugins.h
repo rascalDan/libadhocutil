@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include "visibility.h"
 #include "unique.h"
+#include "c++11Helpers.h"
 
 namespace std {
 	DLL_PUBLIC
@@ -29,7 +30,10 @@ namespace AdHoc {
 	/// Base class for all plugin implementations.
 	class DLL_PUBLIC AbstractPluginImplementation {
 		public:
+			AbstractPluginImplementation() = default;
 			virtual ~AbstractPluginImplementation() = 0;
+			/// Standard move/copy support
+			SPECIAL_MEMBERS_DEFAULT(AbstractPluginImplementation);
 	};
 
 	/// Base class for untyped plugins.
@@ -37,13 +41,15 @@ namespace AdHoc {
 		public:
 			/// Constructor taking name, filename and line of install.
 			Plugin(const std::string_view &, const std::string_view &, int);
+			/// Standard move/copy support
+			SPECIAL_MEMBERS_DELETE(Plugin);
 			virtual ~Plugin() = default;
 
 			/// Get the plugin type from the subclass.
-			virtual const std::type_info & type() const = 0;
+			[[nodiscard]] virtual const std::type_info & type() const = 0;
 
 			/// Get the abstract base plugin implementation.
-			virtual std::shared_ptr<AbstractPluginImplementation> instance() const = 0;
+			[[nodiscard]] virtual std::shared_ptr<AbstractPluginImplementation> instance() const = 0;
 
 			/// The name the plugin was installed with.
 			const std::string name;
@@ -52,7 +58,7 @@ namespace AdHoc {
 			/// The line of file the plugin was installed in.
 			const int lineno;
 	};
-	typedef std::shared_ptr<const Plugin> PluginPtr;
+	using PluginPtr = std::shared_ptr<const Plugin>;
 
 	/// Thrown when a plugin with the same name and base is loaded into a manager.
 	class DuplicatePluginException : public std::runtime_error {
@@ -65,7 +71,7 @@ namespace AdHoc {
 	class DuplicateResolverException : public std::runtime_error {
 		public:
 			/// Constuctor taking resolver type.
-			DuplicateResolverException(const std::type_info &);
+			explicit DuplicateResolverException(const std::type_info &);
 	};
 
 	/// Thrown when an attempt to load a library fails.
@@ -80,17 +86,17 @@ namespace AdHoc {
 	class DLL_PUBLIC PluginOf : public Plugin {
 		public:
 			/// Constructor taking an instance and name, filename and line of install for Plugin.
-			PluginOf(const std::shared_ptr<T> & t, const std::string_view & n, const std::string_view & f, int l);
+			PluginOf(std::shared_ptr<T> t, const std::string_view & n, const std::string_view & f, int l);
 
 			/// Get the type of this plugin.
-			const std::type_info & type() const override;
+			[[nodiscard]] const std::type_info & type() const override;
 			/// Get the implementation of this plugin.
-			std::shared_ptr<T> implementation() const;
+			[[nodiscard]] std::shared_ptr<T> implementation() const;
 
-			std::shared_ptr<AbstractPluginImplementation> instance() const override;
+			[[nodiscard]] std::shared_ptr<AbstractPluginImplementation> instance() const override;
 
 		private:
-			std::shared_ptr<T> impl;
+			const std::shared_ptr<T> impl;
 	};
 
 	/// Container for loaded plugins.
@@ -98,21 +104,24 @@ namespace AdHoc {
 		public:
 			/// Callback definition to resolve a plugin type and name to a potential library
 			/// containing an implementation.
-			typedef std::function<std::optional<std::string> (const std::type_info &, const std::string_view &)> PluginResolver;
+			using PluginResolver = std::function<std::optional<std::string> (const std::type_info &, const std::string_view &)>;
 
 			PluginManager();
 			virtual ~PluginManager();
+
+			/// Standard move/copy support
+			SPECIAL_MEMBERS_DELETE(PluginManager);
 
 			/// Install a plugin.
 			void add(const PluginPtr &);
 			/// Uninstall a plugin.
 			void remove(const std::string_view &, const std::type_info &);
 			/// Get a specific plugin.
-			PluginPtr get(const std::string_view &, const std::type_info &) const;
+			[[nodiscard]] PluginPtr get(const std::string_view &, const std::type_info &) const;
 			/// Get all plugins.
-			std::set<PluginPtr> getAll() const;
+			[[nodiscard]] std::set<PluginPtr> getAll() const;
 			/// Get all plugins of a specific type.
-			std::set<PluginPtr> getAll(const std::type_info &) const;
+			[[nodiscard]] std::set<PluginPtr> getAll(const std::type_info &) const;
 
 			/**
 			 * Install a plugin.
@@ -148,23 +157,23 @@ namespace AdHoc {
 			 * Get a specific plugin.
 			 * @param n Name of plugin.
 			 */
-			template<typename T> std::shared_ptr<const PluginOf<T>> get(const std::string_view & n) const;
+			template<typename T> [[nodiscard]] std::shared_ptr<const PluginOf<T>> get(const std::string_view & n) const;
 
 			/**
 			 * Get the implementation from specific plugin.
 			 * @param n Name of plugin.
 			 */
-			template<typename T> std::shared_ptr<T> getImplementation(const std::string_view & n) const;
+			template<typename T> [[nodiscard]] std::shared_ptr<T> getImplementation(const std::string_view & n) const;
 
 			/**
 			 * Get all plugins of a given time.
 			 */
-			template<typename T> std::set<std::shared_ptr<const PluginOf<T>>> getAll() const;
+			template<typename T> [[nodiscard]] std::set<std::shared_ptr<const PluginOf<T>>> getAll() const;
 
 			/**
 			 * The number of installed plugins.
 			 */
-			size_t count() const;
+			[[nodiscard]] size_t count() const;
 
 			/**
 			 * Add a type plugin resolver function.
@@ -193,7 +202,7 @@ namespace AdHoc {
 			/**
 			 * The number of installed plugins.
 			 */
-			size_t countResolvers() const;
+			[[nodiscard]] size_t countResolvers() const;
 
 			/**
 			 * Get the default plugin manager instance.

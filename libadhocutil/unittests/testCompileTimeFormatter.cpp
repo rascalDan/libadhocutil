@@ -4,6 +4,7 @@
 #include <compileTimeFormatter.h>
 #include <fileUtils.h>
 #include <definedDirs.h>
+#include "memstream.h"
 
 #include <filesystem>
 
@@ -35,7 +36,6 @@ namespace AdHoc {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << "-( " << p << " )-";
 			StreamWriter::next(s, pn...);
 		}
@@ -46,7 +46,6 @@ namespace AdHoc {
 		template<typename P, typename ... Pn>
 		static void write(stream & s, const P & p, const Pn & ... pn)
 		{
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << "---( " << p << " )---";
 			StreamWriter::next(s, pn...);
 		}
@@ -59,7 +58,6 @@ namespace AdHoc {
 		{
 			// NOLINTNEXTLINE(bugprone-string-constructor)
 			std::string d(dashes, '-');
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			s << d << "( " << p << " )" << d;
 			StreamWriter::next(s, pn...);
 		}
@@ -71,7 +69,6 @@ namespace AdHoc {
 		static void write(stream & s, int width, const P & p, const Pn & ... pn)
 		{
 			std::stringstream buf;
-			// NOLINTNEXTLINE(hicpp-no-array-decay)
 			buf << p;
 			std::string spaces(width - buf.str().length(), ' ');
 			s << spaces << buf.str();
@@ -80,6 +77,7 @@ namespace AdHoc {
 	};
 }
 
+#ifndef __cpp_nontype_template_parameter_class
 // Compile string util assertions
 static_assert(strlen<formatEdgeCaseEmpty>() == 0);
 static_assert(strlen<formatEdgeCaseSingle>() == 1);
@@ -87,16 +85,16 @@ static_assert(strlen<formatEdgeCaseFormatLonely>() == 2);
 static_assert(strlen<formatStringLiteral>() == 7);
 static_assert(strlen<formatStringLong>() == 246);
 
-static_assert(strchr<formatEdgeCaseEmpty, 't'>() == -1);
-static_assert(strchr<formatEdgeCaseSingle, 't'>() == -1);
-static_assert(strchr<formatEdgeCaseSingle, '1'>() == 0);
-static_assert(strchr<formatEdgeCaseFormatLonely, '%'>() == 0);
-static_assert(strchr<formatEdgeCaseFormatLonely, '?'>() == 1);
-static_assert(strchr<formatStringLiteral, 'e'>() == 3);
-static_assert(strchr<formatStringLiteral, 'f'>() == -1);
-static_assert(strchr<formatStringLiteral, 'e', 3>() == 3);
-static_assert(strchr<formatStringLiteral, 'e', 4>() == -1);
-static_assert(strchr<formatStringLiteral, 'f', 3>() == -1);
+static_assert(!strchr<formatEdgeCaseEmpty, 't'>());
+static_assert(!strchr<formatEdgeCaseSingle, 't'>());
+static_assert(*strchr<formatEdgeCaseSingle, '1'>() == 0);
+static_assert(*strchr<formatEdgeCaseFormatLonely, '%'>() == 0);
+static_assert(*strchr<formatEdgeCaseFormatLonely, '?'>() == 1);
+static_assert(*strchr<formatStringLiteral, 'e'>() == 3);
+static_assert(!strchr<formatStringLiteral, 'f'>());
+static_assert(*strchr<formatStringLiteral, 'e', 3U>() == 3);
+static_assert(!strchr<formatStringLiteral, 'e', 4U>());
+static_assert(!strchr<formatStringLiteral, 'f', 3U>());
 
 static_assert(strchrnul<formatEdgeCaseEmpty, 't'>() == 0);
 static_assert(strchrnul<formatEdgeCaseSingle, 't'>() == 1);
@@ -105,9 +103,9 @@ static_assert(strchrnul<formatEdgeCaseFormatLonely, '%'>() == 0);
 static_assert(strchrnul<formatEdgeCaseFormatLonely, '?'>() == 1);
 static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
 static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
-static_assert(strchrnul<formatStringLiteral, 'e', 3>() == 3);
-static_assert(strchrnul<formatStringLiteral, 'e', 4>() == 7);
-static_assert(strchrnul<formatStringLiteral, 'f', 3>() == 7);
+static_assert(strchrnul<formatStringLiteral, 'e', 3U>() == 3);
+static_assert(strchrnul<formatStringLiteral, 'e', 4U>() == 7);
+static_assert(strchrnul<formatStringLiteral, 'f', 3U>() == 7);
 
 static_assert(strchrnul<formatEdgeCaseEmpty, 't'>() == 0);
 static_assert(strchrnul<formatEdgeCaseSingle, 't'>() == 1);
@@ -116,6 +114,7 @@ static_assert(strchrnul<formatEdgeCaseFormatLonely, '%'>() == 0);
 static_assert(strchrnul<formatEdgeCaseFormatLonely, '?'>() == 1);
 static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
 static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
+#endif
 
 BOOST_FIXTURE_TEST_SUITE( TestStreamWrite, std::stringstream )
 
@@ -289,7 +288,6 @@ namespace AdHoc {
 	template<>
 	inline void appendStream(FILE & strm, const char * const p, size_t n)
 	{
-		// NOLINTNEXTLINE(hicpp-no-array-decay)
 		BOOST_VERIFY(fwrite(p, n, 1, &strm) == 1);
 	}
 }
@@ -303,17 +301,11 @@ operator<<(FILE & strm, const char * const p)
 
 BOOST_AUTO_TEST_CASE( filestar )
 {
-	char * buf = nullptr;
-	size_t len = 0;
-	FILE * strm = open_memstream(&buf, &len);
-	BOOST_REQUIRE(strm);
+	MemStream strm;
 	// NOLINTNEXTLINE(misc-non-copyable-objects)
-	Formatter<formatStringMulti>::write(*strm, "file", "star");
-	fclose(strm);
-	BOOST_CHECK_EQUAL(len, 22);
-	BOOST_CHECK_EQUAL(buf, "First file, then star.");
-	// NOLINTNEXTLINE(hicpp-no-malloc)
-	free(buf);
+	Formatter<formatStringMulti>::write(*strm.operator FILE *(), "file", "star");
+	BOOST_CHECK_EQUAL(strm.length(), 22);
+	BOOST_CHECK_EQUAL(strm.sv(), "First file, then star.");
 }
 
 #include "ctf-impl/printf-compat.h"
@@ -454,15 +446,52 @@ BOOST_AUTO_TEST_CASE(smartptr)
 	smartptr_fmt::get(shrd);
 }
 
-// This tests scprintf macro, which in turn requires compiler support
-#ifdef scprintf
-BOOST_AUTO_TEST_CASE(scprintf)
+#ifdef __cpp_nontype_template_parameter_class
+BOOST_AUTO_TEST_CASE(literal_format_string)
 {
-	auto str = std::make_unique<std::stringstream>();
-	auto & strret = scprintf(*str, "Some literal format string (%d, %c).", 0, 'f');
-	BOOST_CHECK_EQUAL(str.get(), &strret); // We got back our original stream
-	BOOST_CHECK_EQUAL(str->str(), "Some literal format string (0, f).");
-	scprintf(*str, "Some literal format string, no args.");
+	std::stringstream str;
+	LiteralFormatter<"literal format string %?.">::write(str, 42);
+	BOOST_CHECK_EQUAL("literal format string 42.", str.str());
+}
+
+BOOST_AUTO_TEST_CASE(cprintf_args)
+{
+	auto & strret = cprintf<"Some literal format string (%d, %c).">(0, 'f');
+	BOOST_CHECK_EQUAL(&std::cout, &strret);
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_strm_args)
+{
+	std::stringstream str;
+	auto & strret = scprintf<"Some literal format string (%d, %c).">(str, 0, 'f');
+	BOOST_CHECK_EQUAL(&str, &strret);
+	BOOST_CHECK_EQUAL(str.str(), "Some literal format string (0, f).");
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_get_args)
+{
+	auto stng = scprintf<"Some literal format string (%d, %c).">(0, 'f');
+	BOOST_CHECK_EQUAL(stng, "Some literal format string (0, f).");
+}
+
+BOOST_AUTO_TEST_CASE(cprintf_no_args)
+{
+	auto & strret = cprintf<"Some literal format string.">();
+	BOOST_CHECK_EQUAL(&std::cout, &strret);
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_strm_no_args)
+{
+	std::stringstream str;
+	auto & strret = scprintf<"Some literal format string.">(str);
+	BOOST_CHECK_EQUAL(&str, &strret);
+	BOOST_CHECK_EQUAL(str.str(), "Some literal format string.");
+}
+
+BOOST_AUTO_TEST_CASE(scprintf_get_no_args)
+{
+	auto stng = scprintf<"Some literal format string.">();
+	BOOST_CHECK_EQUAL(stng, "Some literal format string.");
 }
 #endif
 

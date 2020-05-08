@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE ( general )
 	Ice::optional<float> ix;
 	Ice::optional<short> iy = 4;
 	std::string * p = nullptr;
-	std::string * q = new std::string("str");
+	auto * q = new std::string("str");
 	std::optional<std::string> r;
 	Ice::optional<std::string> s;
 

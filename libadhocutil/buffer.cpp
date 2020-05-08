@@ -4,8 +4,6 @@
 
 namespace AdHoc {
 
-Buffer::FragmentBase::~FragmentBase() = default;
-
 //
 // CString Fragment
 //
@@ -107,8 +105,6 @@ Buffer::StringFragment::operator[](size_t x) const
 // Buffer :)
 //
 
-Buffer::Buffer() = default;
-
 Buffer::Buffer(const char * src, CStringHandling h)
 {
 	append(src, h);
@@ -123,8 +119,6 @@ Buffer::Buffer(const std::string & str)
 {
 	append(str);
 }
-
-Buffer::~Buffer() = default;
 
 Buffer &
 Buffer::append(const char * str, CStringHandling h)
@@ -167,11 +161,8 @@ Buffer &
 Buffer::appendf(const char * fmt, ...)
 {
 	va_list v;
-	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	va_start(v, fmt);
-	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	vappendf(fmt, v);
-	// NOLINTNEXTLINE(hicpp-no-array-decay)
 	va_end(v);
 	return *this;
 }
@@ -290,9 +281,6 @@ Buffer::operator=(const std::string & str)
 	content = { std::make_shared<StringFragment>(str) };
 	return *this;
 }
-
-Buffer &
-Buffer::operator=(const Buffer & buf) = default;
 
 Buffer::operator bool() const
 {

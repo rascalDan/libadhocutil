@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include <memory>
 #include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 namespace Net {
@@ -16,7 +17,9 @@ class DLL_PUBLIC CurlHandle {
 		 * Create a new CurlHandle.
 		 * @param url Set the required CURLOPT_URL property to the given url.
 		 */
-		CurlHandle(const std::string & url);
+		explicit CurlHandle(const std::string & url);
+		/// Standard move/copy support
+		SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(CurlHandle);
 		virtual ~CurlHandle();
 
 		/** Set option wrapper. */
@@ -38,6 +41,7 @@ class DLL_PUBLIC CurlHandle {
 		void perform();
 
 		/** Get the underlying CURL * handle. @warning Make changes at your own risk. */
+		// NOLINTNEXTLINE(hicpp-explicit-conversions)
 		operator CURL *() const;
 
 	protected:
@@ -49,7 +53,7 @@ class DLL_PUBLIC CurlHandle {
 		curl_httppost * postS, * postE;
 		/// @endcond
 };
-typedef std::shared_ptr<CurlHandle> CurlHandlePtr;
+using CurlHandlePtr = std::shared_ptr<CurlHandle>;
 
 /// @cond
 template <>

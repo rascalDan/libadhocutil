@@ -1,4 +1,3 @@
-import testing ;
 import type ;
 import generators ;
 
@@ -21,7 +20,8 @@ lib dl ;
 
 project
   : requirements
-			<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
+			<toolset>tidy:<xcheckxx>bugprone-use-after-move
+			<toolset>tidy:<xcheckxx>hicpp-invalid-access-moved
 	;
 
 h lorem-ipsum : lorem-ipsum.txt ;
@@ -35,6 +35,21 @@ run
 	<library>stdc++fs
 	<library>boost_utf
 	<implicit-dependency>lorem-ipsum
+	;
+
+run
+	testCompileTimeFormatter.cpp
+	: : :
+	<define>ROOT=\"$(me)\"
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>stdc++fs
+	<library>boost_utf
+	-<cxxstd>17
+	<cxxstd>2a
+	<implicit-dependency>lorem-ipsum
+	:
+	testCompileTimeFormatter20
 	;
 
 run
@@ -297,6 +312,14 @@ run
 
 run
 	testNagios.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	;
+
+run
+	testHandle.cpp
 	: : :
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil

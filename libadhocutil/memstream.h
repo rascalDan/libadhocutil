@@ -4,6 +4,7 @@
 #include <visibility.h>
 #include <cstdio>
 #include <string_view>
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 	/**
@@ -14,31 +15,35 @@ namespace AdHoc {
 			MemStream();
 			~MemStream();
 
-			MemStream(const MemStream &) = delete;
+			/// Standard move/copy support
+			SPECIAL_MEMBERS_COPY(MemStream, delete);
+
 			/// Standard move constructor
 			MemStream(MemStream &&) noexcept;
 
-			void operator=(const MemStream &) = delete;
 			/// Standard move assignment
 			MemStream & operator=(MemStream &&) noexcept;
 
 			/// Implicit conversion to use as FILE* for writes
-			operator FILE * ();
+			// NOLINTNEXTLINE(hicpp-explicit-conversions)
+			operator FILE * () noexcept;
 			/// Implicit conversion to use as const char * for reads
-			operator const char * () const;
+			// NOLINTNEXTLINE(hicpp-explicit-conversions)
+			operator const char * () const noexcept;
 			/// Implicit conversion to use as std::string_view for reads
-			operator std::string_view () const;
+			// NOLINTNEXTLINE(hicpp-explicit-conversions)
+			operator std::string_view () const noexcept;
 
 			/// Get buffer contents
-			const char * buffer() const;
+			[[nodiscard]] const char * buffer() const noexcept;
 			/// Get buffer contents view
-			std::string_view sv() const;
+			[[nodiscard]] std::string_view sv() const noexcept;
 			/// Get buffer length
-			size_t length() const;
+			[[nodiscard]] size_t length() const noexcept;
 
 		private:
-			char * buf;
-			size_t len;
+			char * buf { nullptr };
+			size_t len { 0 };
 			FILE * strm;
 	};
 }

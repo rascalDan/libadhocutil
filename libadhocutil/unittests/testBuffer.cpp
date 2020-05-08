@@ -13,13 +13,11 @@ BOOST_AUTO_TEST_CASE ( create )
 	Buffer use(nonconst, Buffer::Use);
 	Buffer fre(nonconst, Buffer::Free);
 
-	BOOST_REQUIRE_EQUAL(false, empty);
-	BOOST_REQUIRE_EQUAL(true, !empty);
+	BOOST_REQUIRE(!empty);
 	BOOST_REQUIRE_EQUAL(0, empty.length());
 	BOOST_REQUIRE_EQUAL("", empty.str());
 
-	BOOST_REQUIRE_EQUAL(true, copy);
-	BOOST_REQUIRE_EQUAL(false, !copy);
+	BOOST_REQUIRE(copy);
 	BOOST_REQUIRE_EQUAL(5, copy.length());
 	BOOST_REQUIRE_EQUAL("const", copy.str());
 

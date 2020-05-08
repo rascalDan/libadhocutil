@@ -10,8 +10,8 @@ namespace AdHoc {
 
 /// @cond
 template<typename T, typename K>
-Cacheable<T, K>::Cacheable(const K & k, time_t vu) :
-	key(k),
+Cacheable<T, K>::Cacheable(K k, time_t vu) :
+	key(std::move(k)),
 	validUntil(vu)
 {
 }
@@ -24,9 +24,9 @@ ObjectCacheable<T, K>::ObjectCacheable(const T & t, const K & k, time_t vu) :
 }
 
 template<typename T, typename K>
-ObjectCacheable<T, K>::ObjectCacheable(typename Cacheable<T, K>::Value & t, const K & k, time_t vu) :
+ObjectCacheable<T, K>::ObjectCacheable(typename Cacheable<T, K>::Value t, const K & k, time_t vu) :
 	Cacheable<T, K>(k, vu),
-	value(t)
+	value(std::move(t))
 {
 }
 
@@ -81,7 +81,7 @@ PointerCallCacheable<T, K>::item() const
 
 template<typename T, typename K>
 Cache<T, K>::Cache() :
-	lastPruneTime(time(NULL))
+	lastPruneTime(time(nullptr))
 {
 }
 
@@ -128,7 +128,7 @@ Cache<T, K>::getItem(const K & k) const
 		if (i == collection.end()) {
 			return Element();
 		}
-		if ((*i)->validUntil > time(NULL)) {
+		if ((*i)->validUntil > time(nullptr)) {
 			return (*i);
 		}
 	}
@@ -174,7 +174,7 @@ template<typename T, typename K>
 void
 Cache<T, K>::prune() const
 {
-	auto now = time(NULL);
+	auto now = time(nullptr);
 	if (lastPruneTime < now) {
 		Lock(lock);
 		auto & collection = cached.template get<byValidity>();

@@ -5,75 +5,73 @@
 #include <sys/resource.h>
 #include <stdexcept>
 #include <sys.h>
-#include "scopeExit.h"
+#include "c++11Helpers.h"
 
-// NOLINTNEXTLINE(modernize-concat-nested-namespaces)
-namespace AdHoc {
-namespace System {
-
-using PipePair = std::array<int, 2>;
-static
-void
-pipe(PipePair & pipes, ScopeExit & tidyUp)
+namespace AdHoc::System {
+ProcessPipes::InitPipe
+ProcessPipes::pipeSetup(bool setup, bool swap)
 {
-	if (::pipe(pipes.data())) {
-		throw SystemException("pipe(2) failed", strerror(errno), errno);
+	if (setup) {
+		PipePair pair;
+		if (::pipe(&pair.first)) {
+			throw SystemException("pipe(2) failed", strerror(errno), errno);
+		}
+		if (swap) {
+			std::swap(pair.first, pair.second);
+		}
+		return pair;
 	}
-	tidyUp.onFailure.emplace_back([pipes] {
-			close(pipes[0]);
-			close(pipes[1]);
-		});
+	return {};
+}
+
+void ProcessPipes::closeChild(const InitPipe & pipe) noexcept
+{
+	if (pipe) {
+		close(pipe->second);
+	}
+}
+
+void ProcessPipes::dupChild(int fd, const InitPipe & pipe) noexcept
+{
+	if (pipe) {
+		close(pipe->first);
+		dup2(pipe->second, fd);
+	}
 }
 
 ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o, bool e) :
-	in(-1),
-	out(-1),
-	error(-1)
+	ProcessPipes([&args](){
+		if (args.empty()) {
+			throw std::invalid_argument("args is empty");
+		}
+		return args;
+	}(), pipeSetup(i, true), pipeSetup(o, false), pipeSetup(e, false))
 {
-	if (args.empty()) {
-		throw std::invalid_argument("args is empty");
-	}
-	PipePair ipipes { -1, -1 }, opipes { -1, -1 }, epipes { -1, -1 };
-	ScopeExit tidyUp;
-	if (i) {
-		pipe(ipipes, tidyUp);
-	}
-	if (o) {
-		pipe(opipes, tidyUp);
-	}
-	if (e) {
-		pipe(epipes, tidyUp);
-	}
-	switch (child = fork()) {
-		case -1: // fail
-			throw SystemException("fork(2) failed", strerror(errno), errno);
+}
+
+ProcessPipes::ProcessPipes(const std::vector<std::string> & args, InitPipe && ipp, InitPipe && opp, InitPipe && epp) :
+	child([]() {
+		if (pid_t p = fork(); p != -1) {
+			return p;
+		}
+		/// LCOV_EXCL_START (fork won't fail)
+		throw SystemException("fork(2) failed", strerror(errno), errno);
+		/// LCOV_EXCL_STOP
+	}()),
+	in(ipp ? std::make_optional<FHandle>(ipp->first, &close) : OFHandle()),
+	out(opp ? std::make_optional<FHandle>(opp->first, &close) : OFHandle()),
+	error(epp ? std::make_optional<FHandle>(epp->first, &close) : OFHandle())
+{
+	switch (child) {
 		default: // parent
-			if (i) {
-				close(ipipes[0]);
-				in = ipipes[1];
-			}
-			if (o) {
-				close(opipes[1]);
-				out = opipes[0];
-			}
-			if (e) {
-				close(epipes[1]);
-				error = epipes[0];
-			}
+			closeChild(ipp);
+			closeChild(opp);
+			closeChild(epp);
 			break;
 		case 0: // in child
-			if (i) {
-				close(ipipes[1]);
-				dup2(ipipes[0], 0);
-			}
-			if (o) {
-				close(opipes[0]);
-				dup2(opipes[1], 1);
-			}
-			if (e) {
-				close(epipes[0]);
-				dup2(epipes[1], 2);
-			}
+			dupChild(STDIN_FILENO, ipp);
+			dupChild(STDOUT_FILENO, opp);
+			dupChild(STDERR_FILENO, epp);
 			closeAllOpenFiles();
 			std::vector<char *> buf(args.size() + 1);
 			auto w = buf.begin();
@@ -89,45 +87,42 @@ ProcessPipes::ProcessPipes(const std::vector<std::string> & args, bool i, bool o
 	}
 }
 
-ProcessPipes::~ProcessPipes()
+int
+ProcessPipes::closeIn()
 {
-	if (in >= 0) {
-		close(in);
+	if (in) {
+		in.reset();
+		return 0;
 	}
-	if (out >= 0) {
-		close(out);
-	}
-	if (error >= 0) {
-		close(error);
-	}
+	return EBADF;
 }
 
 int
-ProcessPipes::fdIn() const
+ProcessPipes::fdIn() const noexcept
 {
-	return in;
+	return in ? *in : -1;
 }
 
 int
-ProcessPipes::fdOut() const
+ProcessPipes::fdOut() const noexcept
 {
-	return out;
+	return out ? *out : -1;
 }
 
 int
-ProcessPipes::fdError() const
+ProcessPipes::fdError() const noexcept
 {
-	return error;
+	return error ? *error : -1;
 }
 
 pid_t
-ProcessPipes::pid() const
+ProcessPipes::pid() const noexcept
 {
 	return child;
 }
 
 void
-ProcessPipes::closeAllOpenFiles()
+ProcessPipes::closeAllOpenFiles() noexcept
 {
 	rlimit lim { };
 	getrlimit(RLIMIT_NOFILE, &lim);
@@ -142,8 +137,6 @@ ProcessPipes::closeAllOpenFiles()
 			close(pfd.fd);
 		}
 	}
-}
-
 }
 }
 

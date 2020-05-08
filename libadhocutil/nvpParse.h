@@ -11,7 +11,8 @@
 #define yyFlexLexer nvpBaseFlexLexer
 #include <FlexLexer.h>
 #endif
-#include <visibility.h>
+#include "visibility.h"
+#include "c++11Helpers.h"
 
 namespace AdHoc {
 
@@ -26,7 +27,7 @@ class NvpParse : public yyFlexLexer {
 		/// Thrown in the event of the input referring to a member that doesn't exist.
 		class ValueNotFound : public std::runtime_error {
 			public:
-				ValueNotFound(const std::string &);
+				explicit ValueNotFound(const std::string &);
 		};
 
 		using AssignFunc = std::function<void(const std::string &)>;
@@ -35,14 +36,16 @@ class NvpParse : public yyFlexLexer {
 		template <typename T>
 		class TargetBase {
 			public:
+				TargetBase() = default;
 				virtual ~TargetBase() = default;
 				virtual AssignFunc assign(T *) const = 0;
+				SPECIAL_MEMBERS_DEFAULT(TargetBase);
 		};
 
 		template <typename T, typename V>
 		class Target : public TargetBase<T> {
 			public:
-				Target(V T::*t) :
+				explicit Target(V T::*t) :
 					target(t)
 				{
 				}
@@ -59,7 +62,6 @@ class NvpParse : public yyFlexLexer {
 		};
 		/// @endcond
 
-		// NOLINTNEXTLINE(bugprone-macro-parentheses)
 #define NvpTarget(T) std::map<std::string, std::shared_ptr<::AdHoc::NvpParse::TargetBase<T>>>
 #define NvpValue(c, m) { #m, std::make_shared<::AdHoc::NvpParse::Target<c, decltype(c::m)>>(&c::m) }
 
@@ -85,7 +87,6 @@ class NvpParse : public yyFlexLexer {
 
 	private:
 		NvpParse(std::istream & in, const AssignMap &);
-		~NvpParse() override;
 
 		int yylex() override;
 		void LexerError(const char * msg) override;

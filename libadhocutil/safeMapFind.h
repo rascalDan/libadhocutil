@@ -13,11 +13,10 @@ template <class Ex, class Map>
 typename Map::const_iterator
 safeMapFind(const Map & map, const typename Map::key_type & key)
 {
-	typename Map::const_iterator i = map.find(key);
-	if (i == map.end()) {
-		throw Ex(key);
+	if (auto i = map.find(key); i != map.end()) {
+		return i;
 	}
-	return i;
+	throw Ex(key);
 }
 
 /*
@@ -28,11 +27,10 @@ template <class Map>
 typename Map::mapped_type
 defaultMapLookup(const Map & map, const typename Map::key_type & key, const typename Map::mapped_type & def = typename Map::mapped_type())
 {
-	typename Map::const_iterator i = map.find(key);
-	if (i == map.end()) {
-		return def;
+	if (auto i = map.find(key); i != map.end()) {
+		return i->second;
 	}
-	return i->second;
+	return def;
 }
 
 /*
@@ -43,11 +41,10 @@ template <class Ex, class Map>
 const typename Map::mapped_type &
 safeMapLookup(const Map & map, const typename Map::key_type & key)
 {
-	typename Map::const_iterator i = map.find(key);
-	if (i == map.end()) {
-		throw Ex(key);
+	if (auto i = map.find(key); i != map.end()) {
+		return i->second;
 	}
-	return i->second;
+	throw Ex(key);
 }
 
 /*
