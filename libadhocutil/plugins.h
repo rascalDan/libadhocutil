@@ -8,6 +8,7 @@
 #include <set>
 #include <map>
 #include <algorithm>
+#include <stdexcept>
 #include "visibility.h"
 #include "unique.h"
 

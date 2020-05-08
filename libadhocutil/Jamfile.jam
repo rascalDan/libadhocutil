@@ -26,6 +26,7 @@ lib adhocutil :
 	<library>curl
 	<library>..//glibmm
 	<library>dl
+	<library>pthread
 	<implicit-dependency>gen
 	: :
 	<include>.
