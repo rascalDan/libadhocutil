@@ -2,6 +2,7 @@
 #define ADHOCUTIL_COMPILE_TIME_FORMATTER_H
 
 #include <sstream>
+#include <iostream>
 #include <cstring>
 #include <optional>
 #include <array>
@@ -254,7 +255,7 @@ namespace AdHoc {
 										typename std::decay<decltype(S[0])>::type, L>(S, L), L> { };
 
 #define AdHocFormatter(name, str) \
-	using name = LiteralFormatter<str>
+	using name = ::AdHoc::LiteralFormatter<str>
 
 	template<const support::basic_fixed_string Str, typename ... Pn>
 	inline auto scprintf(const Pn & ... pn)
