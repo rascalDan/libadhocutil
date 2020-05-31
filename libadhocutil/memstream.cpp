@@ -1,12 +1,11 @@
 #include "memstream.h"
-#include <cstdlib>
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
 #include <sys.h>
 
 namespace AdHoc {
-	MemStream::MemStream() :
-		strm(open_memstream(&buf, &len))
+	MemStream::MemStream() : strm(open_memstream(&buf, &len))
 	{
 		if (!strm) {
 			// LCOV_EXCL_START no sensible way to make open_memstream fail
@@ -15,10 +14,7 @@ namespace AdHoc {
 		}
 	}
 
-	MemStream::MemStream(MemStream && o) noexcept :
-		buf(o.buf),
-		len(o.len),
-		strm(o.strm)
+	MemStream::MemStream(MemStream && o) noexcept : buf(o.buf), len(o.len), strm(o.strm)
 	{
 		o.buf = nullptr;
 		o.len = 0;
@@ -34,7 +30,8 @@ namespace AdHoc {
 		free(buf);
 	}
 
-	MemStream & MemStream::operator=(MemStream && o) noexcept
+	MemStream &
+	MemStream::operator=(MemStream && o) noexcept
 	{
 		if (strm) {
 			fclose(strm);
@@ -53,36 +50,38 @@ namespace AdHoc {
 		return *this;
 	}
 
-	MemStream::operator FILE * () noexcept
+	MemStream::operator FILE *() noexcept
 	{
 		return strm;
 	}
 
-	MemStream::operator const char * () const noexcept
+	MemStream::operator const char *() const noexcept
 	{
 		return buffer();
 	}
 
 	MemStream::operator std::string_view() const noexcept
 	{
-		return { buffer(), len };
+		return {buffer(), len};
 	}
 
-	const char * MemStream::buffer() const noexcept
+	const char *
+	MemStream::buffer() const noexcept
 	{
 		fflush(strm);
 		return buf;
 	}
 
-	std::string_view MemStream::sv() const noexcept
+	std::string_view
+	MemStream::sv() const noexcept
 	{
-		return { buffer(), len };
+		return {buffer(), len};
 	}
 
-	size_t MemStream::length() const noexcept
+	size_t
+	MemStream::length() const noexcept
 	{
 		fflush(strm);
 		return len;
 	}
 }
-

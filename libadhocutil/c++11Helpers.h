@@ -31,4 +31,3 @@
 	SPECIAL_MEMBERS_MOVE(T, default)
 
 #endif
-

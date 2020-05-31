@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #ifndef ROOT
-#error "ROOT needs to be defined at compilation time"
+#	error "ROOT needs to be defined at compilation time"
 #endif
 
 #define XSTR(s) STR(s)
@@ -14,4 +14,3 @@ const std::filesystem::path binDir = selfExe.parent_path();
 const std::filesystem::path rootDir(XSTR(ROOT));
 
 #endif
-

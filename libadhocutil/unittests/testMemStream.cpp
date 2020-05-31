@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE NvpParse
-#include <boost/test/unit_test.hpp>
 #include <boost/mpl/list.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "memstream.h"
 
@@ -17,9 +17,9 @@ BOOST_AUTO_TEST_CASE(empty)
 }
 
 using cast_types = boost::mpl::list<const char *, std::string_view, FILE *>;
-BOOST_AUTO_TEST_CASE_TEMPLATE(casts, T, cast_types )
+BOOST_AUTO_TEST_CASE_TEMPLATE(casts, T, cast_types)
 {
-	auto dummy = [](const T &) { };
+	auto dummy = [](const T &) {};
 	dummy(*this);
 }
 
@@ -44,4 +44,3 @@ BOOST_AUTO_TEST_CASE(move_assign)
 	MemStream ms2;
 	ms2 = std::move(ms1);
 }
-

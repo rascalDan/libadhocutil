@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE ProcessPipes
 #include <boost/test/unit_test.hpp>
 
-#include "processPipes.h"
 #include "definedDirs.h"
+#include "processPipes.h"
 #include <sys/wait.h>
 
 using namespace AdHoc::System;
 
-BOOST_AUTO_TEST_CASE( readfind )
+BOOST_AUTO_TEST_CASE(readfind)
 {
 	ProcessPipes pp({"/usr/bin/find", rootDir, "-maxdepth", "1"}, false, true, true);
 	BOOST_REQUIRE_EQUAL(pp.fdIn(), -1);
@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE( readfind )
 	waitpid(pp.pid(), &status, 0);
 }
 
-BOOST_AUTO_TEST_CASE( readwrite )
+BOOST_AUTO_TEST_CASE(readwrite)
 {
 	ProcessPipes pp({"/usr/bin/md5sum"}, true, true, false);
 	BOOST_REQUIRE_NE(pp.fdIn(), -1);
@@ -38,10 +38,7 @@ BOOST_AUTO_TEST_CASE( readwrite )
 	waitpid(pp.pid(), &status, 0);
 }
 
-BOOST_AUTO_TEST_CASE( noargs )
+BOOST_AUTO_TEST_CASE(noargs)
 {
-	BOOST_CHECK_THROW({
-		ProcessPipes({}, false, false, false);
-	}, std::invalid_argument);
+	BOOST_CHECK_THROW({ ProcessPipes({}, false, false, false); }, std::invalid_argument);
 }
-

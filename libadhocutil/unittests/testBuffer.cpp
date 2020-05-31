@@ -5,7 +5,7 @@
 
 using namespace AdHoc;
 
-BOOST_AUTO_TEST_CASE ( create )
+BOOST_AUTO_TEST_CASE(create)
 {
 	Buffer empty;
 	Buffer copy("const", Buffer::Copy);
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE ( create )
 	BOOST_REQUIRE_EQUAL("Nonconst", fre.str());
 }
 
-BOOST_AUTO_TEST_CASE( writestream )
+BOOST_AUTO_TEST_CASE(writestream)
 {
 	std::stringstream buf;
 	Buffer b;
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( writestream )
 	BOOST_REQUIRE_EQUAL("Some text.And then some more.", buf.str());
 }
 
-BOOST_AUTO_TEST_CASE( appendempty )
+BOOST_AUTO_TEST_CASE(appendempty)
 {
 	Buffer b;
 	// These should not add content
@@ -55,13 +55,10 @@ BOOST_AUTO_TEST_CASE( appendempty )
 	BOOST_REQUIRE(!b);
 }
 
-BOOST_AUTO_TEST_CASE( appendthings )
+BOOST_AUTO_TEST_CASE(appendthings)
 {
 	Buffer b;
-	b.append("string a")
-		.append(std::string(" b"))
-		.appendf(" num %d", 1)
-		.appendbf(" num %d", 2);
+	b.append("string a").append(std::string(" b")).appendf(" num %d", 1).appendbf(" num %d", 2);
 	BOOST_REQUIRE_EQUAL(22, b.length());
 	BOOST_REQUIRE_EQUAL("string a b num 1 num 2", b.str());
 	const char * cstring = b;
@@ -69,19 +66,16 @@ BOOST_AUTO_TEST_CASE( appendthings )
 	BOOST_REQUIRE_EQUAL("string a b num 1 num 2", cstring);
 }
 
-BOOST_AUTO_TEST_CASE( writeto )
+BOOST_AUTO_TEST_CASE(writeto)
 {
 	Buffer b;
-	b.append("string a")
-		.append(std::string(" b"))
-		.appendf(" num %d", 1)
-		.appendbf(" num %d", 2);
+	b.append("string a").append(std::string(" b")).appendf(" num %d", 1).appendbf(" num %d", 2);
 	std::string buf(22, '\0');
 	b.writeto(buf.data(), 23, 0);
 	BOOST_REQUIRE_EQUAL(buf, "string a b num 1 num 2");
 }
 
-BOOST_AUTO_TEST_CASE( operators )
+BOOST_AUTO_TEST_CASE(operators)
 {
 	auto expected = "cstringstd::string";
 	Buffer a;
@@ -102,7 +96,7 @@ BOOST_AUTO_TEST_CASE( operators )
 	BOOST_REQUIRE_EQUAL(expected, d.str());
 }
 
-BOOST_AUTO_TEST_CASE( clear )
+BOOST_AUTO_TEST_CASE(clear)
 {
 	Buffer b("some");
 	BOOST_REQUIRE(b);
@@ -110,7 +104,7 @@ BOOST_AUTO_TEST_CASE( clear )
 	BOOST_REQUIRE(!b);
 }
 
-BOOST_AUTO_TEST_CASE( replacesstringbf )
+BOOST_AUTO_TEST_CASE(replacesstringbf)
 {
 	auto str = Buffer().appendbf("something %d", 1234).str();
 	BOOST_REQUIRE_EQUAL("something 1234", str);
@@ -120,4 +114,3 @@ BOOST_AUTO_TEST_CASE( replacesstringbf )
 	std::string macrostringbf = stringbf("something %d", 1234);
 	BOOST_REQUIRE_EQUAL("something 1234", macrostringbf);
 }
-

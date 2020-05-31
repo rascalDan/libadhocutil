@@ -1,11 +1,11 @@
 #define BOOST_TEST_MODULE fprintbf
 #include <boost/test/unit_test.hpp>
 
-#include "fprintbf.h"
 #include "definedDirs.h"
+#include "fprintbf.h"
 #include <system_error>
 
-BOOST_AUTO_TEST_CASE( writestring )
+BOOST_AUTO_TEST_CASE(writestring)
 {
 	FILE * f = fopen(binDir / "writestring", "w");
 	BOOST_REQUIRE(f);
@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE( writestring )
 	fclose(f);
 }
 
-BOOST_AUTO_TEST_CASE( writestringerror )
+BOOST_AUTO_TEST_CASE(writestringerror)
 {
 	FILE * f = fopen(binDir / "writestring", "r");
 	BOOST_REQUIRE(f);
@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE( writestringerror )
 	fclose(f);
 }
 
-BOOST_AUTO_TEST_CASE( writeformatNoArgs )
+BOOST_AUTO_TEST_CASE(writeformatNoArgs)
 {
 	FILE * f = fopen(binDir / "writeformatNoArgs", "w");
 	BOOST_REQUIRE(f);
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE( writeformatNoArgs )
 	fclose(f);
 }
 
-BOOST_AUTO_TEST_CASE( writeformatOneArg )
+BOOST_AUTO_TEST_CASE(writeformatOneArg)
 {
 	FILE * f = fopen(binDir / "writeformatOneArg", "w");
 	BOOST_REQUIRE(f);
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( writeformatOneArg )
 	fclose(f);
 }
 
-BOOST_AUTO_TEST_CASE( writeformatTwoArgs )
+BOOST_AUTO_TEST_CASE(writeformatTwoArgs)
 {
 	FILE * f = fopen(binDir / "writeformatTwoArgs", "w");
 	BOOST_REQUIRE(f);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE( writeformatTwoArgs )
 	fclose(f);
 }
 
-BOOST_AUTO_TEST_CASE( writeformatError )
+BOOST_AUTO_TEST_CASE(writeformatError)
 {
 	FILE * f = fopen(binDir / "writeformatTwoArgs", "r");
 	BOOST_REQUIRE(f);
@@ -53,8 +53,7 @@ BOOST_AUTO_TEST_CASE( writeformatError )
 	fclose(f);
 }
 
-BOOST_AUTO_TEST_CASE( fopenerror )
+BOOST_AUTO_TEST_CASE(fopenerror)
 {
 	BOOST_REQUIRE_THROW(fopen(binDir / "missing" / "folder", "r"), std::system_error);
 }
-

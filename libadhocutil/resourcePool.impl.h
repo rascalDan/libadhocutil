@@ -1,31 +1,28 @@
 #ifndef ADHOCUTIL_RESOURCEPOOL_IMPL_H
 #define ADHOCUTIL_RESOURCEPOOL_IMPL_H
 
-#include <boost/assert.hpp>
-#include "resourcePool.h"
 #include "lockHelpers.h"
+#include "resourcePool.h"
 #include "safeMapFind.h"
+#include <boost/assert.hpp>
 
 namespace AdHoc {
 	//
 	// ResourceHandle
 	//
 
-	template <typename R>
-	ResourceHandle<R>::ResourceHandle(std::shared_ptr<Object> o) noexcept :
-		resource(std::move(o))
+	template<typename R> ResourceHandle<R>::ResourceHandle(std::shared_ptr<Object> o) noexcept : resource(std::move(o))
 	{
 	}
 
-	template <typename R>
-	ResourceHandle<R>::~ResourceHandle() noexcept
+	template<typename R> ResourceHandle<R>::~ResourceHandle() noexcept
 	{
 		if (resource) {
 			decRef();
 		}
 	}
 
-	template <typename R>
+	template<typename R>
 	unsigned int
 	ResourceHandle<R>::handleCount() const
 	{
@@ -34,7 +31,7 @@ namespace AdHoc {
 		return resource.use_count() - 1;
 	}
 
-	template <typename R>
+	template<typename R>
 	R *
 	ResourceHandle<R>::get() const noexcept
 	{
@@ -42,20 +39,19 @@ namespace AdHoc {
 		return std::get<0>(*resource).get();
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourceHandle<R>::release() noexcept
 	{
 		decRef();
 	}
 
-	template <typename R>
-	ResourceHandle<R>::operator bool() const noexcept
+	template<typename R> ResourceHandle<R>::operator bool() const noexcept
 	{
 		return (bool)resource;
 	}
 
-	template <typename R>
+	template<typename R>
 	R *
 	ResourceHandle<R>::operator->() const noexcept
 	{
@@ -63,7 +59,7 @@ namespace AdHoc {
 		return std::get<0>(*resource).get();
 	}
 
-	template <typename R>
+	template<typename R>
 	ResourceHandle<R> &
 	ResourceHandle<R>::operator=(const ResourceHandle & rh) noexcept
 	{
@@ -76,7 +72,7 @@ namespace AdHoc {
 		return *this;
 	}
 
-	template <typename R>
+	template<typename R>
 	ResourceHandle<R> &
 	ResourceHandle<R>::operator=(ResourceHandle && rh) noexcept
 	{
@@ -89,7 +85,7 @@ namespace AdHoc {
 		return *this;
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourceHandle<R>::decRef() noexcept
 	{
@@ -112,34 +108,28 @@ namespace AdHoc {
 	// ResourcePool
 	//
 
-	template <typename R>
-	ResourcePool<R>::ResourcePool(unsigned int max, unsigned int k) :
-		poolSize(max),
-		keep(k)
-	{
-	}
+	template<typename R> ResourcePool<R>::ResourcePool(unsigned int max, unsigned int k) : poolSize(max), keep(k) { }
 
-	template <typename R>
-	ResourcePool<R>::~ResourcePool()
+	template<typename R> ResourcePool<R>::~ResourcePool()
 	{
 		for (auto & r : inUse) {
 			std::get<1>(*r.second) = nullptr;
 		}
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourcePool<R>::testResource(R const *) const
 	{
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourcePool<R>::returnTestResource(R const *) const
 	{
 	}
 
-	template <typename R>
+	template<typename R>
 	unsigned int
 	ResourcePool<R>::inUseCount() const
 	{
@@ -147,7 +137,7 @@ namespace AdHoc {
 		return inUse.size();
 	}
 
-	template <typename R>
+	template<typename R>
 	unsigned int
 	ResourcePool<R>::availableCount() const
 	{
@@ -155,7 +145,7 @@ namespace AdHoc {
 		return available.size();
 	}
 
-	template <typename R>
+	template<typename R>
 	unsigned int
 	ResourcePool<R>::freeCount() const
 	{
@@ -163,7 +153,7 @@ namespace AdHoc {
 		return poolSize.freeCount();
 	}
 
-	template <typename R>
+	template<typename R>
 	ResourceHandle<R>
 	ResourcePool<R>::getMine()
 	{
@@ -171,7 +161,7 @@ namespace AdHoc {
 		return ResourceHandle(safeMapLookup<NoCurrentResourceT<R>>(inUse, std::this_thread::get_id()));
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourcePool<R>::idle()
 	{
@@ -179,7 +169,7 @@ namespace AdHoc {
 		available.clear();
 	}
 
-	template <typename R>
+	template<typename R>
 	ResourceHandle<R>
 	ResourcePool<R>::get()
 	{
@@ -187,13 +177,13 @@ namespace AdHoc {
 		try {
 			return ResourceHandle(getOne());
 		}
-		catch(...) {
+		catch (...) {
 			poolSize.notify();
 			throw;
 		}
 	}
 
-	template <typename R>
+	template<typename R>
 	ResourceHandle<R>
 	ResourcePool<R>::get(unsigned int timeout)
 	{
@@ -203,13 +193,13 @@ namespace AdHoc {
 		try {
 			return getOne();
 		}
-		catch(...) {
+		catch (...) {
 			poolSize.notify();
 			throw;
 		}
 	}
 
-	template <typename R>
+	template<typename R>
 	ResourceHandle<R>
 	ResourcePool<R>::getOne()
 	{
@@ -220,7 +210,7 @@ namespace AdHoc {
 				testResource(r.get());
 				auto ro = std::make_shared<typename ResourceHandle<R>::Object>(r, this);
 				available.pop_front();
-				inUse.insert({ std::this_thread::get_id(), ro });
+				inUse.insert({std::this_thread::get_id(), ro});
 				return ResourceHandle(ro);
 			}
 			catch (...) {
@@ -228,11 +218,11 @@ namespace AdHoc {
 			}
 		}
 		auto ro = std::make_shared<typename ResourceHandle<R>::Object>(createResource(), this);
-		inUse.insert({ std::this_thread::get_id(), ro });
+		inUse.insert({std::this_thread::get_id(), ro});
 		return ResourceHandle(ro);
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourcePool<R>::putBack(const std::shared_ptr<R> & r)
 	{
@@ -249,7 +239,7 @@ namespace AdHoc {
 		poolSize.notify();
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourcePool<R>::discard(const std::shared_ptr<R> & r)
 	{
@@ -258,7 +248,7 @@ namespace AdHoc {
 		poolSize.notify();
 	}
 
-	template <typename R>
+	template<typename R>
 	void
 	ResourcePool<R>::removeFrom(const std::shared_ptr<R> & r, InUse & inUse)
 	{
@@ -271,19 +261,15 @@ namespace AdHoc {
 		}
 	}
 
-	template <typename R>
-	TimeOutOnResourcePoolT<R>::TimeOutOnResourcePoolT() :
-		TimeOutOnResourcePool(typeid(R).name())
+	template<typename R> TimeOutOnResourcePoolT<R>::TimeOutOnResourcePoolT() : TimeOutOnResourcePool(typeid(R).name())
 	{
 	}
 
-	template <typename R>
-	NoCurrentResourceT<R>::NoCurrentResourceT(const std::thread::id & id) :
-		NoCurrentResource(id, typeid(R).name())
+	template<typename R>
+	NoCurrentResourceT<R>::NoCurrentResourceT(const std::thread::id & id) : NoCurrentResource(id, typeid(R).name())
 	{
 	}
 
 }
 
 #endif
-

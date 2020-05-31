@@ -5,26 +5,30 @@
 
 namespace AdHoc {
 	template<typename Object>
-	Object * GlobalStatic<Object>::get()
+	Object *
+	GlobalStatic<Object>::get()
 	{
 		return instance();
 	}
 
 	template<typename Object>
-	void GlobalStatic<Object>::createObject()
+	void
+	GlobalStatic<Object>::createObject()
 	{
 		instance() = new Object();
 	}
 
 	template<typename Object>
-	void GlobalStatic<Object>::deleteObject()
+	void
+	GlobalStatic<Object>::deleteObject()
 	{
 		delete instance();
 		instance() = nullptr;
 	}
 
 	template<typename Object>
-	typename GlobalStatic<Object>::Ptr & GlobalStatic<Object>::instance()
+	typename GlobalStatic<Object>::Ptr &
+	GlobalStatic<Object>::instance()
 	{
 		static Ptr _instance;
 		return _instance;
@@ -32,4 +36,3 @@ namespace AdHoc {
 };
 
 #endif
-

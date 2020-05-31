@@ -4,59 +4,75 @@
 #include <resourcePool.impl.h>
 
 class MockResource {
-	public:
-		MockResource() : id(ids++) { count += 1; }
-		~MockResource() { count -= 1; }
+public:
+	MockResource() : id(ids++)
+	{
+		count += 1;
+	}
+	~MockResource()
+	{
+		count -= 1;
+	}
 
-		SPECIAL_MEMBERS_DELETE(MockResource);
+	SPECIAL_MEMBERS_DELETE(MockResource);
 
-		[[ nodiscard ]] bool valid() const { return true; }
+	[[nodiscard]] bool
+	valid() const
+	{
+		return true;
+	}
 
-		const unsigned int id;
-		static std::atomic<unsigned int> ids;
-		static std::atomic<unsigned int> count;
+	const unsigned int id;
+	static std::atomic<unsigned int> ids;
+	static std::atomic<unsigned int> count;
 };
 
 std::atomic<unsigned int> MockResource::ids;
 std::atomic<unsigned int> MockResource::count;
 
 class TRP : public AdHoc::ResourcePool<MockResource> {
-	public:
-		TRP() : AdHoc::ResourcePool<MockResource>(10, 10) { }
-	protected:
-		std::shared_ptr<MockResource> createResource() const override
-		{
-			return std::make_shared<MockResource>();
-		}
+public:
+	TRP() : AdHoc::ResourcePool<MockResource>(10, 10) { }
+
+protected:
+	std::shared_ptr<MockResource>
+	createResource() const override
+	{
+		return std::make_shared<MockResource>();
+	}
 };
 
 class TRPSmall : public AdHoc::ResourcePool<MockResource> {
-	public:
-		TRPSmall() : AdHoc::ResourcePool<MockResource>(3, 1) { }
-	protected:
-		std::shared_ptr<MockResource> createResource() const override
-		{
-			return std::make_shared<MockResource>();
-		}
+public:
+	TRPSmall() : AdHoc::ResourcePool<MockResource>(3, 1) { }
+
+protected:
+	std::shared_ptr<MockResource>
+	createResource() const override
+	{
+		return std::make_shared<MockResource>();
+	}
 };
 
 class TRPCreateFail : public TRPSmall {
-	protected:
-		std::shared_ptr<MockResource> createResource() const override
-		{
-			throw std::exception();
-		}
+protected:
+	std::shared_ptr<MockResource>
+	createResource() const override
+	{
+		throw std::exception();
+	}
 };
 
 class TRPReturnFail : public TRPSmall {
-	protected:
-		void returnTestResource(MockResource const *) const override
-		{
-			throw std::exception();
-		}
+protected:
+	void
+	returnTestResource(MockResource const *) const override
+	{
+		throw std::exception();
+	}
 };
 
-BOOST_AUTO_TEST_CASE ( get )
+BOOST_AUTO_TEST_CASE(get)
 {
 	{
 		TRP pool;
@@ -109,7 +125,7 @@ BOOST_AUTO_TEST_CASE ( get )
 	BOOST_REQUIRE_EQUAL(0, MockResource::count);
 }
 
-BOOST_AUTO_TEST_CASE( destroyPoolWhenInUse )
+BOOST_AUTO_TEST_CASE(destroyPoolWhenInUse)
 {
 	auto rp = new TRP();
 	auto rh1 = rp->get();
@@ -122,7 +138,7 @@ BOOST_AUTO_TEST_CASE( destroyPoolWhenInUse )
 	BOOST_REQUIRE(rh3->valid());
 }
 
-BOOST_AUTO_TEST_CASE ( getMine )
+BOOST_AUTO_TEST_CASE(getMine)
 {
 	TRP pool;
 	auto r1 = pool.get();
@@ -133,7 +149,7 @@ BOOST_AUTO_TEST_CASE ( getMine )
 	BOOST_REQUIRE_EQUAL(2, r2.handleCount());
 }
 
-BOOST_AUTO_TEST_CASE( getMineNoCurrent )
+BOOST_AUTO_TEST_CASE(getMineNoCurrent)
 {
 	TRP pool;
 	BOOST_REQUIRE_THROW(pool.getMine(), AdHoc::NoCurrentResourceT<MockResource>);
@@ -145,7 +161,7 @@ BOOST_AUTO_TEST_CASE( getMineNoCurrent )
 	BOOST_REQUIRE_THROW(pool.getMine(), AdHoc::NoCurrentResource);
 }
 
-BOOST_AUTO_TEST_CASE( move )
+BOOST_AUTO_TEST_CASE(move)
 {
 	TRP pool;
 	{
@@ -177,7 +193,7 @@ BOOST_AUTO_TEST_CASE( move )
 	BOOST_CHECK_EQUAL(pool.inUseCount(), 0);
 }
 
-BOOST_AUTO_TEST_CASE( discard )
+BOOST_AUTO_TEST_CASE(discard)
 {
 	TRP pool;
 	try {
@@ -193,7 +209,7 @@ BOOST_AUTO_TEST_CASE( discard )
 	}
 }
 
-BOOST_AUTO_TEST_CASE( keepSome1 )
+BOOST_AUTO_TEST_CASE(keepSome1)
 {
 	TRPSmall pool;
 	{
@@ -228,7 +244,7 @@ BOOST_AUTO_TEST_CASE( keepSome1 )
 	BOOST_REQUIRE_EQUAL(1, MockResource::count);
 }
 
-BOOST_AUTO_TEST_CASE( keepSome2 )
+BOOST_AUTO_TEST_CASE(keepSome2)
 {
 	TRPSmall pool;
 	{
@@ -244,7 +260,7 @@ BOOST_AUTO_TEST_CASE( keepSome2 )
 	BOOST_REQUIRE_EQUAL(1, MockResource::count);
 }
 
-BOOST_AUTO_TEST_CASE( idle )
+BOOST_AUTO_TEST_CASE(idle)
 {
 	TRP pool;
 	{
@@ -270,12 +286,12 @@ BOOST_AUTO_TEST_CASE( idle )
 	BOOST_REQUIRE_EQUAL(0, MockResource::count);
 }
 
-BOOST_AUTO_TEST_CASE( threading1, * boost::unit_test::timeout(10) )
+BOOST_AUTO_TEST_CASE(threading1, *boost::unit_test::timeout(10))
 {
 	TRPSmall pool;
 	std::list<std::thread> threads;
 	for (int x = 0; x < 100; x += 1) {
-		threads.emplace_back([&pool](){
+		threads.emplace_back([&pool]() {
 			auto r = pool.get();
 			usleep(50000);
 		});
@@ -283,15 +299,14 @@ BOOST_AUTO_TEST_CASE( threading1, * boost::unit_test::timeout(10) )
 		// pool size never exceeds 3
 		BOOST_REQUIRE_LE(pool.inUseCount(), 3);
 	}
-	for(auto & thread : threads) {
+	for (auto & thread : threads) {
 		thread.join();
 	}
 	// pool keep returns to 1
 	BOOST_REQUIRE_EQUAL(1, pool.availableCount());
 }
 
-static
-void
+static void
 acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::Semaphore & s)
 {
 	auto r = pool->get();
@@ -299,13 +314,19 @@ acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::Semaphore & s)
 	sleep(1);
 }
 
-BOOST_AUTO_TEST_CASE( threading2 )
+BOOST_AUTO_TEST_CASE(threading2)
 {
 	TRPSmall pool;
 	AdHoc::Semaphore s;
-	std::thread t1([&pool, &s]() { acquireAndKeepFor1Second(&pool, s); });
-	std::thread t2([&pool, &s]() { acquireAndKeepFor1Second(&pool, s); });
-	std::thread t3([&pool, &s]() { acquireAndKeepFor1Second(&pool, s); });
+	std::thread t1([&pool, &s]() {
+		acquireAndKeepFor1Second(&pool, s);
+	});
+	std::thread t2([&pool, &s]() {
+		acquireAndKeepFor1Second(&pool, s);
+	});
+	std::thread t3([&pool, &s]() {
+		acquireAndKeepFor1Second(&pool, s);
+	});
 
 	s.wait();
 	s.wait();
@@ -325,19 +346,21 @@ BOOST_AUTO_TEST_CASE( threading2 )
 }
 
 class TTRP : public TRP {
-	public:
-		void testResource(MockResource const *) const override
-		{
-			n += 1;
-			if (n % 2) {
-				throw std::exception();
-			}
+public:
+	void
+	testResource(MockResource const *) const override
+	{
+		n += 1;
+		if (n % 2) {
+			throw std::exception();
 		}
-	private:
-		mutable int n{0};
+	}
+
+private:
+	mutable int n {0};
 };
 
-BOOST_AUTO_TEST_CASE( test )
+BOOST_AUTO_TEST_CASE(test)
 {
 	TTRP pool;
 	unsigned int rpId;
@@ -360,7 +383,7 @@ BOOST_AUTO_TEST_CASE( test )
 	}
 }
 
-BOOST_AUTO_TEST_CASE( createFail )
+BOOST_AUTO_TEST_CASE(createFail)
 {
 	TRPCreateFail pool;
 	BOOST_REQUIRE_EQUAL(0, MockResource::count);
@@ -382,7 +405,7 @@ BOOST_AUTO_TEST_CASE( createFail )
 	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
 }
 
-BOOST_AUTO_TEST_CASE( returnFail )
+BOOST_AUTO_TEST_CASE(returnFail)
 {
 	TRPReturnFail pool;
 	{
@@ -396,9 +419,8 @@ BOOST_AUTO_TEST_CASE( returnFail )
 	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
 }
 
-BOOST_AUTO_TEST_CASE( exception_msgs )
+BOOST_AUTO_TEST_CASE(exception_msgs)
 {
 	BOOST_CHECK_NO_THROW(AdHoc::TimeOutOnResourcePool("foo").message());
 	BOOST_CHECK_NO_THROW(AdHoc::NoCurrentResource(std::this_thread::get_id(), "foo").message());
 }
-

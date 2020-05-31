@@ -31,4 +31,3 @@ fopen(const std::filesystem::path & path, const char * mode)
 	}
 	return f;
 }
-

@@ -3,7 +3,7 @@
 
 #include "uriParse.h"
 
-BOOST_AUTO_TEST_CASE( simple )
+BOOST_AUTO_TEST_CASE(simple)
 {
 	AdHoc::Uri u("http://localhost");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE( simple )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( lowerScheme )
+BOOST_AUTO_TEST_CASE(lowerScheme)
 {
 	AdHoc::Uri u("HtTP://localhost");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE( lowerScheme )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( simpleTrailingSlash )
+BOOST_AUTO_TEST_CASE(simpleTrailingSlash)
 {
 	AdHoc::Uri u("ssh+git://localhost/");
 	BOOST_REQUIRE_EQUAL("ssh+git", u.scheme);
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE( simpleTrailingSlash )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( simpleWithPort )
+BOOST_AUTO_TEST_CASE(simpleWithPort)
 {
 	AdHoc::Uri u("http://localhost:80");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE( simpleWithPort )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( simpleTrailingSlashWithPort )
+BOOST_AUTO_TEST_CASE(simpleTrailingSlashWithPort)
 {
 	AdHoc::Uri u("http://localhost:80/");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE( simpleTrailingSlashWithPort )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( username )
+BOOST_AUTO_TEST_CASE(username)
 {
 	AdHoc::Uri u("http://user@localhost");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE( username )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( usernameAndPassword )
+BOOST_AUTO_TEST_CASE(usernameAndPassword)
 {
 	AdHoc::Uri u("http://user:pass@localhost");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE( usernameAndPassword )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( path )
+BOOST_AUTO_TEST_CASE(path)
 {
 	AdHoc::Uri u("http://localhost/path/to/resource");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE( path )
 	BOOST_REQUIRE(!u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( query0 )
+BOOST_AUTO_TEST_CASE(query0)
 {
 	AdHoc::Uri u("http://localhost/?");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE( query0 )
 	BOOST_REQUIRE_EQUAL(0, u.query.size());
 }
 
-BOOST_AUTO_TEST_CASE( query1 )
+BOOST_AUTO_TEST_CASE(query1)
 {
 	AdHoc::Uri u("http://localhost/?var=val");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE( query1 )
 	BOOST_REQUIRE_EQUAL("val", u.query.begin()->second);
 }
 
-BOOST_AUTO_TEST_CASE( query2 )
+BOOST_AUTO_TEST_CASE(query2)
 {
 	AdHoc::Uri u("http://localhost/?var=val&name=value");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE( query2 )
 	BOOST_REQUIRE_EQUAL("val", u.query.rbegin()->second);
 }
 
-BOOST_AUTO_TEST_CASE( queryMany )
+BOOST_AUTO_TEST_CASE(queryMany)
 {
 	AdHoc::Uri u("http://localhost/?name=val&name=value");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE( queryMany )
 	BOOST_REQUIRE_EQUAL("value", u.query.rbegin()->second);
 }
 
-BOOST_AUTO_TEST_CASE( queryNoValue1 )
+BOOST_AUTO_TEST_CASE(queryNoValue1)
 {
 	AdHoc::Uri u("http://localhost/?n1");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE( queryNoValue1 )
 	BOOST_REQUIRE_EQUAL("", u.query.begin()->second);
 }
 
-BOOST_AUTO_TEST_CASE( queryNoValue1eq )
+BOOST_AUTO_TEST_CASE(queryNoValue1eq)
 {
 	AdHoc::Uri u("http://localhost/?n1=");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE( queryNoValue1eq )
 	BOOST_REQUIRE_EQUAL("", u.query.begin()->second);
 }
 
-BOOST_AUTO_TEST_CASE( queryNoValue2 )
+BOOST_AUTO_TEST_CASE(queryNoValue2)
 {
 	AdHoc::Uri u("http://localhost/?n1=&n2");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE( queryNoValue2 )
 	BOOST_REQUIRE_EQUAL("", u.query.rbegin()->second);
 }
 
-BOOST_AUTO_TEST_CASE( fragment )
+BOOST_AUTO_TEST_CASE(fragment)
 {
 	AdHoc::Uri u("http://localhost/path/to/resource#someFrag");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE( fragment )
 	BOOST_REQUIRE_EQUAL("someFrag", *u.fragment);
 }
 
-BOOST_AUTO_TEST_CASE( ipv6 )
+BOOST_AUTO_TEST_CASE(ipv6)
 {
 	AdHoc::Uri u("http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html");
 	BOOST_REQUIRE_EQUAL("http", u.scheme);
@@ -211,7 +211,7 @@ BOOST_AUTO_TEST_CASE( ipv6 )
 	BOOST_REQUIRE_EQUAL("index.html", *u.path);
 }
 
-BOOST_AUTO_TEST_CASE( bad )
+BOOST_AUTO_TEST_CASE(bad)
 {
 	BOOST_REQUIRE_THROW(AdHoc::Uri(""), AdHoc::InvalidUri);
 	BOOST_REQUIRE_THROW(AdHoc::Uri("localhost"), AdHoc::InvalidUri);
@@ -227,4 +227,3 @@ BOOST_AUTO_TEST_CASE( bad )
 	AdHoc::InvalidUri ui("message", "http://localhost");
 	BOOST_REQUIRE_EQUAL("InvalidUri (message) parsing [http://localhost]", ui.what());
 }
-

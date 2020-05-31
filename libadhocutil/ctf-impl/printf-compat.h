@@ -3,19 +3,20 @@
 
 #include "../compileTimeFormatter.h"
 #include <boost/assert.hpp>
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/if.hpp>
-#include <boost/preprocessor/comma_if.hpp>
 #include <boost/preprocessor/arithmetic/add.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/comma_if.hpp>
+#include <boost/preprocessor/if.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 #include <iomanip>
 #include <type_traits>
 
 namespace AdHoc {
 #define BASICCONV(PARAMTYPE, OP, ...) \
 	StreamWriterT(__VA_ARGS__) { \
-		template<typename ... Pn> \
-		static inline void write(stream & s, const PARAMTYPE & p, const Pn & ... pn) \
+		template<typename... Pn> \
+		static inline void \
+		write(stream & s, const PARAMTYPE & p, const Pn &... pn) \
 		{ \
 			OP; \
 			s.copyfmt(std::ios(nullptr)); \
@@ -68,23 +69,26 @@ namespace AdHoc {
 	BASICCONV(wchar_t, s << p, 'l', 'c');
 #undef BASICCONV
 	StreamWriterT('p') {
-		template<typename Obj, typename ... Pn>
-		static inline void write(stream & s, Obj * const ptr, const Pn & ... pn)
+		template<typename Obj, typename... Pn>
+		static inline void
+		write(stream & s, Obj * const ptr, const Pn &... pn)
 		{
 			s << std::showbase << std::hex << (long unsigned int)ptr;
 			s.copyfmt(std::ios(nullptr));
 			StreamWriter::next(s, pn...);
 		}
-		template<typename Ptr, typename ... Pn>
-		static inline void write(stream & s, const Ptr & ptr, const Pn & ... pn)
+		template<typename Ptr, typename... Pn>
+		static inline void
+		write(stream & s, const Ptr & ptr, const Pn &... pn)
 		{
 			write(s, ptr.get(), pn...);
 		}
 	};
 
 	StreamWriterT('m') {
-		template<typename ... Pn>
-		static inline void write(stream & s, const Pn & ... pn)
+		template<typename... Pn>
+		static inline void
+		write(stream & s, const Pn &... pn)
 		{
 			s << strerror(errno);
 			s.copyfmt(std::ios(nullptr));
@@ -92,8 +96,9 @@ namespace AdHoc {
 		}
 	};
 	StreamWriterT('n') {
-		template<typename ... Pn>
-		static inline void write(stream & s, int * n, const Pn & ... pn)
+		template<typename... Pn>
+		static inline void
+		write(stream & s, int * n, const Pn &... pn)
 		{
 			BOOST_ASSERT_MSG(n, "%n conversion requires non-null parameter");
 			*n = streamLength(s);
@@ -104,24 +109,36 @@ namespace AdHoc {
 
 	////
 	// Width/precision embedded in format string
-	template<auto ... chs>
-	constexpr auto decdigits()
+	template<auto... chs>
+	constexpr auto
+	decdigits()
 	{
 		static_assert((isdigit(chs) && ... && true));
 		int n = 0;
-		([&n](auto ch) {
-			n = (n * 10) + (ch - '0');
-		}(chs), ...);
+		(
+				[&n](auto ch) {
+					n = (n * 10) + (ch - '0');
+				}(chs),
+				...);
 		return n;
 	}
-#define AUTON(z, n, data) BOOST_PP_COMMA_IF(n) auto BOOST_PP_CAT(data, n)
-#define NS(z, n, data) BOOST_PP_COMMA_IF(n) BOOST_PP_CAT(data, n)
-#define ISDIGIT(z, n, data) && isdigit(BOOST_PP_CAT(data, BOOST_PP_ADD(n, 1)))
+#define AUTON(z, n, data) \
+	BOOST_PP_COMMA_IF(n) \
+	auto BOOST_PP_CAT(data, n)
+#define NS(z, n, data) \
+	BOOST_PP_COMMA_IF(n) \
+	BOOST_PP_CAT(data, n)
+#define ISDIGIT(z, n, data) &&isdigit(BOOST_PP_CAT(data, BOOST_PP_ADD(n, 1)))
 #define FMTWIDTH(unused, d, data) \
-	template<CtfString S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, auto ... sn> \
-	struct StreamWriter<S, L, pos, stream, typename std::enable_if<ispositivedigit(n0) BOOST_PP_REPEAT(d, ISDIGIT, n) && !isdigit(nn)>::type, '%', BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n), nn, sn...> { \
-		template<typename ... Pn> \
-		static inline void write(stream & s, const Pn & ... pn) { \
+	template<CtfString S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, \
+			auto... sn> \
+	struct StreamWriter<S, L, pos, stream, \
+			typename std::enable_if<ispositivedigit(n0) BOOST_PP_REPEAT(d, ISDIGIT, n) && !isdigit(nn)>::type, '%', \
+			BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n), nn, sn...> { \
+		template<typename... Pn> \
+		static inline void \
+		write(stream & s, const Pn &... pn) \
+		{ \
 			constexpr auto p = decdigits<BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n)>(); \
 			s << std::setw(p); \
 			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 1), stream, void, '%', nn, sn...>::write(s, pn...); \
@@ -129,10 +146,15 @@ namespace AdHoc {
 	};
 	BOOST_PP_REPEAT(6, FMTWIDTH, void);
 #define FMTPRECISION(unused, d, data) \
-	template<CtfString S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, auto ... sn> \
-	struct StreamWriter<S, L, pos, stream, typename std::enable_if<isdigit(n0) BOOST_PP_REPEAT(d, ISDIGIT, n) && !isdigit(nn)>::type, '%', '.', BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n), nn, sn...> { \
-		template<typename ... Pn> \
-		static inline void write(stream & s, const Pn & ... pn) { \
+	template<CtfString S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, \
+			auto... sn> \
+	struct StreamWriter<S, L, pos, stream, \
+			typename std::enable_if<isdigit(n0) BOOST_PP_REPEAT(d, ISDIGIT, n) && !isdigit(nn)>::type, '%', '.', \
+			BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n), nn, sn...> { \
+		template<typename... Pn> \
+		static inline void \
+		write(stream & s, const Pn &... pn) \
+		{ \
 			constexpr auto p = decdigits<BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n)>(); \
 			s << std::setprecision(p); \
 			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 2), stream, void, '%', nn, sn...>::write(s, pn...); \
@@ -145,16 +167,18 @@ namespace AdHoc {
 #undef FMTWIDTH
 
 	StreamWriterT('.', '*') {
-		template<typename ... Pn>
-		static inline void write(stream & s, int l, const Pn & ... pn)
+		template<typename... Pn>
+		static inline void
+		write(stream & s, int l, const Pn &... pn)
 		{
 			s << std::setw(l);
 			StreamWriter<S, L, pos + 2, stream, void, '%', sn...>::write(s, pn...);
 		}
 	};
 	StreamWriterT('.', '*', 's') {
-		template<typename ... Pn>
-		static inline void write(stream & s, int l, const std::string_view & p, const Pn & ... pn)
+		template<typename... Pn>
+		static inline void
+		write(stream & s, int l, const std::string_view & p, const Pn &... pn)
 		{
 			s << p.substr(0, l);
 			s.copyfmt(std::ios(nullptr));
@@ -162,10 +186,13 @@ namespace AdHoc {
 		}
 	};
 
-	// Flags
+		// Flags
 #define FLAGCONV(OP, ...) \
 	StreamWriterT(__VA_ARGS__) { \
-		template<typename ... Pn> static inline void write(stream & s, const Pn & ... pn) { \
+		template<typename... Pn> \
+		static inline void \
+		write(stream & s, const Pn &... pn) \
+		{ \
 			OP; \
 			StreamWriter<S, L, pos + 1, stream, void, '%', sn...>::write(s, pn...); \
 		} \
@@ -179,4 +206,3 @@ namespace AdHoc {
 }
 
 #endif
-

@@ -6,4 +6,3 @@
 #define MAKE_UNIQUE(x) CONCATENATE(x, __COUNTER__)
 
 #endif
-

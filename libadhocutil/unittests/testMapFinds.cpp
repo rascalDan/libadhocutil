@@ -1,31 +1,22 @@
 #define BOOST_TEST_MODULE MapFinds
 #include <boost/test/unit_test.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include "safeMapFind.h"
+#include <boost/lexical_cast.hpp>
+#include <map>
 #include <stdexcept>
 #include <string>
-#include <map>
 
 using namespace AdHoc;
 
 class NotFound : std::runtime_error {
-	public:
-		explicit NotFound(int key) :
-			std::runtime_error(boost::lexical_cast<std::string>("Key not found: %d", key))
-		{
-		}
+public:
+	explicit NotFound(int key) : std::runtime_error(boost::lexical_cast<std::string>("Key not found: %d", key)) { }
 };
 
-const std::map<int, std::string> sample {
-	{ 1, "one" },
-	{ 2, "two" },
-	{ 4, "four" },
-	{ 8, "eight" },
-	{ 16, "sixteen" }
-};
+const std::map<int, std::string> sample {{1, "one"}, {2, "two"}, {4, "four"}, {8, "eight"}, {16, "sixteen"}};
 
-BOOST_AUTO_TEST_CASE ( testSafeMapFind )
+BOOST_AUTO_TEST_CASE(testSafeMapFind)
 {
 	BOOST_REQUIRE_EQUAL(safeMapFind<NotFound>(sample, 1)->first, 1);
 	BOOST_REQUIRE_EQUAL(safeMapFind<NotFound>(sample, 1)->second, "one");
@@ -34,7 +25,7 @@ BOOST_AUTO_TEST_CASE ( testSafeMapFind )
 	BOOST_REQUIRE_THROW(safeMapFind<NotFound>(sample, 5), NotFound);
 }
 
-BOOST_AUTO_TEST_CASE ( testDefaultMapLookup )
+BOOST_AUTO_TEST_CASE(testDefaultMapLookup)
 {
 	BOOST_REQUIRE_EQUAL(defaultMapLookup(sample, 1), "one");
 	BOOST_REQUIRE_EQUAL(defaultMapLookup(sample, 4), "four");
@@ -42,18 +33,17 @@ BOOST_AUTO_TEST_CASE ( testDefaultMapLookup )
 	BOOST_REQUIRE_EQUAL(defaultMapLookup(sample, 5, "default"), "default");
 }
 
-BOOST_AUTO_TEST_CASE ( testSafeMapLookup )
+BOOST_AUTO_TEST_CASE(testSafeMapLookup)
 {
 	BOOST_REQUIRE_EQUAL(safeMapLookup<NotFound>(sample, 1), "one");
 	BOOST_REQUIRE_EQUAL(safeMapLookup<NotFound>(sample, 4), "four");
 	BOOST_REQUIRE_THROW(safeMapLookup<NotFound>(sample, 5), NotFound);
 }
 
-BOOST_AUTO_TEST_CASE ( testContainerContains )
+BOOST_AUTO_TEST_CASE(testContainerContains)
 {
 	BOOST_REQUIRE_EQUAL(true, containerContains(sample, {1, "one"}));
 	BOOST_REQUIRE_EQUAL(false, containerContains(sample, {2, "one"}));
 	BOOST_REQUIRE_EQUAL(false, containerContains(sample, {1, "two"}));
 	BOOST_REQUIRE_EQUAL(true, containerContains(sample, {2, "two"}));
 }
-

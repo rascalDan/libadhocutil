@@ -1,10 +1,10 @@
 #define BOOST_TEST_MODULE CompileTimeFormatter
 #include <boost/test/unit_test.hpp>
 
-#include <compileTimeFormatter.h>
-#include <fileUtils.h>
-#include <definedDirs.h>
 #include "memstream.h"
+#include <compileTimeFormatter.h>
+#include <definedDirs.h>
+#include <fileUtils.h>
 
 #include <filesystem>
 
@@ -22,7 +22,10 @@ constexpr const char * formatStringCustom = "custom %()";
 constexpr const char * formatStringCustomParam1 = "custom %(\x3)";
 constexpr const char * formatStringCustomParam2 = "custom %(\x9)";
 constexpr const char * formatStringCustomLong = "custom %(longname)";
-constexpr const char * formatStringLong = "                                                                                                                                                                                                                                                      ";
+constexpr const char * formatStringLong
+		= "                                                                                                            "
+		  "                                                                                                            "
+		  "                              ";
 constexpr const char * formatStringMultiArg = "value%ra";
 constexpr const char * formatStringEscape1 = "literal %% percentage.";
 constexpr const char * formatStringEscape2 = "literal %%? percentage.";
@@ -33,8 +36,9 @@ namespace AdHoc {
 	// Custom stream writer formatter, formats as
 	// -( bracketed expression )-
 	StreamWriterT('(', ')') {
-		template<typename P, typename ... Pn>
-		static void write(stream & s, const P & p, const Pn & ... pn)
+		template<typename P, typename... Pn>
+		static void
+		write(stream & s, const P & p, const Pn &... pn)
 		{
 			s << "-( " << p << " )-";
 			StreamWriter::next(s, pn...);
@@ -43,8 +47,9 @@ namespace AdHoc {
 	// Custom stream writer formatter with a long identifier, formats as
 	// ---( bracketed expression )---
 	StreamWriterT('(', 'l', 'o', 'n', 'g', 'n', 'a', 'm', 'e', ')') {
-		template<typename P, typename ... Pn>
-		static void write(stream & s, const P & p, const Pn & ... pn)
+		template<typename P, typename... Pn>
+		static void
+		write(stream & s, const P & p, const Pn &... pn)
 		{
 			s << "---( " << p << " )---";
 			StreamWriter::next(s, pn...);
@@ -53,8 +58,9 @@ namespace AdHoc {
 	// Custom stream writer formatter that has parameter in the format string, formats as
 	// dashes*-( bracketed expression )dashes*-
 	StreamWriterTP(dashes, '(', dashes, ')') {
-		template<typename P, typename ... Pn>
-		static void write(stream & s, const P & p, const Pn & ... pn)
+		template<typename P, typename... Pn>
+		static void
+		write(stream & s, const P & p, const Pn &... pn)
 		{
 			// NOLINTNEXTLINE(bugprone-string-constructor)
 			std::string d(dashes, '-');
@@ -65,8 +71,9 @@ namespace AdHoc {
 	// Custom stream writer formatter, formats
 	//            right-aligned by given width
 	StreamWriterT('r', 'a') {
-		template<typename P, typename ... Pn>
-		static void write(stream & s, int width, const P & p, const Pn & ... pn)
+		template<typename P, typename... Pn>
+		static void
+		write(stream & s, int width, const P & p, const Pn &... pn)
 		{
 			std::stringstream buf;
 			buf << p;
@@ -116,137 +123,137 @@ static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
 static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
 #endif
 
-BOOST_FIXTURE_TEST_SUITE( TestStreamWrite, std::stringstream )
+BOOST_FIXTURE_TEST_SUITE(TestStreamWrite, std::stringstream)
 
-BOOST_AUTO_TEST_CASE ( empty )
+BOOST_AUTO_TEST_CASE(empty)
 {
 	Formatter<formatEdgeCaseEmpty>::write(*this);
 	BOOST_CHECK(this->str().empty());
 }
 
-BOOST_AUTO_TEST_CASE ( single )
+BOOST_AUTO_TEST_CASE(single)
 {
 	Formatter<formatEdgeCaseSingle>::write(*this);
 	BOOST_CHECK_EQUAL(this->str(), "1");
 }
 
-BOOST_AUTO_TEST_CASE ( start )
+BOOST_AUTO_TEST_CASE(start)
 {
 	Formatter<formatEdgeCaseFormatStart>::write(*this, 10);
 	BOOST_CHECK_EQUAL(this->str(), "10 after");
 }
 
-BOOST_AUTO_TEST_CASE ( end )
+BOOST_AUTO_TEST_CASE(end)
 {
 	Formatter<formatEdgeCaseFormatEnd>::write(*this, 10);
 	BOOST_CHECK_EQUAL(this->str(), "before 10");
 }
 
-BOOST_AUTO_TEST_CASE ( lonely )
+BOOST_AUTO_TEST_CASE(lonely)
 {
 	Formatter<formatEdgeCaseFormatLonely>::write(*this, 10);
 	BOOST_CHECK_EQUAL(this->str(), "10");
 }
 
-BOOST_AUTO_TEST_CASE ( literal )
+BOOST_AUTO_TEST_CASE(literal)
 {
 	Formatter<formatStringLiteral>::write(*this);
 	BOOST_CHECK_EQUAL(this->str(), "literal");
 }
 
-BOOST_AUTO_TEST_CASE ( singleInt )
+BOOST_AUTO_TEST_CASE(singleInt)
 {
 	Formatter<formatStringSingle>::write(*this, 32);
 	BOOST_CHECK_EQUAL(this->str(), "single 32.");
 }
 
-BOOST_AUTO_TEST_CASE ( singleIntReturn )
+BOOST_AUTO_TEST_CASE(singleIntReturn)
 {
 	BOOST_CHECK_EQUAL(Formatter<formatStringSingle>::write(*this, 32).str(), "single 32.");
 }
 
-BOOST_AUTO_TEST_CASE ( singleDouble )
+BOOST_AUTO_TEST_CASE(singleDouble)
 {
 	Formatter<formatStringSingle>::write(*this, 3.14);
 	BOOST_CHECK_EQUAL(this->str(), "single 3.14.");
 }
 
-BOOST_AUTO_TEST_CASE ( singlePath )
+BOOST_AUTO_TEST_CASE(singlePath)
 {
 	std::filesystem::path p("/tmp/test/path");
 	Formatter<formatStringSingle>::write(*this, p);
 	BOOST_CHECK_EQUAL(this->str(), R"(single "/tmp/test/path".)");
 }
 
-BOOST_AUTO_TEST_CASE ( multi )
+BOOST_AUTO_TEST_CASE(multi)
 {
 	Formatter<formatStringMulti>::write(*this, "one", "two");
 	BOOST_CHECK_EQUAL(this->str(), "First one, then two.");
 }
 
-BOOST_AUTO_TEST_CASE ( escape1 )
+BOOST_AUTO_TEST_CASE(escape1)
 {
 	Formatter<formatStringEscape1>::write(*this);
 	BOOST_CHECK_EQUAL(this->str(), "literal % percentage.");
 }
 
-BOOST_AUTO_TEST_CASE ( escape2 )
+BOOST_AUTO_TEST_CASE(escape2)
 {
 	Formatter<formatStringEscape2>::write(*this);
 	BOOST_CHECK_EQUAL(this->str(), "literal %? percentage.");
 }
 
-BOOST_AUTO_TEST_CASE ( escape3 )
+BOOST_AUTO_TEST_CASE(escape3)
 {
 	Formatter<formatStringEscape3>::write(*this, 3);
 	BOOST_CHECK_EQUAL(this->str(), "literal %3 percentage.");
 }
 
-BOOST_AUTO_TEST_CASE ( escape4 )
+BOOST_AUTO_TEST_CASE(escape4)
 {
 	Formatter<formatStringEscape4>::write(*this, 3);
 	BOOST_CHECK_EQUAL(this->str(), "literal %3% percentage.");
 }
 
-BOOST_AUTO_TEST_CASE ( customBracketted )
+BOOST_AUTO_TEST_CASE(customBracketted)
 {
 	Formatter<formatStringCustom>::write(*this, "expr");
 	BOOST_CHECK_EQUAL(this->str(), "custom -( expr )-");
 }
 
-BOOST_AUTO_TEST_CASE ( customLongName )
+BOOST_AUTO_TEST_CASE(customLongName)
 {
 	Formatter<formatStringCustomLong>::write(*this, "some text here");
 	BOOST_CHECK_EQUAL(this->str(), "custom ---( some text here )---");
 }
 
-BOOST_AUTO_TEST_CASE ( customParam1 )
+BOOST_AUTO_TEST_CASE(customParam1)
 {
 	Formatter<formatStringCustomParam1>::write(*this, "some text here");
 	BOOST_CHECK_EQUAL(this->str(), "custom ---( some text here )---");
 }
 
-BOOST_AUTO_TEST_CASE ( customParam2 )
+BOOST_AUTO_TEST_CASE(customParam2)
 {
 	Formatter<formatStringCustomParam2>::write(*this, "some text here");
 	BOOST_CHECK_EQUAL(this->str(), "custom ---------( some text here )---------");
 }
 
 using TestFormat = Formatter<formatStringCustom>;
-BOOST_AUTO_TEST_CASE ( typedefFormat )
+BOOST_AUTO_TEST_CASE(typedefFormat)
 {
 	TestFormat::write(*this, "expr");
 	BOOST_CHECK_EQUAL(this->str(), "custom -( expr )-");
 }
 
 AdHocFormatter(TypedefWrapper, "Typedef wrapper %?.");
-BOOST_AUTO_TEST_CASE ( typedefWrapper )
+BOOST_AUTO_TEST_CASE(typedefWrapper)
 {
 	TypedefWrapper::write(*this, "expr");
 	BOOST_CHECK_EQUAL(this->str(), "Typedef wrapper expr.");
 }
 
-BOOST_AUTO_TEST_CASE ( longFormatString )
+BOOST_AUTO_TEST_CASE(longFormatString)
 {
 	Formatter<formatStringLong>::write(*this);
 	BOOST_CHECK_EQUAL(this->str().length(), 246);
@@ -254,7 +261,7 @@ BOOST_AUTO_TEST_CASE ( longFormatString )
 
 BOOST_AUTO_TEST_SUITE_END();
 
-BOOST_AUTO_TEST_CASE ( customMultiArgRightAlign )
+BOOST_AUTO_TEST_CASE(customMultiArgRightAlign)
 {
 	std::stringstream buf1, buf2, buf3;
 	const int width = 20;
@@ -266,7 +273,7 @@ BOOST_AUTO_TEST_CASE ( customMultiArgRightAlign )
 	BOOST_CHECK_EQUAL(buf3.str(), "value              123.45");
 }
 
-BOOST_AUTO_TEST_CASE ( get )
+BOOST_AUTO_TEST_CASE(get)
 {
 	auto s = Formatter<formatStringMultiArg>::get(20, "something else");
 	BOOST_CHECK_EQUAL(s, "value      something else");
@@ -274,7 +281,7 @@ BOOST_AUTO_TEST_CASE ( get )
 
 constexpr
 #include <lorem-ipsum.h>
-BOOST_AUTO_TEST_CASE( lorem_ipsum )
+		BOOST_AUTO_TEST_CASE(lorem_ipsum)
 {
 	using LIF = Formatter<lorem_ipsum_txt, sizeof(lorem_ipsum_txt)>;
 	auto s = LIF::get();
@@ -286,7 +293,8 @@ BOOST_AUTO_TEST_CASE( lorem_ipsum )
 
 namespace AdHoc {
 	template<>
-	inline void appendStream(FILE & strm, const char * const p, size_t n)
+	inline void
+	appendStream(FILE & strm, const char * const p, size_t n)
 	{
 		BOOST_VERIFY(fwrite(p, n, 1, &strm) == 1);
 	}
@@ -299,7 +307,7 @@ operator<<(FILE & strm, const char * const p)
 	return strm;
 }
 
-BOOST_AUTO_TEST_CASE( filestar )
+BOOST_AUTO_TEST_CASE(filestar)
 {
 	MemStream strm;
 	// NOLINTNEXTLINE(misc-non-copyable-objects)
@@ -330,10 +338,11 @@ static_assert(419 == decdigits<'0', '4', '1', '9'>());
 // The following tests represent CTF's [partial] emulation of many
 // POSIX formatting features
 #define GLIBC_FMT_TEST(NAME, FMT, ...) \
-	AdHocFormatter(NAME ## fmtr, FMT); \
-	BOOST_AUTO_TEST_CASE(NAME ## t) { \
+	AdHocFormatter(NAME##fmtr, FMT); \
+	BOOST_AUTO_TEST_CASE(NAME##t) \
+	{ \
 		BOOST_TEST_CONTEXT(FMT) { \
-			auto str = NAME ## fmtr::get(__VA_ARGS__); \
+			auto str = NAME##fmtr::get(__VA_ARGS__); \
 			char * buf = NULL; \
 			int len = asprintf(&buf, FMT, __VA_ARGS__); \
 			auto bufp = std::unique_ptr<char, decltype(&std::free)>(buf, std::free); \
@@ -351,8 +360,8 @@ GLIBC_FMT_TEST(s5, "in %.*s.", 7, "other");
 GLIBC_FMT_TEST(s35, "in %3s.", "other");
 GLIBC_FMT_TEST(s55, "in %5s.", "other");
 GLIBC_FMT_TEST(s115, "in %11s.", "other");
-//std::setw does not truncate strings
-//GLIBC_FMT_TEST(sd35, "in %.3s.", "other");
+// std::setw does not truncate strings
+// GLIBC_FMT_TEST(sd35, "in %.3s.", "other");
 GLIBC_FMT_TEST(sd55, "in %.5s.", "other");
 GLIBC_FMT_TEST(sd115, "in %.11s.", "other");
 
@@ -421,8 +430,7 @@ GLIBC_FMT_TEST(g6, "in %G.", -123.456789);
 GLIBC_FMT_TEST(g7, "in %g.", 123456789.123);
 GLIBC_FMT_TEST(g8, "in %g.", -123456789.123);
 
-GLIBC_FMT_TEST(fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n",
-		1.234, 42, 3.13, "str", (void*)1000, (int)'X');
+GLIBC_FMT_TEST(fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n", 1.234, 42, 3.13, "str", (void *)1000, (int)'X');
 
 AdHocFormatter(chars_written_fmt, "%n %s %n %d %n");
 BOOST_AUTO_TEST_CASE(chars_written)
@@ -514,4 +522,3 @@ BOOST_AUTO_TEST_CASE(user_defined_literal_fmt_write)
 	"foo %?"_fmt(str, 42);
 	BOOST_CHECK_EQUAL("foo 42", str.str());
 }
-

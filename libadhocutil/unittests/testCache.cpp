@@ -1,20 +1,22 @@
 #define BOOST_TEST_MODULE Cache
 #include <boost/test/unit_test.hpp>
 
-#include <functional>
 #include "cache.h"
 #include "cache.impl.h"
+#include <functional>
 
 // NOLINTNEXTLINE(hicpp-special-member-functions)
 class Obj {
-	public:
-		// NOLINTNEXTLINE(hicpp-explicit-conversions)
-		Obj(int i) : v(i) { }
-		void operator=(const Obj &) = delete;
-		bool operator==(const int & i) const {
-			return v == i;
-		}
-		int v;
+public:
+	// NOLINTNEXTLINE(hicpp-explicit-conversions)
+	Obj(int i) : v(i) { }
+	void operator=(const Obj &) = delete;
+	bool
+	operator==(const int & i) const
+	{
+		return v == i;
+	}
+	int v;
 };
 
 bool
@@ -25,7 +27,8 @@ operator==(const int & i, const Obj & o)
 
 namespace std {
 	/// LCOV_EXCL_START (diagnostics)
-	ostream & operator<<(ostream & s, const Obj & o)
+	ostream &
+	operator<<(ostream & s, const Obj & o)
 	{
 		return s << o.v;
 	}
@@ -43,7 +46,7 @@ namespace AdHoc {
 
 using namespace AdHoc;
 
-BOOST_AUTO_TEST_CASE( miss )
+BOOST_AUTO_TEST_CASE(miss)
 {
 	TestCache tc;
 	BOOST_REQUIRE_EQUAL(0, tc.size());
@@ -54,7 +57,7 @@ BOOST_AUTO_TEST_CASE( miss )
 	BOOST_REQUIRE_EQUAL(1, tc.size());
 }
 
-BOOST_AUTO_TEST_CASE( hit )
+BOOST_AUTO_TEST_CASE(hit)
 {
 	TestCache tc;
 	auto vu = time(nullptr) + 5;
@@ -69,7 +72,7 @@ BOOST_AUTO_TEST_CASE( hit )
 	BOOST_REQUIRE_EQUAL(0, tc.size());
 }
 
-BOOST_AUTO_TEST_CASE( multivalues )
+BOOST_AUTO_TEST_CASE(multivalues)
 {
 	TestCache tc;
 	auto vu = time(nullptr) + 5;
@@ -89,7 +92,7 @@ BOOST_AUTO_TEST_CASE( multivalues )
 	BOOST_REQUIRE_EQUAL(0, tc.size());
 }
 
-BOOST_AUTO_TEST_CASE( expired )
+BOOST_AUTO_TEST_CASE(expired)
 {
 	TestCache tc;
 	tc.add("miss", 3, time(nullptr) - 5);
@@ -110,13 +113,19 @@ BOOST_AUTO_TEST_CASE( expired )
 	BOOST_REQUIRE_EQUAL(1, tc.size());
 }
 
-BOOST_AUTO_TEST_CASE( callcache )
+BOOST_AUTO_TEST_CASE(callcache)
 {
 	TestCache tc;
 	int callCount = 0;
 	auto vu = time(nullptr) + 5;
 	BOOST_REQUIRE_EQUAL(nullptr, tc.get("key"));
-	tc.addFactory("key", [&callCount]{ callCount++; return 3; }, vu);
+	tc.addFactory(
+			"key",
+			[&callCount] {
+				callCount++;
+				return 3;
+			},
+			vu);
 	BOOST_REQUIRE_EQUAL(0, callCount);
 	BOOST_REQUIRE_EQUAL(3, *tc.get("key"));
 	BOOST_REQUIRE_EQUAL(1, callCount);
@@ -124,13 +133,19 @@ BOOST_AUTO_TEST_CASE( callcache )
 	BOOST_REQUIRE_EQUAL(1, callCount);
 }
 
-BOOST_AUTO_TEST_CASE( pointercallcache )
+BOOST_AUTO_TEST_CASE(pointercallcache)
 {
 	TestCache tc;
 	int callCount = 0;
 	auto vu = time(nullptr) + 5;
 	BOOST_REQUIRE_EQUAL(nullptr, tc.get("key"));
-	tc.addPointerFactory("key", [&callCount]{ callCount++; return TestCache::Value(new Obj(3)); }, vu);
+	tc.addPointerFactory(
+			"key",
+			[&callCount] {
+				callCount++;
+				return TestCache::Value(new Obj(3));
+			},
+			vu);
 	BOOST_REQUIRE_EQUAL(0, callCount);
 	BOOST_REQUIRE_EQUAL(3, *tc.get("key"));
 	BOOST_REQUIRE_EQUAL(1, callCount);
@@ -138,7 +153,7 @@ BOOST_AUTO_TEST_CASE( pointercallcache )
 	BOOST_REQUIRE_EQUAL(1, callCount);
 }
 
-BOOST_AUTO_TEST_CASE( hitThenRenove )
+BOOST_AUTO_TEST_CASE(hitThenRenove)
 {
 	TestCache tc;
 	tc.add("key", 3, time(nullptr) + 5);
@@ -150,7 +165,7 @@ BOOST_AUTO_TEST_CASE( hitThenRenove )
 	BOOST_REQUIRE_EQUAL(3, *h);
 }
 
-BOOST_AUTO_TEST_CASE( addPointer )
+BOOST_AUTO_TEST_CASE(addPointer)
 {
 	TestCache tc;
 	auto v = TestCache::Value(new Obj(3));
@@ -159,4 +174,3 @@ BOOST_AUTO_TEST_CASE( addPointer )
 	BOOST_REQUIRE(h);
 	BOOST_REQUIRE_EQUAL(3, *h);
 }
-

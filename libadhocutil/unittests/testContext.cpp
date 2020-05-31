@@ -6,34 +6,35 @@
 using namespace AdHoc::System;
 
 class TestRuntimeContext : public RuntimeContext {
-	public:
-		void run()
-		{
-			log += "a";
-			swapContext();
-			log += "b";
-			swapContext();
-			log += "c";
-			swapContext();
-			log += "d";
-		}
+public:
+	void
+	run()
+	{
+		log += "a";
+		swapContext();
+		log += "b";
+		swapContext();
+		log += "c";
+		swapContext();
+		log += "d";
+	}
 
-		void callback() override
-		{
-			log += "e";
-			swapContext();
-			log += "f";
-			swapContext();
-		}
+	void
+	callback() override
+	{
+		log += "e";
+		swapContext();
+		log += "f";
+		swapContext();
+	}
 
-		std::string log;
+	std::string log;
 };
 
-BOOST_AUTO_TEST_CASE ( basic )
+BOOST_AUTO_TEST_CASE(basic)
 {
 	TestRuntimeContext trc;
 	trc.run();
 	BOOST_REQUIRE_EQUAL("aebfcd", trc.log);
 	BOOST_REQUIRE(trc.hasCompleted());
 }
-

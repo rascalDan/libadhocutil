@@ -1,14 +1,14 @@
 #include "plugins.h"
-#include <cstring>
-#include <dlfcn.h>
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/mem_fun.hpp>
-#include <boost/multi_index/composite_key.hpp>
 #include "compileTimeFormatter.h"
 #include "globalStatic.impl.h"
+#include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index_container.hpp>
+#include <cstring>
 #include <cxxabi.h>
+#include <dlfcn.h>
 
 namespace std {
 	bool
@@ -20,7 +20,8 @@ namespace std {
 	std::ostream &
 	operator<<(std::ostream & s, const std::type_info & t)
 	{
-		auto buf = std::unique_ptr<char, decltype(&std::free)>(__cxxabiv1::__cxa_demangle(t.name(), nullptr, nullptr, nullptr), std::free);
+		auto buf = std::unique_ptr<char, decltype(&std::free)>(
+				__cxxabiv1::__cxa_demangle(t.name(), nullptr, nullptr, nullptr), std::free);
 		s << buf.get();
 		return s;
 	}
@@ -31,12 +32,7 @@ namespace AdHoc {
 
 	AbstractPluginImplementation::~AbstractPluginImplementation() = default;
 
-	Plugin::Plugin(const std::string_view & n, const std::string_view & f, int l) :
-		name(n),
-		filename(f),
-		lineno(l)
-	{
-	}
+	Plugin::Plugin(const std::string_view & n, const std::string_view & f, int l) : name(n), filename(f), lineno(l) { }
 
 	AdHocFormatter(NoSuchPluginExceptionMsg, "No such plugin: %? of type %?");
 	NoSuchPluginException::NoSuchPluginException(const std::string_view & n, const std::type_info & t) :
@@ -47,7 +43,7 @@ namespace AdHoc {
 	AdHocFormatter(DuplicatePluginExceptionMsg, "Duplicate plugin %? for type %? at %?:%?, originally from %?:%?");
 	DuplicatePluginException::DuplicatePluginException(const PluginPtr & p1, const PluginPtr & p2) :
 		std::runtime_error(DuplicatePluginExceptionMsg::get(
-					p1->name, p1->type(), p2->filename, p2->lineno, p1->filename, p1->lineno))
+				p1->name, p1->type(), p2->filename, p2->lineno, p1->filename, p1->lineno))
 	{
 	}
 
@@ -63,25 +59,26 @@ namespace AdHoc {
 	{
 	}
 
-	class PluginManager::PluginStore : public boost::multi_index_container<PluginPtr,
-					boost::multi_index::indexed_by<
-						boost::multi_index::ordered_non_unique<boost::multi_index::member<Plugin, const std::string, &Plugin::name>, std::less<>>,
-						boost::multi_index::ordered_non_unique<boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>>,
+	class PluginManager::PluginStore :
+		public boost::multi_index_container<PluginPtr,
+				boost::multi_index::indexed_by<
+						boost::multi_index::ordered_non_unique<
+								boost::multi_index::member<Plugin, const std::string, &Plugin::name>, std::less<>>,
+						boost::multi_index::ordered_non_unique<
+								boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>>,
 						boost::multi_index::ordered_unique<
-							boost::multi_index::composite_key<
-								Plugin,
-								boost::multi_index::member<Plugin, const std::string, &Plugin::name>,
-								boost::multi_index::const_mem_fun<Plugin, const std::type_info &, &Plugin::type>
-								>, std::less<>>
-						>>
-	{
+								boost::multi_index::composite_key<Plugin,
+										boost::multi_index::member<Plugin, const std::string, &Plugin::name>,
+										boost::multi_index::const_mem_fun<Plugin, const std::type_info &,
+												&Plugin::type>>,
+								std::less<>>>> {
 	};
 
-	class PluginManager::TypePluginResolvers : public std::map<size_t, PluginResolver> { };
+	class PluginManager::TypePluginResolvers : public std::map<size_t, PluginResolver> {
+	};
 
 	PluginManager::PluginManager() :
-		plugins(std::make_unique<PluginStore>()),
-		resolvers(std::make_unique<TypePluginResolvers>())
+		plugins(std::make_unique<PluginStore>()), resolvers(std::make_unique<TypePluginResolvers>())
 	{
 	}
 
@@ -140,14 +137,14 @@ namespace AdHoc {
 	std::set<PluginPtr>
 	PluginManager::getAll() const
 	{
-		return { plugins->begin(), plugins->end() };
+		return {plugins->begin(), plugins->end()};
 	}
 
 	std::set<PluginPtr>
 	PluginManager::getAll(const std::type_info & t) const
 	{
 		auto r = plugins->get<1>().equal_range(t);
-		return { r.first, r.second };
+		return {r.first, r.second};
 	}
 
 	size_t
@@ -177,4 +174,3 @@ namespace AdHoc {
 		return resolvers->size();
 	}
 }
-

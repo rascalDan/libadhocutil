@@ -1,19 +1,18 @@
 #define BOOST_TEST_MODULE Curl
 #include <boost/test/unit_test.hpp>
 
-#include <functional>
+#include "compileTimeFormatter.h"
 #include "curlHandle.h"
 #include "curlMultiHandle.h"
 #include "curlStream.h"
-#include "compileTimeFormatter.h"
 #include "definedDirs.h"
 #include "net.h"
 #include <boost/algorithm/string/predicate.hpp>
+#include <functional>
 
 using namespace AdHoc::Net;
 
-static
-size_t
+static size_t
 discard(void *, size_t sz, size_t nm, void *)
 {
 	return sz * nm;
@@ -24,7 +23,7 @@ const auto urlGen = [](const std::string_view & url) {
 	return FileUrl::get(rootDir.string(), url);
 };
 
-BOOST_AUTO_TEST_CASE( fetch_file )
+BOOST_AUTO_TEST_CASE(fetch_file)
 {
 	auto url = urlGen("testCurl.cpp");
 	BOOST_TEST_CONTEXT(url) {
@@ -34,7 +33,7 @@ BOOST_AUTO_TEST_CASE( fetch_file )
 	}
 }
 
-BOOST_AUTO_TEST_CASE( setAndGetOptions )
+BOOST_AUTO_TEST_CASE(setAndGetOptions)
 {
 	auto url = urlGen("testCurl.cpp");
 	CurlHandle ch(url);
@@ -58,14 +57,14 @@ BOOST_AUTO_TEST_CASE( setAndGetOptions )
 	BOOST_REQUIRE_LT(totalTime, 50);
 }
 
-BOOST_AUTO_TEST_CASE( fetch_missing )
+BOOST_AUTO_TEST_CASE(fetch_missing)
 {
 	auto url = urlGen("nothere");
 	CurlHandle ch(url);
 	BOOST_REQUIRE_THROW(ch.perform(), AdHoc::Net::CurlException);
 }
 
-BOOST_AUTO_TEST_CASE( fetch_http_stream )
+BOOST_AUTO_TEST_CASE(fetch_http_stream)
 {
 	CurlStreamSource css("https://sys.randomdan.homeip.net/env.cgi");
 	css.appendHeader("X-POWERED-BY: mature-cheddar");
@@ -82,7 +81,7 @@ BOOST_AUTO_TEST_CASE( fetch_http_stream )
 	BOOST_REQUIRE_EQUAL(1, expected);
 }
 
-BOOST_AUTO_TEST_CASE( fetch_file_stream )
+BOOST_AUTO_TEST_CASE(fetch_file_stream)
 {
 	auto url = urlGen("testCurl.cpp");
 	CurlStreamSource css(url);
@@ -99,7 +98,7 @@ BOOST_AUTO_TEST_CASE( fetch_file_stream )
 	}
 }
 
-BOOST_AUTO_TEST_CASE( fetch_missing_stream )
+BOOST_AUTO_TEST_CASE(fetch_missing_stream)
 {
 	auto url = urlGen("nothere");
 	CurlStreamSource css(url);
@@ -110,8 +109,7 @@ BOOST_AUTO_TEST_CASE( fetch_missing_stream )
 	BOOST_REQUIRE(!curlstrm.good());
 }
 
-static
-void
+static void
 mapFileToName(std::map<std::string, std::string> & map, const std::string & file, std::istream & curlstrm)
 {
 	std::string tok;
@@ -121,17 +119,20 @@ mapFileToName(std::map<std::string, std::string> & map, const std::string & file
 	map[file] = tok;
 }
 
-BOOST_AUTO_TEST_CASE( fetch_multi )
+BOOST_AUTO_TEST_CASE(fetch_multi)
 {
 	using std::placeholders::_1;
 	CurlMultiHandle cmh;
 	std::map<std::string, std::string> files;
-	cmh.addCurl(urlGen("/testBuffer.cpp"),
-			[&files](auto && PH1) { return mapFileToName(files, "testBuffer.cpp", PH1); });
-	cmh.addCurl(urlGen("/testCurl.cpp"),
-			[&files](auto && PH1) { return mapFileToName(files, "testCurl.cpp", PH1); });
-	cmh.addCurl(urlGen("/testLocks.cpp"),
-			[&files](auto && PH1) { return mapFileToName(files, "testLocks.cpp", PH1); });
+	cmh.addCurl(urlGen("/testBuffer.cpp"), [&files](auto && PH1) {
+		return mapFileToName(files, "testBuffer.cpp", PH1);
+	});
+	cmh.addCurl(urlGen("/testCurl.cpp"), [&files](auto && PH1) {
+		return mapFileToName(files, "testCurl.cpp", PH1);
+	});
+	cmh.addCurl(urlGen("/testLocks.cpp"), [&files](auto && PH1) {
+		return mapFileToName(files, "testLocks.cpp", PH1);
+	});
 	cmh.performAll();
 	BOOST_REQUIRE_EQUAL(3, files.size());
 	BOOST_REQUIRE_EQUAL("Locks", files["testLocks.cpp"]);
@@ -139,7 +140,7 @@ BOOST_AUTO_TEST_CASE( fetch_multi )
 	BOOST_REQUIRE_EQUAL("Curl", files["testCurl.cpp"]);
 }
 
-BOOST_AUTO_TEST_CASE( fetch_multi_fail )
+BOOST_AUTO_TEST_CASE(fetch_multi_fail)
 {
 	CurlMultiHandle cmh;
 	bool errored = false;
@@ -161,4 +162,3 @@ BOOST_AUTO_TEST_CASE( fetch_multi_fail )
 	BOOST_REQUIRE(!finished);
 	BOOST_REQUIRE(errored);
 }
-

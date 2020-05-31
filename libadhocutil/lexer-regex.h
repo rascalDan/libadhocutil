@@ -12,9 +12,9 @@ namespace AdHoc {
 		 * @param match The regex match flags.
 		 * @return Pointer to the newly created pattern matcher.
 		 */
-		DLL_PUBLIC Lexer::PatternPtr regex(const Glib::ustring & regex, GRegexCompileFlags compile = (GRegexCompileFlags)0, GRegexMatchFlags match = (GRegexMatchFlags)0);
+		DLL_PUBLIC Lexer::PatternPtr regex(const Glib::ustring & regex,
+				GRegexCompileFlags compile = (GRegexCompileFlags)0, GRegexMatchFlags match = (GRegexMatchFlags)0);
 	}
 };
 
 #endif
-

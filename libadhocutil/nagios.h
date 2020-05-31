@@ -13,11 +13,10 @@ namespace AdHoc {
 		Unknown = 3,
 	};
 
-	DLL_PUBLIC bool submitNagiosPassiveServiceCheck(const std::string_view &,
-			NagiosStatusCode, const std::string_view &);
-	DLL_PUBLIC bool submitNagiosPassiveServiceCheck(std::ostream &, const std::string_view &,
-			NagiosStatusCode, const std::string_view &);
+	DLL_PUBLIC bool submitNagiosPassiveServiceCheck(
+			const std::string_view &, NagiosStatusCode, const std::string_view &);
+	DLL_PUBLIC bool submitNagiosPassiveServiceCheck(
+			std::ostream &, const std::string_view &, NagiosStatusCode, const std::string_view &);
 }
 
 #endif
-

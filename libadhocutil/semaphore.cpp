@@ -1,9 +1,7 @@
 #include "semaphore.h"
 
 namespace AdHoc {
-	Semaphore::Semaphore(unsigned int initial) : count(initial)
-	{
-	}
+	Semaphore::Semaphore(unsigned int initial) : count(initial) { }
 
 	void
 	Semaphore::notify()
@@ -43,4 +41,3 @@ namespace AdHoc {
 		return count;
 	}
 }
-

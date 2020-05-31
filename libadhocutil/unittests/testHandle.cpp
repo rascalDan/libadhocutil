@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE Handle
 #include <boost/test/unit_test.hpp>
 
-#include <type_traits>
-#include <fcntl.h>
 #include "handle.h"
+#include <fcntl.h>
+#include <type_traits>
 
 // Test case base on a file handle
 using T = decltype(STDIN_FILENO);
@@ -20,7 +20,7 @@ static_assert(!std::is_copy_assignable_v<TestHandle>);
 
 BOOST_AUTO_TEST_CASE(values)
 {
-	TestHandle th { open("/dev/null", O_RDWR), &close };
+	TestHandle th {open("/dev/null", O_RDWR), &close};
 	static_assert(std::is_same_v<T, std::remove_reference_t<decltype(th.get())>>);
 	static_assert(std::is_same_v<T, std::remove_reference_t<decltype(*th)>>);
 	BOOST_REQUIRE_EQUAL(1, write(th, "1", 1));
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(values)
 
 BOOST_AUTO_TEST_CASE(values_const)
 {
-	const TestHandle cth { open("/dev/null", O_RDWR), &close };
+	const TestHandle cth {open("/dev/null", O_RDWR), &close};
 	static_assert(std::is_same_v<const T, std::remove_reference_t<decltype(cth.get())>>);
 	static_assert(std::is_same_v<const T, std::remove_reference_t<decltype(*cth)>>);
 	BOOST_REQUIRE_EQUAL(1, write(cth, "1", 1));
@@ -57,4 +57,3 @@ BOOST_AUTO_TEST_CASE(make)
 	BOOST_REQUIRE_EQUAL(-1, write(fd, "1", 1));
 	BOOST_REQUIRE_EQUAL(errno, EBADF);
 }
-

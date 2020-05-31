@@ -1,18 +1,17 @@
 #define BOOST_TEST_MODULE FileUtils
 #include <boost/test/unit_test.hpp>
 
-#include <fileUtils.h>
 #include <definedDirs.h>
+#include <fileUtils.h>
 #include <sys.h>
 
-#define REQUIRE_INVALID_FH(fh) \
-	BOOST_REQUIRE_EQUAL(fcntl(fh, F_GETFD), -1)
+#define REQUIRE_INVALID_FH(fh) BOOST_REQUIRE_EQUAL(fcntl(fh, F_GETFD), -1)
 
-#define REQUIRE_VALID_FH(fh) \
-	BOOST_REQUIRE_NE(fcntl(fh, F_GETFD), -1)
+#define REQUIRE_VALID_FH(fh) BOOST_REQUIRE_NE(fcntl(fh, F_GETFD), -1)
 
-template <typename T>
-void testRaw()
+template<typename T>
+void
+testRaw()
 {
 	int f = open("/proc/self/exe", O_RDONLY);
 	BOOST_REQUIRE_NE(f, -1);
@@ -20,22 +19,24 @@ void testRaw()
 	BOOST_REQUIRE_EQUAL(f, fh);
 }
 
-BOOST_AUTO_TEST_CASE( raw )
+BOOST_AUTO_TEST_CASE(raw)
 {
 	testRaw<AdHoc::FileUtils::FileHandle>();
 	testRaw<AdHoc::FileUtils::FileHandleStat>();
 	testRaw<AdHoc::FileUtils::MemMap>();
 }
 
-template <typename T, typename ... P>
-T openfh(P ... p)
+template<typename T, typename... P>
+T
+openfh(P... p)
 {
 	T fh(rootDir / "testFileUtils.cpp", p...);
 	return fh;
 }
 
-template <typename T, typename ... P>
-T moveTest(P ... p)
+template<typename T, typename... P>
+T
+moveTest(P... p)
 {
 	T fh = openfh<T>(p...);
 	REQUIRE_VALID_FH(fh);
@@ -45,17 +46,17 @@ T moveTest(P ... p)
 }
 
 class Base {
-	public:
-		explicit Base(AdHoc::FileUtils::FileHandle h) : fh(std::move(h)) { }
-		AdHoc::FileUtils::FileHandle fh;
+public:
+	explicit Base(AdHoc::FileUtils::FileHandle h) : fh(std::move(h)) { }
+	AdHoc::FileUtils::FileHandle fh;
 };
 
 class Sub : public Base {
-	public:
-		explicit Sub(AdHoc::FileUtils::FileHandle h) : Base(std::move(h)) { }
+public:
+	explicit Sub(AdHoc::FileUtils::FileHandle h) : Base(std::move(h)) { }
 };
 
-BOOST_AUTO_TEST_CASE( movePassThrough )
+BOOST_AUTO_TEST_CASE(movePassThrough)
 {
 	auto f = openfh<AdHoc::FileUtils::FileHandle>();
 	int ffd = f.fh;
@@ -69,8 +70,7 @@ BOOST_AUTO_TEST_CASE( movePassThrough )
 	REQUIRE_INVALID_FH(ffd);
 }
 
-
-BOOST_AUTO_TEST_CASE( moveFileHandle )
+BOOST_AUTO_TEST_CASE(moveFileHandle)
 {
 	auto f = moveTest<AdHoc::FileUtils::FileHandle>();
 	REQUIRE_VALID_FH(f.fh);
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE( moveFileHandle )
 	moveTest<AdHoc::FileUtils::FileHandle>(O_RDONLY, O_NONBLOCK);
 }
 
-BOOST_AUTO_TEST_CASE( moveFileHandleStat )
+BOOST_AUTO_TEST_CASE(moveFileHandleStat)
 {
 	auto f = moveTest<AdHoc::FileUtils::FileHandleStat>();
 	REQUIRE_VALID_FH(f.fh);
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE( moveFileHandleStat )
 	moveTest<AdHoc::FileUtils::FileHandleStat>(O_RDONLY, O_NONBLOCK);
 }
 
-BOOST_AUTO_TEST_CASE( moveMemMap )
+BOOST_AUTO_TEST_CASE(moveMemMap)
 {
 	auto f = moveTest<AdHoc::FileUtils::MemMap>();
 	REQUIRE_VALID_FH(f.fh);
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE( moveMemMap )
 	moveTest<AdHoc::FileUtils::MemMap>(O_RDONLY, O_NONBLOCK);
 }
 
-BOOST_AUTO_TEST_CASE( memmap )
+BOOST_AUTO_TEST_CASE(memmap)
 {
 	AdHoc::FileUtils::MemMap f(rootDir / "testFileUtils.cpp");
 	BOOST_REQUIRE(f.fh);
@@ -114,49 +114,42 @@ BOOST_AUTO_TEST_CASE( memmap )
 	BOOST_REQUIRE_EQUAL(i.length(), f.getStat().st_size / sizeof(int));
 }
 
-BOOST_AUTO_TEST_CASE( openmode )
+BOOST_AUTO_TEST_CASE(openmode)
 {
 	std::filesystem::remove(binDir / "test.file");
-	BOOST_REQUIRE_THROW({
-		AdHoc::FileUtils::FileHandle fh(binDir / "test.file", O_RDONLY, S_IRWXU);
-	}, AdHoc::SystemExceptionOn);
+	BOOST_REQUIRE_THROW(
+			{ AdHoc::FileUtils::FileHandle fh(binDir / "test.file", O_RDONLY, S_IRWXU); }, AdHoc::SystemExceptionOn);
 	AdHoc::FileUtils::FileHandle fh(binDir / "test.file", O_CREAT, S_IRWXU);
 	std::filesystem::remove(binDir / "test.file");
 }
 
-BOOST_AUTO_TEST_CASE( openfail )
+BOOST_AUTO_TEST_CASE(openfail)
 {
-	BOOST_REQUIRE_THROW({
-		AdHoc::FileUtils::MemMap f("/tmp/nothere");
-	}, AdHoc::SystemException);
+	BOOST_REQUIRE_THROW({ AdHoc::FileUtils::MemMap f("/tmp/nothere"); }, AdHoc::SystemException);
 }
 
-BOOST_AUTO_TEST_CASE( mapfail )
+BOOST_AUTO_TEST_CASE(mapfail)
 {
-	BOOST_REQUIRE_THROW({
-		AdHoc::FileUtils::MemMap f("/dev/null");
-	}, AdHoc::SystemException);
+	BOOST_REQUIRE_THROW({ AdHoc::FileUtils::MemMap f("/dev/null"); }, AdHoc::SystemException);
 	auto fd = open("/dev/null", O_RDWR);
 	REQUIRE_VALID_FH(fd);
-	BOOST_REQUIRE_THROW({
-		AdHoc::FileUtils::MemMap f(fd, O_RDWR);
-	}, AdHoc::SystemException);
+	BOOST_REQUIRE_THROW({ AdHoc::FileUtils::MemMap f(fd, O_RDWR); }, AdHoc::SystemException);
 	REQUIRE_INVALID_FH(fd);
 }
 
-BOOST_AUTO_TEST_CASE( msg )
+BOOST_AUTO_TEST_CASE(msg)
 {
 	AdHoc::SystemException x("verb", "No such file or directory", ENOENT);
 	BOOST_REQUIRE_EQUAL(x.what(), "verb (2:No such file or directory)");
 }
 
-BOOST_AUTO_TEST_CASE( msgOn )
+BOOST_AUTO_TEST_CASE(msgOn)
 {
 	AdHoc::SystemExceptionOn x("verb", "No such file or directory", ENOENT, "noun");
 	BOOST_REQUIRE_EQUAL(x.what(), "verb on 'noun' (2:No such file or directory)");
 }
 
-BOOST_AUTO_TEST_CASE( pathPart )
+BOOST_AUTO_TEST_CASE(pathPart)
 {
 	using namespace AdHoc::FileUtils;
 	std::filesystem::path p("/this/is/some/path");
@@ -166,4 +159,3 @@ BOOST_AUTO_TEST_CASE( pathPart )
 	BOOST_REQUIRE_EQUAL(p / 3, "some");
 	BOOST_REQUIRE_EQUAL(p / 4, "path");
 }
-

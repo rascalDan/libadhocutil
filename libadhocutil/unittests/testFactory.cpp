@@ -10,35 +10,34 @@ using namespace AdHoc;
 
 // NOLINTNEXTLINE(hicpp-special-member-functions)
 class BaseThing {
-	public:
-		BaseThing(int, std::string * n) :
-			name(n)
-		{
-		}
+public:
+	BaseThing(int, std::string * n) : name(n) { }
 
-		virtual ~BaseThing() = default;
+	virtual ~BaseThing() = default;
 
-		virtual void execute() const = 0;
+	virtual void execute() const = 0;
 
-	protected:
-		std::string * name;
+protected:
+	std::string * name;
 };
 
 class ImplOfThing : public BaseThing {
-	public:
-		ImplOfThing(int i, std::string * s) : BaseThing(i, s) {}
-		void execute() const override
-		{
-			*name = typeid(this).name();
-		}
+public:
+	ImplOfThing(int i, std::string * s) : BaseThing(i, s) { }
+	void
+	execute() const override
+	{
+		*name = typeid(this).name();
+	}
 };
 class OtherImplOfThing : public BaseThing {
-	public:
-		OtherImplOfThing(int i, std::string * s) : BaseThing(i, s) {}
-		void execute() const override
-		{
-			*name = typeid(this).name();
-		}
+public:
+	OtherImplOfThing(int i, std::string * s) : BaseThing(i, s) { }
+	void
+	execute() const override
+	{
+		*name = typeid(this).name();
+	}
 };
 
 using BaseThingFactory = AdHoc::Factory<BaseThing, int, std::string *>;
@@ -52,12 +51,12 @@ INSTANTIATEFACTORY(BaseThing, std::string, std::string);
 // Factories of things with commas
 INSTANTIATEFACTORY(BaseThing, std::map<std::string, std::string>);
 
-BOOST_AUTO_TEST_CASE( ready )
+BOOST_AUTO_TEST_CASE(ready)
 {
 	BOOST_REQUIRE_EQUAL(2, PluginManager::getDefault()->count());
 }
 
-BOOST_AUTO_TEST_CASE( get )
+BOOST_AUTO_TEST_CASE(get)
 {
 	auto all = PluginManager::getDefault()->getAll();
 	auto factory1 = PluginManager::getDefault()->get<BaseThingFactory>("a")->implementation();
@@ -69,7 +68,7 @@ BOOST_AUTO_TEST_CASE( get )
 	BOOST_REQUIRE_NE(factory1, factory3);
 }
 
-BOOST_AUTO_TEST_CASE( create )
+BOOST_AUTO_TEST_CASE(create)
 {
 	auto factory1 = BaseThingFactory::get("a");
 	auto factory2 = BaseThingFactory::get("OtherImplOfThing");
@@ -91,10 +90,9 @@ BOOST_AUTO_TEST_CASE( create )
 	BOOST_REQUIRE(i2 != i3);
 }
 
-BOOST_AUTO_TEST_CASE( createNew )
+BOOST_AUTO_TEST_CASE(createNew)
 {
 	std::string n;
 	auto i = BaseThingFactory::createNew("a", 1, &n);
 	BOOST_REQUIRE(i);
 }
-

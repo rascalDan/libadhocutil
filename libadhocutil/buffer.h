@@ -1,12 +1,12 @@
 #ifndef ADHOCUTIL_BUFFER_H
 #define ADHOCUTIL_BUFFER_H
 
+#include "c++11Helpers.h"
+#include "visibility.h"
+#include <boost/format.hpp>
+#include <cstdarg>
 #include <string>
 #include <vector>
-#include <cstdarg>
-#include <boost/format.hpp>
-#include "visibility.h"
-#include "c++11Helpers.h"
 
 namespace AdHoc {
 	class DLL_PUBLIC Buffer;
@@ -18,8 +18,8 @@ namespace std {
 
 namespace AdHoc {
 
-/// High-speed text buffer for easy creation of programatically created strings.
-class DLL_PUBLIC Buffer {
+	/// High-speed text buffer for easy creation of programatically created strings.
+	class DLL_PUBLIC Buffer {
 	public:
 		/** How should Buffer handle char * arguments? */
 		enum CStringHandling {
@@ -85,19 +85,21 @@ class DLL_PUBLIC Buffer {
 		/** Append the given std::string to the end of the buffer. */
 		Buffer & append(const std::string & str);
 		/** Append the given printf style format string and arguments to the buffer. */
-		Buffer & appendf(const char * fmt, ...) __attribute__((format (printf, 2, 3)));
+		Buffer & appendf(const char * fmt, ...) __attribute__((format(printf, 2, 3)));
 		/** Append the given printf style format string and va_list to the buffer. */
 		Buffer & vappendf(const char * fmt, va_list args);
 		/** Append the given boost::format style format string and arguments to the buffer. */
-		template <typename ... Params>
-		Buffer & appendbf(const std::string & fmtstr, const Params & ... params)
+		template<typename... Params>
+		Buffer &
+		appendbf(const std::string & fmtstr, const Params &... params)
 		{
 			auto bf = getFormat(fmtstr);
 			return appendbf(bf, params...);
 		}
 		/** Append the given boost::format and arguments to the buffer. */
-		template <typename Param, typename ... Params>
-		Buffer & appendbf(boost::format & fmt, const Param & param, const Params & ... params)
+		template<typename Param, typename... Params>
+		Buffer &
+		appendbf(boost::format & fmt, const Param & param, const Params &... params)
 		{
 			fmt % param;
 			return appendbf(fmt, params...);
@@ -119,54 +121,54 @@ class DLL_PUBLIC Buffer {
 		void DLL_PRIVATE flatten() const;
 
 		class DLL_PRIVATE FragmentBase {
-			public:
-				FragmentBase() = default;
-				virtual ~FragmentBase() = default;
-				SPECIAL_MEMBERS_DEFAULT(FragmentBase);
+		public:
+			FragmentBase() = default;
+			virtual ~FragmentBase() = default;
+			SPECIAL_MEMBERS_DEFAULT(FragmentBase);
 
-				[[nodiscard]] virtual size_t length() const = 0;
-				[[nodiscard]] virtual char operator[](size_t) const = 0;
-				[[nodiscard]] virtual const char * c_str() const = 0;
-				[[nodiscard]] virtual std::string str() const = 0;
+			[[nodiscard]] virtual size_t length() const = 0;
+			[[nodiscard]] virtual char operator[](size_t) const = 0;
+			[[nodiscard]] virtual const char * c_str() const = 0;
+			[[nodiscard]] virtual std::string str() const = 0;
 		};
 
 		class DLL_PRIVATE CStringFragment : public FragmentBase {
-			public:
-				CStringFragment(const char *, CStringHandling);
-				CStringFragment(const char *, CStringHandling, size_t);
-				CStringFragment(char *, CStringHandling);
-				CStringFragment(char *, CStringHandling, size_t);
-				SPECIAL_MEMBERS_DELETE(CStringFragment);
-				~CStringFragment() override;
+		public:
+			CStringFragment(const char *, CStringHandling);
+			CStringFragment(const char *, CStringHandling, size_t);
+			CStringFragment(char *, CStringHandling);
+			CStringFragment(char *, CStringHandling, size_t);
+			SPECIAL_MEMBERS_DELETE(CStringFragment);
+			~CStringFragment() override;
 
-				[[nodiscard]] size_t length() const override;
-				[[nodiscard]] char operator[](size_t) const override;
-				[[nodiscard]] const char * c_str() const override;
-				[[nodiscard]] std::string str() const override;
+			[[nodiscard]] size_t length() const override;
+			[[nodiscard]] char operator[](size_t) const override;
+			[[nodiscard]] const char * c_str() const override;
+			[[nodiscard]] std::string str() const override;
 
-			private:
-				const size_t len; // Excluding NULL term
-				const char * buf;
-				const CStringHandling handling;
+		private:
+			const size_t len; // Excluding NULL term
+			const char * buf;
+			const CStringHandling handling;
 		};
 
 		class DLL_PRIVATE StringFragment : public FragmentBase {
-			public:
-				explicit StringFragment(std::string);
+		public:
+			explicit StringFragment(std::string);
 
-				[[nodiscard]] size_t length() const override;
-				[[nodiscard]] char operator[](size_t) const override;
-				[[nodiscard]] const char * c_str() const override;
-				[[nodiscard]] std::string str() const override;
+			[[nodiscard]] size_t length() const override;
+			[[nodiscard]] char operator[](size_t) const override;
+			[[nodiscard]] const char * c_str() const override;
+			[[nodiscard]] std::string str() const override;
 
-			private:
-				const std::string buf;
+		private:
+			const std::string buf;
 		};
 
 		using FragmentPtr = std::shared_ptr<FragmentBase>;
 		using Content = std::vector<FragmentPtr>;
 		mutable Content content;
-};
+	};
 
 }
 
@@ -176,4 +178,3 @@ class DLL_PUBLIC Buffer {
 #define stringbf(...) AdHoc::Buffer().appendbf(__VA_ARGS__).str()
 
 #endif
-

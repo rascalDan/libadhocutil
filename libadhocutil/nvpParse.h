@@ -1,77 +1,77 @@
 #ifndef ADHOCUTIL_REFLECTION_H
 #define ADHOCUTIL_REFLECTION_H
 
-#include <string>
-#include <map>
-#include <istream>
-#include <functional>
-#include <memory>
 #include <boost/lexical_cast.hpp>
+#include <functional>
+#include <istream>
+#include <map>
+#include <memory>
+#include <string>
 #ifndef yyFlexLexer
-#define yyFlexLexer nvpBaseFlexLexer
-#include <FlexLexer.h>
+#	define yyFlexLexer nvpBaseFlexLexer
+#	include <FlexLexer.h>
 #endif
-#include "visibility.h"
 #include "c++11Helpers.h"
+#include "visibility.h"
 
 namespace AdHoc {
 
-/// Name=Value parser.
-/**
- * Parses an input stream of the format Name=Value;Name2=Value2;... into a predefined object
- * structure.
- */
-class NvpParse : public yyFlexLexer {
+	/// Name=Value parser.
+	/**
+	 * Parses an input stream of the format Name=Value;Name2=Value2;... into a predefined object
+	 * structure.
+	 */
+	class NvpParse : public yyFlexLexer {
 	public:
 		/// @cond
 		/// Thrown in the event of the input referring to a member that doesn't exist.
 		class ValueNotFound : public std::runtime_error {
-			public:
-				explicit ValueNotFound(const std::string &);
+		public:
+			explicit ValueNotFound(const std::string &);
 		};
 
 		using AssignFunc = std::function<void(const std::string &)>;
 		using AssignMap = std::map<std::string, AssignFunc>;
 
-		template <typename T>
-		class TargetBase {
-			public:
-				TargetBase() = default;
-				virtual ~TargetBase() = default;
-				virtual AssignFunc assign(T *) const = 0;
-				SPECIAL_MEMBERS_DEFAULT(TargetBase);
+		template<typename T> class TargetBase {
+		public:
+			TargetBase() = default;
+			virtual ~TargetBase() = default;
+			virtual AssignFunc assign(T *) const = 0;
+			SPECIAL_MEMBERS_DEFAULT(TargetBase);
 		};
 
-		template <typename T, typename V>
-		class Target : public TargetBase<T> {
-			public:
-				explicit Target(V T::*t) :
-					target(t)
-				{
-				}
+		template<typename T, typename V> class Target : public TargetBase<T> {
+		public:
+			explicit Target(V T::*t) : target(t) { }
 
-				AssignFunc assign(T * t) const override
-				{
-					return [t,this](const std::string & value) {
-						t->*target = boost::lexical_cast<V>(value);
-					};
-				}
+			AssignFunc
+			assign(T * t) const override
+			{
+				return [t, this](const std::string & value) {
+					t->*target = boost::lexical_cast<V>(value);
+				};
+			}
 
-			private:
-				V T::*target;
+		private:
+			V T::*target;
 		};
 		/// @endcond
 
 #define NvpTarget(T) std::map<std::string, std::shared_ptr<::AdHoc::NvpParse::TargetBase<T>>>
-#define NvpValue(c, m) { #m, std::make_shared<::AdHoc::NvpParse::Target<c, decltype(c::m)>>(&c::m) }
+#define NvpValue(c, m) \
+	{ \
+#		m, std::make_shared < ::AdHoc::NvpParse::Target < c, decltype(c::m)>>(&c::m) \
+	}
 
 		/** Parse an input stream into the given object.
 		 * @param in The input stream.
 		 * @param tm The Target Map for the object.
 		 * @param t The target instance to populate.
 		 */
-		template <typename T>
-		static void parse(std::istream & in, const NvpTarget(T) & tm, T & t)
+		template<typename T>
+		static void
+		parse(std::istream & in, const NvpTarget(T) & tm, T & t)
 		{
 			NvpParse::AssignMap am;
 			for (const auto & v : tm) {
@@ -94,9 +94,8 @@ class NvpParse : public yyFlexLexer {
 		void process(const std::string & value) const;
 		std::string name;
 		const AssignMap values;
-};
+	};
 
 }
 
 #endif
-

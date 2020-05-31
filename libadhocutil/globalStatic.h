@@ -8,23 +8,21 @@ namespace AdHoc {
 	 * Wrapper class for initialising/destroying a global static object via
 	 * __attribute__ constructor/destructor.
 	 */
-	template<typename Object>
-	class GlobalStatic {
-		public:
-			/**
-			 * Get the contained object.
-			 * @return The object.
-			 */
-			static Object * get();
+	template<typename Object> class GlobalStatic {
+	public:
+		/**
+		 * Get the contained object.
+		 * @return The object.
+		 */
+		static Object * get();
 
-		private:
-			using Ptr = Object *;
-			static void createObject() __attribute__((constructor(101)));
-			static void deleteObject() __attribute__((destructor(101)));
+	private:
+		using Ptr = Object *;
+		static void createObject() __attribute__((constructor(101)));
+		static void deleteObject() __attribute__((destructor(101)));
 
-			inline static Ptr & instance();
+		inline static Ptr & instance();
 	};
 }
 
 #endif
-

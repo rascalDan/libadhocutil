@@ -6,9 +6,7 @@ namespace AdHoc {
 
 	Lexer::Lexer() = default;
 
-	Lexer::Lexer(Rules r) : rules(std::move(r))
-	{
-	}
+	Lexer::Lexer(Rules r) : rules(std::move(r)) { }
 
 	AdHocFormatter(UnexpectedInputState, "Unexpected input in state (%?) at %?");
 	void
@@ -85,4 +83,3 @@ namespace AdHoc {
 		return pat;
 	}
 }
-

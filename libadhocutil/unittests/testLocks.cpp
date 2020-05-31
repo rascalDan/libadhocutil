@@ -4,7 +4,7 @@
 #include "lockHelpers.h"
 #include <shared_mutex>
 
-BOOST_AUTO_TEST_CASE ( lock )
+BOOST_AUTO_TEST_CASE(lock)
 {
 	std::shared_mutex _lock;
 	{
@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE ( lock )
 	_lock.unlock_shared();
 }
 
-BOOST_AUTO_TEST_CASE ( sharedlock )
+BOOST_AUTO_TEST_CASE(sharedlock)
 {
 	std::shared_mutex _lock;
 	{
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE ( sharedlock )
 	_lock.unlock_shared();
 }
 
-BOOST_AUTO_TEST_CASE ( scopelock )
+BOOST_AUTO_TEST_CASE(scopelock)
 {
 	std::shared_mutex _lock;
 	ScopeLock(_lock) {
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE ( scopelock )
 	_lock.unlock_shared();
 }
 
-BOOST_AUTO_TEST_CASE ( sharedscopelock )
+BOOST_AUTO_TEST_CASE(sharedscopelock)
 {
 	std::shared_mutex _lock;
 	SharedScopeLock(_lock) {
@@ -63,4 +63,3 @@ BOOST_AUTO_TEST_CASE ( sharedscopelock )
 	BOOST_CHECK(_lock.try_lock_shared());
 	_lock.unlock_shared();
 }
-

@@ -23,18 +23,18 @@ static std::optional<std::string> nullResolver(const std::type_info &, const std
 static std::optional<std::string> badResolver(const std::type_info &, const std::string_view &);
 static std::optional<std::string> goodResolver(const std::type_info &, const std::string_view &);
 
-BOOST_AUTO_TEST_CASE( ready )
+BOOST_AUTO_TEST_CASE(ready)
 {
 	BOOST_REQUIRE(PluginManager::getDefault());
 	BOOST_REQUIRE(std::filesystem::exists(lib));
 }
 
-BOOST_AUTO_TEST_CASE( clean )
+BOOST_AUTO_TEST_CASE(clean)
 {
 	BOOST_REQUIRE_EQUAL(0, AdHoc::PluginManager::getDefault()->getAll<BaseThing>().size());
 }
 
-BOOST_AUTO_TEST_CASE( loadAndUnloadlib )
+BOOST_AUTO_TEST_CASE(loadAndUnloadlib)
 {
 	void * handle = dlopen(lib.c_str(), RTLD_NOW);
 	BOOST_REQUIRE(handle);
@@ -63,7 +63,7 @@ goodResolver(const std::type_info & t, const std::string_view & n)
 	return lib;
 }
 
-BOOST_AUTO_TEST_CASE( addAndRemoveResolver )
+BOOST_AUTO_TEST_CASE(addAndRemoveResolver)
 {
 	auto pm = AdHoc::PluginManager::getDefault();
 	BOOST_REQUIRE_EQUAL(0, pm->countResolvers());
@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE( addAndRemoveResolver )
 	BOOST_REQUIRE_EQUAL(0, pm->countResolvers());
 }
 
-BOOST_AUTO_TEST_CASE( null )
+BOOST_AUTO_TEST_CASE(null)
 {
 	auto pm = AdHoc::PluginManager::getDefault();
 	pm->addResolver<BaseThing>(nullResolver);
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE( null )
 	pm->removeResolver<BaseThing>();
 }
 
-BOOST_AUTO_TEST_CASE( bad )
+BOOST_AUTO_TEST_CASE(bad)
 {
 	auto pm = AdHoc::PluginManager::getDefault();
 	pm->addResolver<BaseThing>(badResolver);
@@ -91,11 +91,10 @@ BOOST_AUTO_TEST_CASE( bad )
 	pm->removeResolver<BaseThing>();
 }
 
-BOOST_AUTO_TEST_CASE( good )
+BOOST_AUTO_TEST_CASE(good)
 {
 	auto pm = AdHoc::PluginManager::getDefault();
 	pm->addResolver<BaseThing>(goodResolver);
 	BOOST_REQUIRE(pm->get<BaseThing>("ImplOfThing"));
 	pm->removeResolver<BaseThing>();
 }
-

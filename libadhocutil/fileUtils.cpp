@@ -1,14 +1,15 @@
 #include "fileUtils.h"
 #include "compileTimeFormatter.h"
-#include <unistd.h>
+#include <boost/assert.hpp>
 #include <sys.h>
 #include <sys/mman.h>
-#include <boost/assert.hpp>
+#include <unistd.h>
 
 namespace AdHoc::FileUtils {
 	AdHocFormatter(FD, "FD %?");
 
-	std::filesystem::path operator/(const std::filesystem::path & p, unsigned int n)
+	std::filesystem::path
+	operator/(const std::filesystem::path & p, unsigned int n)
 	{
 		auto pp = p.begin();
 		while (n--) {
@@ -17,13 +18,9 @@ namespace AdHoc::FileUtils {
 		return *pp;
 	}
 
-	FileHandle::FileHandle(int d) noexcept :
-		fh(d)
-	{
-	}
+	FileHandle::FileHandle(int d) noexcept : fh(d) { }
 
-	FileHandle::FileHandle(FileHandle && o) noexcept :
-		fh(o.fh)
+	FileHandle::FileHandle(FileHandle && o) noexcept : fh(o.fh)
 	{
 		const_cast<int &>(o.fh) = -1;
 	}
@@ -36,8 +33,7 @@ namespace AdHoc::FileUtils {
 		return *this;
 	}
 
-	FileHandle::FileHandle(const std::filesystem::path & path, int flags) :
-		fh(open(path.c_str(), flags))
+	FileHandle::FileHandle(const std::filesystem::path & path, int flags) : fh(open(path.c_str(), flags))
 	{
 		if (fh < 0) {
 			throw SystemExceptionOn("open(2) failed", strerror(errno), errno, path);
@@ -64,23 +60,18 @@ namespace AdHoc::FileUtils {
 		return fh;
 	}
 
-	FileHandleStat::FileHandleStat(int fd) :
-		FileHandle(fd),
-		st({})
+	FileHandleStat::FileHandleStat(int fd) : FileHandle(fd), st({})
 	{
 		refreshStat();
 	}
 
-	FileHandleStat::FileHandleStat(const std::filesystem::path & path, int flags) :
-		FileHandle(path, flags),
-		st({})
+	FileHandleStat::FileHandleStat(const std::filesystem::path & path, int flags) : FileHandle(path, flags), st({})
 	{
 		refreshStat(path);
 	}
 
 	FileHandleStat::FileHandleStat(const std::filesystem::path & path, int flags, int mode) :
-		FileHandle(path, flags, mode),
-		st({})
+		FileHandle(path, flags, mode), st({})
 	{
 		refreshStat(path);
 	}
@@ -112,21 +103,15 @@ namespace AdHoc::FileUtils {
 		}
 	}
 
-	MemMap::MemMap(int d, int flags) :
-		FileHandleStat(d),
-		data(setupMap(flags))
-	{
-	}
+	MemMap::MemMap(int d, int flags) : FileHandleStat(d), data(setupMap(flags)) { }
 
 	MemMap::MemMap(const std::filesystem::path & path, int flags) :
-		FileHandleStat(path, flags),
-		data(setupMap(path, flags))
+		FileHandleStat(path, flags), data(setupMap(path, flags))
 	{
 	}
 
 	MemMap::MemMap(const std::filesystem::path & path, int flags, int mode) :
-		FileHandleStat(path, flags, mode),
-		data(setupMap(path, flags))
+		FileHandleStat(path, flags, mode), data(setupMap(path, flags))
 	{
 	}
 
@@ -161,4 +146,3 @@ namespace AdHoc::FileUtils {
 		return data;
 	}
 }
-

@@ -1,15 +1,15 @@
 #ifndef ADHOCUTIL_SCOPEEXIT_H
 #define ADHOCUTIL_SCOPEEXIT_H
 
+#include "c++11Helpers.h"
+#include "visibility.h"
 #include <functional>
 #include <vector>
-#include "visibility.h"
-#include "c++11Helpers.h"
 
 namespace AdHoc {
 
-/// Run code at scope exit.
-class DLL_PUBLIC ScopeExit {
+	/// Run code at scope exit.
+	class DLL_PUBLIC ScopeExit {
 	public:
 		/** Callback for code to be run. */
 		using Event = std::function<void()>;
@@ -24,7 +24,8 @@ class DLL_PUBLIC ScopeExit {
 		 * @param failure Only run this if the scope is exitted because of an uncaught exception.
 		 * @param post Run this code (unconditionally) last.
 		 */
-		explicit ScopeExit(const Event & pre, const Event & success = Event(), const Event & failure = Event(), const Event & post = Event());
+		explicit ScopeExit(const Event & pre, const Event & success = Event(), const Event & failure = Event(),
+				const Event & post = Event());
 		~ScopeExit();
 
 		/// Standard move/copy support
@@ -36,9 +37,8 @@ class DLL_PUBLIC ScopeExit {
 		std::vector<Event> onFailure;
 		std::vector<Event> onExitPost;
 		/// @endcond
-};
+	};
 
 }
 
 #endif
-

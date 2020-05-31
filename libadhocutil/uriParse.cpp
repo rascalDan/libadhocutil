@@ -1,11 +1,12 @@
 #include "uriParse.h"
+#include "compileTimeFormatter.h"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
 #include <utility>
-#include "compileTimeFormatter.h"
 
 namespace AdHoc {
-	static inline int _is_scheme_char(int c)
+	static inline int
+	_is_scheme_char(int c)
 	{
 		return (!isalpha(c) && '+' != c && '-' != c && '.' != c) ? 0 : 1;
 	}
@@ -13,7 +14,7 @@ namespace AdHoc {
 	Uri::Uri(const std::string & uri)
 	{
 		auto * puri = this;
-		const char *curstr;
+		const char * curstr;
 		int userpass_flag;
 		int bracket_flag;
 
@@ -47,7 +48,8 @@ namespace AdHoc {
 			if ('@' == *tmpstr) {
 				userpass_flag = 1;
 				break;
-			} else if ('/' == *tmpstr) {
+			}
+			else if ('/' == *tmpstr) {
 				userpass_flag = 0;
 				break;
 			}
@@ -69,7 +71,7 @@ namespace AdHoc {
 					tmpstr++;
 				}
 				len = tmpstr - curstr;
-				puri->password = std::string(curstr, len); 
+				puri->password = std::string(curstr, len);
 				curstr = tmpstr;
 			}
 			if ('@' != *curstr) {
@@ -80,7 +82,8 @@ namespace AdHoc {
 
 		if ('[' == *curstr) {
 			bracket_flag = 1;
-		} else {
+		}
+		else {
 			bracket_flag = 0;
 		}
 
@@ -89,7 +92,8 @@ namespace AdHoc {
 			if (bracket_flag && ']' == *tmpstr) {
 				tmpstr++;
 				break;
-			} else if (!bracket_flag && (':' == *tmpstr || '/' == *tmpstr)) {
+			}
+			else if (!bracket_flag && (':' == *tmpstr || '/' == *tmpstr)) {
 				break;
 			}
 			tmpstr++;
@@ -123,7 +127,7 @@ namespace AdHoc {
 		curstr++;
 
 		tmpstr = curstr;
-		while ('\0' != *tmpstr && '#' != *tmpstr  && '?' != *tmpstr) {
+		while ('\0' != *tmpstr && '#' != *tmpstr && '?' != *tmpstr) {
 			tmpstr++;
 		}
 		len = tmpstr - curstr;
@@ -138,7 +142,7 @@ namespace AdHoc {
 					tmpstr++;
 				}
 				len = tmpstr - curstr;
-				auto q = puri->query.insert({ std::string(curstr, len), std::string() });
+				auto q = puri->query.insert({std::string(curstr, len), std::string()});
 				curstr = tmpstr;
 				if ('=' == *curstr) {
 					curstr++;
@@ -171,10 +175,8 @@ namespace AdHoc {
 		}
 	}
 
-	InvalidUri::InvalidUri(std::string  e, std::string  u) :
-		Exception<std::invalid_argument>(std::string()),
-		err(std::move(e)),
-		uri(std::move(u))
+	InvalidUri::InvalidUri(std::string e, std::string u) :
+		Exception<std::invalid_argument>(std::string()), err(std::move(e)), uri(std::move(u))
 	{
 	}
 
@@ -186,4 +188,3 @@ namespace AdHoc {
 		return InvalidUriMsg::get(err, uri);
 	}
 }
-
