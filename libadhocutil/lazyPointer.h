@@ -25,11 +25,11 @@ namespace AdHoc {
 		/// @endcond
 
 		/** Construct pointer with a factory function. */
-		// NOLINTNEXTLINE(hicpp-explicit-conversions)
+		// cppcheck-suppress noExplicitConstructor; NOLINTNEXTLINE(hicpp-explicit-conversions)
 		LazyPointer(Factory f) : source(f) { }
 
 		/** Construct pointer with an instance value. */
-		// NOLINTNEXTLINE(hicpp-explicit-conversions)
+		// cppcheck-suppress noExplicitConstructor; NOLINTNEXTLINE(hicpp-explicit-conversions)
 		LazyPointer(P p) : source(p) { }
 
 		/** Construct pointer with no factory or value. */

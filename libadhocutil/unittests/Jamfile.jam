@@ -22,6 +22,7 @@ project
   : requirements
 			<toolset>tidy:<xcheckxx>bugprone-use-after-move
 			<toolset>tidy:<xcheckxx>hicpp-invalid-access-moved
+			<toolset>tidy:<suppress>accessMoved
 	;
 
 h lorem-ipsum : lorem-ipsum.txt ;

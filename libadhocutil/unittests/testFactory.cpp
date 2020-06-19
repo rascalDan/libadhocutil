@@ -59,6 +59,7 @@ BOOST_AUTO_TEST_CASE(ready)
 BOOST_AUTO_TEST_CASE(get)
 {
 	auto all = PluginManager::getDefault()->getAll();
+	BOOST_CHECK_EQUAL(all.size(), 2);
 	auto factory1 = PluginManager::getDefault()->get<BaseThingFactory>("a")->implementation();
 	auto factory2 = BaseThingFactory::get("a");
 	auto factory3 = BaseThingFactory::get("OtherImplOfThing");

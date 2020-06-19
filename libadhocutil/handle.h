@@ -39,6 +39,7 @@ namespace AdHoc {
 			deleter = std::move(h.deleter);
 			owning = h.owning;
 			h.owning = false;
+			return *this;
 		}
 
 		/// Returns a reference to the managed object.

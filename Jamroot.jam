@@ -34,6 +34,7 @@ project
 			<toolset>tidy:<xcheckxx>hicpp-signed-bitwise
 			<toolset>tidy:<xcheckxx>hicpp-no-array-decay
 			<toolset>tidy:<checkxx>performance-*
+			<toolset>tidy:<define>ICE_IGNORE_VERSION
 	;
 
 build-project libadhocutil ;

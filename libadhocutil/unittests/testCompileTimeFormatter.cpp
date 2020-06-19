@@ -123,7 +123,7 @@ static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
 static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
 #endif
 
-BOOST_FIXTURE_TEST_SUITE(TestStreamWrite, std::stringstream)
+BOOST_FIXTURE_TEST_SUITE(TestStreamWrite, std::stringstream);
 
 BOOST_AUTO_TEST_CASE(empty)
 {

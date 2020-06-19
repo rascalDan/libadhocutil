@@ -1,6 +1,7 @@
 #include "buffer.h"
 #include <cstdio>
 #include <cstring>
+#include <numeric>
 
 namespace AdHoc {
 
@@ -241,11 +242,9 @@ namespace AdHoc {
 	size_t
 	Buffer::length() const
 	{
-		size_t len = 0;
-		for (const Content::value_type & c : content) {
-			len += c->length();
-		}
-		return len;
+		return std::accumulate(content.begin(), content.end(), 0U, [](auto && len, auto && c) {
+			return len + c->length();
+		});
 	}
 
 	Buffer &

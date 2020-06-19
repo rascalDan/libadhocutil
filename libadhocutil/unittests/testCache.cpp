@@ -8,7 +8,7 @@
 // NOLINTNEXTLINE(hicpp-special-member-functions)
 class Obj {
 public:
-	// NOLINTNEXTLINE(hicpp-explicit-conversions)
+	// cppcheck-suppress noExplicitConstructor; NOLINTNEXTLINE(hicpp-explicit-conversions)
 	Obj(int i) : v(i) { }
 	void operator=(const Obj &) = delete;
 	bool

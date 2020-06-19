@@ -214,10 +214,13 @@ BOOST_AUTO_TEST_CASE(keepSome1)
 	TRPSmall pool;
 	{
 		auto r1 = pool.get();
+		BOOST_CHECK(r1);
 		{
 			auto r2 = pool.get();
+			BOOST_CHECK(r2);
 			{
 				auto r3 = pool.get();
+				BOOST_CHECK(r3);
 				BOOST_REQUIRE_EQUAL(3, pool.inUseCount());
 				BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 				BOOST_REQUIRE_EQUAL(3, MockResource::count);
@@ -231,6 +234,7 @@ BOOST_AUTO_TEST_CASE(keepSome1)
 		BOOST_REQUIRE_EQUAL(2, MockResource::count);
 		{
 			auto r2 = pool.get();
+			BOOST_CHECK(r2);
 			BOOST_REQUIRE_EQUAL(2, pool.inUseCount());
 			BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 			BOOST_REQUIRE_EQUAL(2, MockResource::count);
@@ -249,8 +253,11 @@ BOOST_AUTO_TEST_CASE(keepSome2)
 	TRPSmall pool;
 	{
 		auto r1 = pool.get();
+		BOOST_CHECK(r1);
 		auto r2 = pool.get();
+		BOOST_CHECK(r2);
 		auto r3 = pool.get();
+		BOOST_CHECK(r3);
 		BOOST_REQUIRE_EQUAL(3, pool.inUseCount());
 		BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 		BOOST_REQUIRE_EQUAL(3, MockResource::count);
@@ -266,9 +273,12 @@ BOOST_AUTO_TEST_CASE(idle)
 	{
 		{
 			auto r1 = pool.get();
+			BOOST_CHECK(r1);
 			auto r2 = pool.get();
+			BOOST_CHECK(r2);
 		}
 		auto r3 = pool.get();
+		BOOST_CHECK(r3);
 		BOOST_REQUIRE_EQUAL(1, pool.inUseCount());
 		BOOST_REQUIRE_EQUAL(1, pool.availableCount());
 		BOOST_REQUIRE_EQUAL(2, MockResource::count);
@@ -310,6 +320,7 @@ static void
 acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::Semaphore & s)
 {
 	auto r = pool->get();
+	BOOST_CHECK(r);
 	s.notify();
 	sleep(1);
 }
@@ -410,6 +421,7 @@ BOOST_AUTO_TEST_CASE(returnFail)
 	TRPReturnFail pool;
 	{
 		auto rh = pool.get();
+		BOOST_CHECK(rh);
 		BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 		BOOST_REQUIRE_EQUAL(1, pool.inUseCount());
 		BOOST_REQUIRE_EQUAL(2, pool.freeCount());

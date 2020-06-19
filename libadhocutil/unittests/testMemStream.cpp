@@ -43,4 +43,5 @@ BOOST_AUTO_TEST_CASE(move_assign)
 	MemStream ms1;
 	MemStream ms2;
 	ms2 = std::move(ms1);
+	BOOST_CHECK_EQUAL(ms2.length(), 0);
 }

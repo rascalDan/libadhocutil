@@ -123,7 +123,7 @@ namespace AdHoc::FileUtils {
 	void *
 	MemMap::setupMapInt(int flags) const
 	{
-		return mmap(nullptr, st.st_size, flags & (O_WRONLY | O_RDWR) ? PROT_WRITE : PROT_READ, MAP_SHARED, fh, 0);
+		return mmap(nullptr, st.st_size, (flags & (O_WRONLY | O_RDWR)) ? PROT_WRITE : PROT_READ, MAP_SHARED, fh, 0);
 	}
 
 	void *
