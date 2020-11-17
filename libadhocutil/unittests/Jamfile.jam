@@ -90,6 +90,14 @@ run
 	;
 
 run
+	testCaseLess.cpp
+	: : :
+	<define>BOOST_TEST_DYN_LINK
+	<library>..//adhocutil
+	<library>boost_utf
+	;
+
+run
 	testBuffer.cpp
 	: : :
 	<define>BOOST_TEST_DYN_LINK
