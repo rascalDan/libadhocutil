@@ -325,11 +325,11 @@ namespace AdHoc {
 		template<typename T, T... t> struct FMT {
 			/// CTF format string
 			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
-			static constexpr char __FMT[] = {t...};
+			static constexpr char fmtstr[] = {t...};
 		};
 		template<typename T, T... t> inline auto operator""_fmt() noexcept
 		{
-			return AdHoc::FormatterDetail<FMT<T, t...>::__FMT, sizeof...(t)>();
+			return AdHoc::FormatterDetail<FMT<T, t...>::fmtstr, sizeof...(t)>();
 		}
 #endif
 #ifdef __clang__
