@@ -320,7 +320,10 @@ static void
 acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::Semaphore & s)
 {
 	auto r = pool->get();
-	BOOST_CHECK(r);
+	static std::mutex m;
+	ScopeLock(m) {
+		BOOST_CHECK(r);
+	}
 	s.notify();
 	sleep(1);
 }
