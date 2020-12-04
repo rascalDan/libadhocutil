@@ -95,6 +95,7 @@ BOOST_AUTO_TEST_CASE(get)
 			BOOST_REQUIRE(r2.get());
 
 			auto r1a = r2;
+			BOOST_CHECK_EQUAL(2, r1a.handleCount());
 			r1a = r1;
 			BOOST_REQUIRE_EQUAL(2, pool.inUseCount());
 			BOOST_REQUIRE_EQUAL(0, pool.availableCount());
