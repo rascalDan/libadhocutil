@@ -58,7 +58,11 @@ namespace AdHoc {
 		[[nodiscard]] T *
 		get() const
 		{
+#if __cpp_lib_to_address
+			return std::to_address(deref());
+#else
 			return &*deref();
+#endif
 		}
 
 		[[nodiscard]] const P &
