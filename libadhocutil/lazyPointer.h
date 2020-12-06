@@ -17,6 +17,7 @@ namespace AdHoc {
 	 */
 	template<typename T, typename P = std::shared_ptr<T>> class LazyPointer {
 	public:
+		static_assert(std::is_same_v<T &, decltype(*P())>);
 		/// @cond
 		using element_type = T;
 		using pointer_type = P;
@@ -26,14 +27,14 @@ namespace AdHoc {
 
 		/** Construct pointer with a factory function. */
 		// cppcheck-suppress noExplicitConstructor; NOLINTNEXTLINE(hicpp-explicit-conversions)
-		LazyPointer(Factory f) : source(f) { }
+		LazyPointer(Factory f) : source(std::move(f)) { }
 
 		/** Construct pointer with an instance value. */
 		// cppcheck-suppress noExplicitConstructor; NOLINTNEXTLINE(hicpp-explicit-conversions)
-		LazyPointer(P p) : source(p) { }
+		LazyPointer(P p) : source(std::move(p)) { }
 
 		/** Construct pointer with no factory or value. */
-		LazyPointer() : source(P(NULL)) { }
+		LazyPointer() : source(P(nullptr)) { }
 
 		// Getters
 		/// @cond
@@ -57,25 +58,16 @@ namespace AdHoc {
 		[[nodiscard]] T *
 		get() const
 		{
-			if constexpr (std::is_pointer<P>::value) {
-				return deref();
-			}
-			else {
-				return deref().get();
-			}
+			return &*deref();
 		}
 
-		[[nodiscard]] P
+		[[nodiscard]] const P &
 		deref() const
 		{
-			if (Factory * f = std::get_if<Factory>(&source)) {
-				P p = (*f)();
-				source = p;
-				return p;
+			if (const auto * f = std::get_if<Factory>(&source)) {
+				source = (*f)();
 			}
-			else {
-				return std::get<P>(source);
-			}
+			return std::get<P>(source);
 		}
 
 		bool
