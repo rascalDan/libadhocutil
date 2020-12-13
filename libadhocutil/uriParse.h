@@ -44,6 +44,7 @@ namespace AdHoc {
 		/// Constructor accepting what went wrong and the URI being parsed.
 		InvalidUri(std::string err, std::string uri);
 
+		/// Get the exception message
 		std::string message() const noexcept override;
 
 		/// The parse error.

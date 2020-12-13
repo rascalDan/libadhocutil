@@ -5,7 +5,9 @@
 #include <cstring>
 
 namespace AdHoc {
+	/// STL compatible case-insentive less comparator wrapping strncasecmp
 	struct case_less {
+		/// Compare a and b
 		template<typename A, typename B>
 		inline bool
 		operator()(const A & a, const B & b) const
