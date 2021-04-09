@@ -4,6 +4,7 @@
 #include "cache.h"
 #include "lockHelpers.h"
 #include <boost/lambda/lambda.hpp>
+#include <mutex>
 #include <shared_mutex>
 
 namespace AdHoc {

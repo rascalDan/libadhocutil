@@ -4,6 +4,7 @@
 #include "cache.h"
 #include "cache.impl.h"
 #include <functional>
+#include <mutex>
 
 // NOLINTNEXTLINE(hicpp-special-member-functions)
 class Obj {

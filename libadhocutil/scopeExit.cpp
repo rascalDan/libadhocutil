@@ -1,4 +1,5 @@
 #include "scopeExit.h"
+#include <stdexcept>
 
 namespace AdHoc {
 
