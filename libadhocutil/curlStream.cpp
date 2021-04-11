@@ -1,4 +1,6 @@
 #include "curlStream.h"
+#include <algorithm>
+#include <cstring>
 
 namespace AdHoc::Net {
 

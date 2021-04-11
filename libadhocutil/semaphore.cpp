@@ -1,4 +1,5 @@
 #include "semaphore.h"
+#include <chrono>
 
 namespace AdHoc {
 	Semaphore::Semaphore(unsigned int initial) : count(initial) { }

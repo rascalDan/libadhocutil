@@ -2,6 +2,10 @@
 #include <boost/test/unit_test.hpp>
 
 #include "buffer.h"
+#include <boost/format.hpp>
+#include <cstring>
+#include <iosfwd>
+#include <string>
 
 using namespace AdHoc;
 

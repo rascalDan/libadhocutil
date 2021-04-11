@@ -3,6 +3,7 @@
 
 #include "visibility.h"
 #include <cstdint>
+#include <iosfwd>
 #include <string_view>
 
 namespace AdHoc {

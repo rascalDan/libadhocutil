@@ -2,6 +2,8 @@
 #include <boost/test/unit_test.hpp>
 
 #include <case_less.h>
+#include <string>
+#include <string_view>
 
 BOOST_FIXTURE_TEST_SUITE(l, AdHoc::case_less);
 

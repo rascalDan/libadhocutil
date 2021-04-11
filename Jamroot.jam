@@ -36,6 +36,7 @@ project
 			<toolset>tidy:<xcheckxx>hicpp-no-array-decay
 			<toolset>tidy:<checkxx>performance-*
 			<toolset>tidy:<define>ICE_IGNORE_VERSION
+			<toolset>tidy:<mapping>iwyu.json
 	;
 
 build-project libadhocutil ;

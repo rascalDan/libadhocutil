@@ -3,13 +3,19 @@
 
 #include "c++11Helpers.h"
 #include "visibility.h"
+#include <cstddef>
 #include <functional>
-#include <glibmm/ustring.h>
+#include <glib.h>
 #include <memory>
 #include <optional>
 #include <set>
+#include <string>
 #include <tuple>
 #include <vector>
+
+namespace Glib {
+	class ustring;
+}
 
 namespace AdHoc {
 	/// An extensible lexer.

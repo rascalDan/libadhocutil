@@ -2,3 +2,4 @@
 #include "plugins.impl.h"
 
 PLUGIN(ImplOfThing, BaseThing);
+INSTANTIATEPLUGINOF(BaseThing);

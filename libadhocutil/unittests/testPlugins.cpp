@@ -1,9 +1,10 @@
 #define BOOST_TEST_MODULE Plugins
 #include <boost/test/unit_test.hpp>
 
-#include "plugins.h"
 #include "plugins.impl.h"
 #include "utilTestClasses.h"
+#include <memory>
+#include <set>
 
 using namespace AdHoc;
 

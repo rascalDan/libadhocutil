@@ -1,8 +1,12 @@
 #include "curlMultiHandle.h"
 #include "curlStream.h"
-#include "runtimeContext.h"
+#include <boost/core/ref.hpp>
+#include <boost/core/typeinfo.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <map>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <utility>
 
 namespace AdHoc::Net {
 

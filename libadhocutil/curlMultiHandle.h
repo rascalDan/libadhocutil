@@ -5,9 +5,11 @@
 #include "curlHandle.h"
 #include "visibility.h"
 #include <functional>
+#include <iosfwd>
 #include <map>
 #include <memory>
 #include <set>
+#include <string>
 
 namespace AdHoc {
 	namespace Net {

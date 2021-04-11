@@ -1,10 +1,11 @@
 #define BOOST_TEST_MODULE Buffer
 #include <boost/test/unit_test.hpp>
 
-#include <Ice/Exception.h>
 #include <Ice/Optional.h>
 #include <optional>
 #include <optionalUtils.h>
+#include <string>
+#include <type_traits>
 
 using namespace AdHoc;
 

@@ -5,10 +5,11 @@
 #include "exception.h"
 #include "semaphore.h"
 #include "visibility.h"
-#include <atomic>
 #include <list>
 #include <map>
+#include <memory>
 #include <shared_mutex>
+#include <string>
 #include <thread>
 #include <tuple>
 

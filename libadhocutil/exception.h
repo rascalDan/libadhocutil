@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_EXCEPTION_H
 #define ADHOCUTIL_EXCEPTION_H
 
-#include <exception>
+#include <exception> // IWYU pragma: export
 #include <optional>
 #include <string>
 

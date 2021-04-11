@@ -2,6 +2,9 @@
 #include "compileTimeFormatter.h"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
+#include <cctype>
+#include <cstdint>
+#include <cstring>
 #include <utility>
 
 namespace AdHoc {

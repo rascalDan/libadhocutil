@@ -1,5 +1,7 @@
 #include "lexer.h"
 #include "compileTimeFormatter.h"
+#include <stdexcept>
+#include <utility>
 
 namespace AdHoc {
 	const Lexer::State Lexer::InitialState = "";

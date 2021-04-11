@@ -3,8 +3,11 @@
 
 #include "buffer.h"
 #include "visibility.h"
-#include <boost/format.hpp>
+#include <boost/format.hpp> // IWYU pragma: keep
+#include <boost/format/format_fwd.hpp>
+#include <cstdio>
 #include <filesystem>
+#include <string>
 
 DLL_PUBLIC size_t fprintss(FILE *, const std::string &);
 

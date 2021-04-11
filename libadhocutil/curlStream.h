@@ -5,9 +5,14 @@
 #include "curlHandle.h"
 #include "runtimeContext.h"
 #include "visibility.h"
+#include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/stream.hpp>
-#include <curl/curl.h>
+#include <cstddef>
+#include <iosfwd>
 #include <string>
+namespace boost {
+	template<class T> class reference_wrapper;
+}
 
 namespace AdHoc {
 	namespace Net {
@@ -40,7 +45,6 @@ namespace AdHoc {
 		};
 
 		using CurlStream = boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>>;
-
 	}
 }
 

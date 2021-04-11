@@ -1,4 +1,5 @@
 #include "fprintbf.h"
+#include <cerrno>
 #include <cstdio>
 #include <system_error>
 

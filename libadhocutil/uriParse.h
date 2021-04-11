@@ -3,9 +3,11 @@
 
 #include "exception.h"
 #include "visibility.h"
+#include <cstdint>
 #include <filesystem>
 #include <map>
 #include <optional>
+#include <stdexcept>
 #include <string>
 
 namespace AdHoc {

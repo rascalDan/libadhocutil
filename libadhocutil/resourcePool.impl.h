@@ -2,7 +2,7 @@
 #define ADHOCUTIL_RESOURCEPOOL_IMPL_H
 
 #include "lockHelpers.h"
-#include "resourcePool.h"
+#include "resourcePool.h" // IWYU pragma: export
 #include "safeMapFind.h"
 #include <boost/assert.hpp>
 

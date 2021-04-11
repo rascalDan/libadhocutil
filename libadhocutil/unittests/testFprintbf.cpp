@@ -3,6 +3,10 @@
 
 #include "definedDirs.h"
 #include "fprintbf.h"
+#include <boost/format.hpp>
+#include <cstdio>
+#include <filesystem>
+#include <string>
 #include <system_error>
 
 BOOST_AUTO_TEST_CASE(writestring)

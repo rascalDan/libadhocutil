@@ -2,6 +2,11 @@
 #include <boost/test/unit_test.hpp>
 
 #include "nvpParse.h"
+#include <iosfwd>
+#include <map>
+#include <memory>
+#include <stdexcept>
+#include <string>
 
 using namespace AdHoc;
 

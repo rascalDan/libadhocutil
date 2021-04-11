@@ -3,10 +3,10 @@
 
 #include "c++11Helpers.h"
 #include "visibility.h"
-#include <fcntl.h>
-#include <filesystem>
+#include <fcntl.h> // IWYU pragma: export
+#include <filesystem> // IWYU pragma: export
 #include <string_view>
-#include <sys/stat.h>
+#include <sys/stat.h> // IWYU pragma: export
 
 namespace AdHoc {
 	namespace FileUtils {

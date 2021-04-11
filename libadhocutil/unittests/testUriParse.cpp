@@ -2,6 +2,12 @@
 #include <boost/test/unit_test.hpp>
 
 #include "uriParse.h"
+#include <iterator>
+#include <map>
+#include <optional>
+#include <string>
+#include <typeinfo>
+#include <utility>
 
 BOOST_AUTO_TEST_CASE(simple)
 {

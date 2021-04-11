@@ -2,8 +2,11 @@
 #include <boost/test/unit_test.hpp>
 
 #include "handle.h"
+#include <cerrno>
 #include <fcntl.h>
 #include <type_traits>
+#include <unistd.h>
+#include <utility>
 
 // Test case base on a file handle
 using T = decltype(STDIN_FILENO);

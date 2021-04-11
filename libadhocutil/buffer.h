@@ -3,8 +3,12 @@
 
 #include "c++11Helpers.h"
 #include "visibility.h"
-#include <boost/format.hpp>
+#include <boost/format.hpp> // IWYU pragma: keep
+#include <boost/format/format_fwd.hpp>
 #include <cstdarg>
+#include <cstddef>
+#include <iosfwd>
+#include <memory>
 #include <string>
 #include <vector>
 

@@ -2,6 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "runtimeContext.h"
+#include <string>
 
 using namespace AdHoc::System;
 

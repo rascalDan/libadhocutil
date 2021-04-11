@@ -1,9 +1,15 @@
 #define BOOST_TEST_MODULE FileUtils
 #include <boost/test/unit_test.hpp>
 
+#include <cerrno>
+#include <cstring>
 #include <definedDirs.h>
 #include <fileUtils.h>
+#include <memory>
+#include <string_view>
 #include <sys.h>
+#include <unistd.h>
+#include <utility>
 
 #define REQUIRE_INVALID_FH(fh) BOOST_REQUIRE_EQUAL(fcntl(fh, F_GETFD), -1)
 

@@ -4,13 +4,15 @@
 #include "c++11Helpers.h"
 #include "unique.h"
 #include "visibility.h"
-#include <algorithm>
+#include <cstddef>
 #include <functional>
-#include <map>
+#include <iosfwd>
 #include <memory>
 #include <optional>
 #include <set>
 #include <stdexcept>
+#include <string>
+#include <string_view>
 #include <typeinfo>
 
 namespace std {
@@ -160,18 +162,18 @@ namespace AdHoc {
 		 * Get a specific plugin.
 		 * @param n Name of plugin.
 		 */
-		template<typename T>[[nodiscard]] std::shared_ptr<const PluginOf<T>> get(const std::string_view & n) const;
+		template<typename T> [[nodiscard]] std::shared_ptr<const PluginOf<T>> get(const std::string_view & n) const;
 
 		/**
 		 * Get the implementation from specific plugin.
 		 * @param n Name of plugin.
 		 */
-		template<typename T>[[nodiscard]] std::shared_ptr<T> getImplementation(const std::string_view & n) const;
+		template<typename T> [[nodiscard]] std::shared_ptr<T> getImplementation(const std::string_view & n) const;
 
 		/**
 		 * Get all plugins of a given time.
 		 */
-		template<typename T>[[nodiscard]] std::set<std::shared_ptr<const PluginOf<T>>> getAll() const;
+		template<typename T> [[nodiscard]] std::set<std::shared_ptr<const PluginOf<T>>> getAll() const;
 
 		/**
 		 * The number of installed plugins.

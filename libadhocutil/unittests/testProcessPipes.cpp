@@ -3,7 +3,13 @@
 
 #include "definedDirs.h"
 #include "processPipes.h"
+#include <cstdio>
+#include <cstring>
+#include <filesystem>
+#include <stdexcept>
+#include <string>
 #include <sys/wait.h>
+#include <unistd.h>
 
 using namespace AdHoc::System;
 

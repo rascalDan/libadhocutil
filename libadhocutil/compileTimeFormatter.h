@@ -6,7 +6,7 @@
 #include <cstring>
 #include <iostream>
 #include <optional>
-#include <sstream>
+#include <sstream> // IWYU pragma: export
 
 namespace AdHoc {
 #ifdef __cpp_nontype_template_parameter_class

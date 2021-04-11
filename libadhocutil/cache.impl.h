@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_CACHE_IMPL_H
 #define ADHOCUTIL_CACHE_IMPL_H
 
-#include "cache.h"
+#include "cache.h" // IWYU pragma: export
 #include "lockHelpers.h"
 #include <boost/lambda/lambda.hpp>
 #include <mutex>

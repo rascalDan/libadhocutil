@@ -1,5 +1,6 @@
 #include "processPipes.h"
-#include "c++11Helpers.h"
+#include <cerrno>
+#include <cstdlib>
 #include <cstring>
 #include <poll.h>
 #include <stdexcept>

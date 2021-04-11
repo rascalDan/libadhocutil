@@ -1,10 +1,13 @@
 #define BOOST_TEST_MODULE Cache
 #include <boost/test/unit_test.hpp>
 
-#include "cache.h"
 #include "cache.impl.h"
-#include <functional>
-#include <mutex>
+#include <ctime>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <unistd.h>
+#include <variant>
 
 // NOLINTNEXTLINE(hicpp-special-member-functions)
 class Obj {

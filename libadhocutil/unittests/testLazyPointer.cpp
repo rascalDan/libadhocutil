@@ -2,6 +2,8 @@
 #include <boost/test/unit_test.hpp>
 
 #include "lazyPointer.h"
+#include <memory>
+#include <string>
 
 using namespace AdHoc;
 

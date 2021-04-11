@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_PLUGINS_IMPL_H
 #define ADHOCUTIL_PLUGINS_IMPL_H
 
-#include "plugins.h"
+#include "plugins.h" // IWYU pragma: export
 
 namespace AdHoc {
 	template<typename T>

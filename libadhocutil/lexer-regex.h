@@ -1,7 +1,10 @@
 #ifndef ADHOCUTIL_LEXER_REGEX_H
 #define ADHOCUTIL_LEXER_REGEX_H
 
-#include "lexer.h"
+#include "glibmm/ustring.h"
+#include "lexer.h" // IWYU pragma: export
+#include "visibility.h"
+#include <glib.h>
 
 namespace AdHoc {
 	namespace LexerMatchers {

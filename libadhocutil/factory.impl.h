@@ -1,8 +1,8 @@
 #ifndef ADHOCUTIL_FACTORY_IMPL_H
 #define ADHOCUTIL_FACTORY_IMPL_H
 
-#include "factory.h"
-#include "plugins.impl.h"
+#include "factory.h" // IWYU pragma: export
+#include "plugins.impl.h" // IWYU pragma: export
 
 namespace AdHoc {
 	template<typename Base, typename... Params>

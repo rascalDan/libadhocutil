@@ -1,11 +1,16 @@
 #define BOOST_TEST_MODULE Plugins
 #include <boost/test/unit_test.hpp>
 
-#include "plugins.h"
 #include "plugins.impl.h"
 #include "utilTestClasses.h"
-#include <definedDirs.h>
 #include <dlfcn.h>
+#include <filesystem>
+#include <memory>
+#include <optional>
+#include <set>
+#include <string>
+#include <string_view>
+#include <typeinfo>
 
 using namespace AdHoc;
 

@@ -2,11 +2,20 @@
 #include <boost/test/unit_test.hpp>
 
 #include "memstream.h"
+#include <boost/assert.hpp>
 #include <compileTimeFormatter.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cxxabi.h>
 #include <definedDirs.h>
 #include <fileUtils.h>
-
-#include <filesystem>
+#include <locale>
+#include <memory>
+#include <optional>
+#include <string>
+#include <string_view>
+#include <type_traits>
 
 using namespace AdHoc;
 

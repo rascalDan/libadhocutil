@@ -1,6 +1,9 @@
 #include "fileUtils.h"
 #include "compileTimeFormatter.h"
 #include <boost/assert.hpp>
+#include <cerrno>
+#include <cstring>
+#include <memory>
 #include <sys.h>
 #include <sys/mman.h>
 #include <unistd.h>

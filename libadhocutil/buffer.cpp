@@ -1,7 +1,10 @@
 #include "buffer.h"
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <numeric>
+#include <ostream>
+#include <utility>
 
 namespace AdHoc {
 

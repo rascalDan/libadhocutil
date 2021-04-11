@@ -1,6 +1,8 @@
 #include "nagios.h"
-#include "ctf-impl/printf-compat.h"
-#include <fstream>
+#include "compileTimeFormatter.h"
+#include "ctf-impl/printf-compat.h" // IWYU pragma: keep
+#include <ctime>
+#include <fstream> // IWYU pragma: keep
 #include <sys/utsname.h>
 
 namespace AdHoc {

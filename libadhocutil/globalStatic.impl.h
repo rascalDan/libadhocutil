@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_GLOBALSTATIC_IMPL_H
 #define ADHOCUTIL_GLOBALSTATIC_IMPL_H
 
-#include "globalStatic.h"
+#include "globalStatic.h" // IWYU pragma: export
 
 namespace AdHoc {
 	template<typename Object>

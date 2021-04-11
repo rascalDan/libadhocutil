@@ -6,9 +6,16 @@
 #include "curlMultiHandle.h"
 #include "curlStream.h"
 #include "definedDirs.h"
-#include "net.h"
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/core/typeinfo.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <cstddef>
+#include <filesystem>
 #include <functional>
+#include <map>
+#include <net.h> // IWYU pragma: keep
+#include <string>
+#include <string_view>
 
 using namespace AdHoc::Net;
 

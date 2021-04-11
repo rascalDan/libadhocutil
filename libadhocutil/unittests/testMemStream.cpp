@@ -3,6 +3,9 @@
 #include <boost/test/unit_test.hpp>
 
 #include "memstream.h"
+#include <cstdio>
+#include <string_view>
+#include <utility>
 
 using namespace AdHoc;
 

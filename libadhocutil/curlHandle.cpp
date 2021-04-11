@@ -1,5 +1,6 @@
 #include "curlHandle.h"
 #include "compileTimeFormatter.h"
+#include <Ice/Optional.h>
 #include <boost/numeric/conversion/cast.hpp>
 #include <net.h>
 

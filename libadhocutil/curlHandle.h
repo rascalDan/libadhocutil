@@ -3,8 +3,9 @@
 
 #include "c++11Helpers.h"
 #include "visibility.h"
-#include <curl/curl.h>
+#include <curl/curl.h> // IWYU pragma: export
 #include <memory>
+#include <string>
 
 namespace AdHoc {
 	namespace Net {

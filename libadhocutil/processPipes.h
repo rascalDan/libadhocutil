@@ -1,11 +1,12 @@
 #ifndef ADHOCUTIL_PROCESSPIPES_H
 #define ADHOCUTIL_PROCESSPIPES_H
 
-#include "c++11Helpers.h"
 #include "handle.h"
 #include "visibility.h"
 #include <optional>
 #include <string>
+#include <sys/types.h>
+#include <utility>
 #include <vector>
 
 namespace AdHoc {

@@ -1,10 +1,12 @@
 #define BOOST_TEST_MODULE Factory
 #include <boost/test/unit_test.hpp>
 
-#include "factory.h"
 #include "factory.impl.h"
-#include "plugins.h"
-#include "plugins.impl.h"
+#include <map>
+#include <memory>
+#include <set>
+#include <string>
+#include <typeinfo>
 
 using namespace AdHoc;
 

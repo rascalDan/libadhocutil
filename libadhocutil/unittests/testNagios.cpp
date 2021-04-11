@@ -1,6 +1,7 @@
 #define BOOST_TEST_MODULE Nagios
 
 #include <boost/test/unit_test.hpp>
+#include <iosfwd>
 #include <nagios.h>
 
 /// LCOV_EXCL_START (calls real Nagios)

@@ -1,8 +1,14 @@
 #define BOOST_TEST_MODULE Lexer
 #include <boost/test/unit_test.hpp>
 
+#include "glibmm/ustring.h"
+#include <functional>
+#include <glib.h>
 #include <lexer-regex.h>
-#include <lexer.h>
+#include <memory>
+#include <optional>
+#include <stdexcept>
+#include <string>
 
 using namespace AdHoc;
 using namespace AdHoc::LexerMatchers;

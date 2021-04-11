@@ -2,13 +2,19 @@
 #include "compileTimeFormatter.h"
 #include "globalStatic.impl.h"
 #include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/indexed_by.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index_container.hpp>
-#include <cstring>
+#include <boost/operators.hpp>
+#include <cstdlib>
 #include <cxxabi.h>
 #include <dlfcn.h>
+#include <map>
+#include <tuple>
+#include <type_traits>
+#include <utility>
 
 namespace std {
 	bool

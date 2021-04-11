@@ -3,6 +3,7 @@
 
 #include <semaphore.h>
 #include <thread>
+#include <unistd.h>
 
 BOOST_AUTO_TEST_CASE(addRemoveOne)
 {

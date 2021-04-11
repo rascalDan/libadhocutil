@@ -1,4 +1,10 @@
 #include "lexer-regex.h"
+#include "c++11Helpers.h"
+#include <cstddef>
+#include <memory>
+#include <optional>
+#include <stdexcept>
+#include <string>
 
 namespace AdHoc::LexerMatchers {
 	class Regex : public Lexer::Pattern {
