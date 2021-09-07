@@ -24,7 +24,12 @@ namespace AdHoc {
 			virtual ~CurlHandle();
 
 			/** Set option wrapper. */
-			template<typename T> void setopt(CURLoption opt, const T val);
+			template<typename T>
+			void
+			setopt(CURLoption opt, const T & val)
+			{
+				curl_easy_setopt(curl_handle, opt, val);
+			}
 			/** Get info for long values */
 			void getinfo(CURLINFO info, long & val) const;
 			/** Get info for int values (avoids ambiguous call errors for ease of use) */
@@ -54,19 +59,6 @@ namespace AdHoc {
 			/// @endcond
 		};
 		using CurlHandlePtr = std::shared_ptr<CurlHandle>;
-
-		/// @cond
-		template<> void CurlHandle::setopt(CURLoption opt, const void * val);
-		template<> void CurlHandle::setopt(CURLoption opt, int val);
-		template<> void CurlHandle::setopt(CURLoption opt, long val);
-		template<typename T>
-		void
-		CurlHandle::setopt(CURLoption opt, const T val)
-		{
-			setopt(opt, (const void *)val);
-		}
-		/// @endcond
-
 	}
 }
 

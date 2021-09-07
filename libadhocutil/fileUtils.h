@@ -169,7 +169,7 @@ namespace AdHoc {
 			[[nodiscard]] auto
 			sv() const
 			{
-				return std::basic_string_view<T>((const T *)data, st.st_size / sizeof(T));
+				return std::basic_string_view<T>(static_cast<const T *>(data), st.st_size / sizeof(T));
 			}
 #endif
 

@@ -27,7 +27,8 @@ namespace AdHoc {
 			struct utsname buf {
 			};
 			uname(&buf);
-			NagiosPassiveServiceCheck::write(command_file, time(nullptr), buf.nodename, svc, (uint8_t)code, output);
+			NagiosPassiveServiceCheck::write(
+					command_file, time(nullptr), buf.nodename, svc, static_cast<uint8_t>(code), output);
 			command_file.flush();
 		}
 		return command_file.good();

@@ -48,7 +48,7 @@ namespace AdHoc {
 
 	template<typename R> ResourceHandle<R>::operator bool() const noexcept
 	{
-		return (bool)resource;
+		return resource.operator bool();
 	}
 
 	template<typename R>

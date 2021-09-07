@@ -31,27 +31,6 @@ namespace AdHoc::Net {
 		curl_easy_cleanup(curl_handle);
 	}
 
-	template<>
-	void
-	CurlHandle::setopt(CURLoption opt, const void * val)
-	{
-		curl_easy_setopt(curl_handle, opt, val);
-	}
-
-	template<>
-	void
-	CurlHandle::setopt(CURLoption opt, int val)
-	{
-		curl_easy_setopt(curl_handle, opt, val);
-	}
-
-	template<>
-	void
-	CurlHandle::setopt(CURLoption opt, long val)
-	{
-		curl_easy_setopt(curl_handle, opt, val);
-	}
-
 	void
 	CurlHandle::getinfo(CURLINFO info, long & val) const
 	{

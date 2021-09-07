@@ -83,6 +83,7 @@ run
 	<define>BOOST_TEST_DYN_LINK
 	<library>..//adhocutil
 	<library>boost_utf
+	<library>..//curl
 	<library>stdc++fs
 	<implicit-dependency>..//adhocutil
 	:

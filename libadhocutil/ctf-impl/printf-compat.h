@@ -73,7 +73,7 @@ namespace AdHoc {
 		static inline void
 		write(stream & s, Obj * const ptr, const Pn &... pn)
 		{
-			s << std::showbase << std::hex << (long unsigned int)ptr;
+			s << std::showbase << std::hex << reinterpret_cast<long unsigned int>(ptr);
 			s.copyfmt(std::ios(nullptr));
 			StreamWriter::next(s, pn...);
 		}

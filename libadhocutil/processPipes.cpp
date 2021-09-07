@@ -134,7 +134,7 @@ namespace AdHoc::System {
 		getrlimit(RLIMIT_NOFILE, &lim);
 		std::vector<struct pollfd> fds;
 		fds.reserve(lim.rlim_max);
-		for (int n = 3; n < (int)lim.rlim_max; n += 1) {
+		for (int n = 3; n < static_cast<int>(lim.rlim_max); n += 1) {
 			fds.push_back({n, 0, 0});
 		}
 		poll(&fds.front(), fds.size(), 0);

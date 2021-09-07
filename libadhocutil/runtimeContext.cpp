@@ -13,7 +13,7 @@ namespace AdHoc::System {
 		ctxCallback.uc_stack.ss_sp = &stack.front();
 		ctxCallback.uc_stack.ss_size = stacksize;
 		ctxCallback.uc_link = &ctxInitial;
-		makecontext(&ctxCallback, (void (*)()) & RuntimeContext::callbackWrapper, 1, this);
+		makecontext(&ctxCallback, reinterpret_cast<void (*)()>(&RuntimeContext::callbackWrapper), 1, this);
 	}
 
 	void

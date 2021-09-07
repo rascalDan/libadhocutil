@@ -5,7 +5,10 @@
 #include "visibility.h"
 #include <cstddef>
 #include <functional>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <glib.h>
+#pragma GCC diagnostic pop
 #include <memory>
 #include <optional>
 #include <set>

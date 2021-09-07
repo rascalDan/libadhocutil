@@ -383,8 +383,8 @@ GLIBC_FMT_TEST(d051, "in %05d.", 123);
 GLIBC_FMT_TEST(d0511, "in % 50d.", 123);
 GLIBC_FMT_TEST(d05121, "in %0510d.", 123);
 GLIBC_FMT_TEST(d2, "in %d.", 123456);
-GLIBC_FMT_TEST(d3, "in %hd.", (int16_t)-12345);
-GLIBC_FMT_TEST(d4, "in %hhd.", (int8_t)-123);
+GLIBC_FMT_TEST(d3, "in %hd.", static_cast<int16_t>(-12345));
+GLIBC_FMT_TEST(d4, "in %hhd.", static_cast<int8_t>(-123));
 GLIBC_FMT_TEST(d5, "in %ld.", -123456L);
 GLIBC_FMT_TEST(d6, "in %lld.", -123456LL);
 GLIBC_FMT_TEST(i1, "in %i.", 123);
@@ -439,7 +439,8 @@ GLIBC_FMT_TEST(g6, "in %G.", -123.456789);
 GLIBC_FMT_TEST(g7, "in %g.", 123456789.123);
 GLIBC_FMT_TEST(g8, "in %g.", -123456789.123);
 
-GLIBC_FMT_TEST(fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n", 1.234, 42, 3.13, "str", (void *)1000, (int)'X');
+GLIBC_FMT_TEST(fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n", 1.234, 42, 3.13, "str", reinterpret_cast<void *>(1000),
+		static_cast<int>('X'));
 
 AdHocFormatter(chars_written_fmt, "%n %s %n %d %n");
 BOOST_AUTO_TEST_CASE(chars_written)

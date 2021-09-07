@@ -17,6 +17,7 @@ project
 			<variant>release:<lto>on
 			<variant>debug:<warnings>extra
 			<variant>debug:<warnings-as-errors>on
+			<variant>debug:<cflags>-Wold-style-cast
 			<variant>coverage:<coverage>on
 			<toolset>tidy:<exclude>bin/sys.h
 			<toolset>tidy:<exclude>bin/net.h

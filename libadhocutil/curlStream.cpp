@@ -48,7 +48,7 @@ namespace AdHoc::Net {
 	size_t
 	CurlStreamSource::recv(void * data, size_t datalen)
 	{
-		buf = (char *)data;
+		buf = static_cast<char *>(data);
 		buflen = datalen;
 		swapContext();
 		return datalen;

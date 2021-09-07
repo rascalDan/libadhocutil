@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(rawPointerNonNull)
 	BOOST_REQUIRE(value);
 	BOOST_REQUIRE(value.get());
 	BOOST_REQUIRE_EQUAL(*value, 3);
-	int * x = (int *)value;
+	int * x = value.operator int *();
 	BOOST_REQUIRE_EQUAL(*x, 3);
 	delete x;
 }
@@ -119,5 +119,5 @@ BOOST_AUTO_TEST_CASE(rawPointerFactory)
 	BOOST_REQUIRE(!value.hasValue());
 	BOOST_REQUIRE_EQUAL(*value, 4);
 	BOOST_REQUIRE(value.hasValue());
-	delete (int *)value;
+	delete value.operator int *();
 }

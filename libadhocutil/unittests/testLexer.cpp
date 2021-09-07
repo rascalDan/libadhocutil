@@ -1,9 +1,12 @@
 #define BOOST_TEST_MODULE Lexer
 #include <boost/test/unit_test.hpp>
 
-#include "glibmm/ustring.h"
 #include <functional>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <glib.h>
+#include <glibmm/ustring.h>
+#pragma GCC diagnostic pop
 #include <lexer-regex.h>
 #include <memory>
 #include <optional>
@@ -79,7 +82,7 @@ BOOST_AUTO_TEST_CASE(multibyte)
 	AdHoc::Lexer::PatternPtr maskHead
 			= AdHoc::LexerMatchers::regex("^# ([^<\n]+)? ?(<(.+?@[^\n>]+)>?)? \\((\\d+ "
 										  "*(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\w* \\d+)\\)$",
-					(GRegexCompileFlags)(G_REGEX_OPTIMIZE | G_REGEX_CASELESS | G_REGEX_UNGREEDY));
+					GRegexCompileFlags(G_REGEX_OPTIMIZE | G_REGEX_CASELESS | G_REGEX_UNGREEDY));
 	Glib::ustring input("# Michał Górny <mgorny@gentoo.org> (28 Mar 2015)");
 	BOOST_REQUIRE_GT(input.bytes(), input.length());
 	BOOST_REQUIRE(maskHead->matches(input.c_str(), input.bytes(), 0));

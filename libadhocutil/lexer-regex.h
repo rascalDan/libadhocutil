@@ -1,10 +1,13 @@
 #ifndef ADHOCUTIL_LEXER_REGEX_H
 #define ADHOCUTIL_LEXER_REGEX_H
 
-#include "glibmm/ustring.h"
 #include "lexer.h" // IWYU pragma: export
 #include "visibility.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <glib.h>
+#include <glibmm/ustring.h>
+#pragma GCC diagnostic pop
 
 namespace AdHoc {
 	namespace LexerMatchers {
@@ -16,7 +19,7 @@ namespace AdHoc {
 		 * @return Pointer to the newly created pattern matcher.
 		 */
 		DLL_PUBLIC Lexer::PatternPtr regex(const Glib::ustring & regex,
-				GRegexCompileFlags compile = (GRegexCompileFlags)0, GRegexMatchFlags match = (GRegexMatchFlags)0);
+				GRegexCompileFlags compile = GRegexCompileFlags {}, GRegexMatchFlags match = GRegexMatchFlags {});
 	}
 };
 
