@@ -120,13 +120,14 @@ namespace AdHoc::FileUtils {
 
 	MemMap::~MemMap()
 	{
-		munmap(const_cast<void *>(data), st.st_size);
+		munmap(const_cast<void *>(data), static_cast<size_t>(st.st_size));
 	}
 
 	void *
 	MemMap::setupMapInt(int flags) const
 	{
-		return mmap(nullptr, st.st_size, (flags & (O_WRONLY | O_RDWR)) ? PROT_WRITE : PROT_READ, MAP_SHARED, fh, 0);
+		return mmap(nullptr, static_cast<size_t>(st.st_size), (flags & (O_WRONLY | O_RDWR)) ? PROT_WRITE : PROT_READ,
+				MAP_SHARED, fh, 0);
 	}
 
 	void *

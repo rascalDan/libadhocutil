@@ -98,7 +98,7 @@ namespace AdHoc {
 	StreamWriterT('n') {
 		template<typename... Pn>
 		static inline void
-		write(stream & s, int * n, const Pn &... pn)
+		write(stream & s, std::streamoff * n, const Pn &... pn)
 		{
 			BOOST_ASSERT_MSG(n, "%n conversion requires non-null parameter");
 			*n = streamLength(s);
@@ -179,6 +179,12 @@ namespace AdHoc {
 		template<typename... Pn>
 		static inline void
 		write(stream & s, int l, const std::string_view & p, const Pn &... pn)
+		{
+			return write(s, static_cast<size_t>(l), p, pn...);
+		}
+		template<typename... Pn>
+		static inline void
+		write(stream & s, size_t l, const std::string_view & p, const Pn &... pn)
 		{
 			s << p.substr(0, l);
 			s.copyfmt(std::ios(nullptr));

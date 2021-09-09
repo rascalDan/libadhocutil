@@ -93,7 +93,7 @@ namespace AdHoc::Net {
 		if (res != CURLE_OK) {
 			long http_code = 0;
 			if (curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &http_code) == CURLE_OK) {
-				throw AdHoc::Net::CurlException(res, curl_easy_strerror(res), http_code);
+				throw AdHoc::Net::CurlException(res, curl_easy_strerror(res), static_cast<short>(http_code));
 			}
 			throw AdHoc::Net::CurlException(res, curl_easy_strerror(res), IceUtil::None);
 		}

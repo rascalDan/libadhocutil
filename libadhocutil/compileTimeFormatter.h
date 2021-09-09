@@ -140,7 +140,7 @@ namespace AdHoc {
 
 	template<typename stream, typename char_type>
 	static inline void
-	appendStream(stream & s, const char_type * p, size_t n)
+	appendStream(stream & s, const char_type * p, std::streamsize n)
 	{
 		s.write(p, n);
 	}

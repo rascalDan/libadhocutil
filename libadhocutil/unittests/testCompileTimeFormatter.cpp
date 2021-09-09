@@ -82,7 +82,7 @@ namespace AdHoc {
 	StreamWriterT('r', 'a') {
 		template<typename P, typename... Pn>
 		static void
-		write(stream & s, int width, const P & p, const Pn &... pn)
+		write(stream & s, size_t width, const P & p, const Pn &... pn)
 		{
 			std::stringstream buf;
 			buf << p;
@@ -273,7 +273,7 @@ BOOST_AUTO_TEST_SUITE_END();
 BOOST_AUTO_TEST_CASE(customMultiArgRightAlign)
 {
 	std::stringstream buf1, buf2, buf3;
-	const int width = 20;
+	const auto width = 20U;
 	Formatter<formatStringMultiArg>::write(buf1, width, "something");
 	Formatter<formatStringMultiArg>::write(buf2, width, "something else");
 	Formatter<formatStringMultiArg>::write(buf3, width, 123.45);
@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE(customMultiArgRightAlign)
 
 BOOST_AUTO_TEST_CASE(get)
 {
-	auto s = Formatter<formatStringMultiArg>::get(20, "something else");
+	auto s = Formatter<formatStringMultiArg>::get(20U, "something else");
 	BOOST_CHECK_EQUAL(s, "value      something else");
 }
 
@@ -303,9 +303,9 @@ constexpr
 namespace AdHoc {
 	template<>
 	inline void
-	appendStream(FILE & strm, const char * const p, size_t n)
+	appendStream(FILE & strm, const char * const p, std::streamsize n)
 	{
-		BOOST_VERIFY(fwrite(p, n, 1, &strm) == 1);
+		BOOST_VERIFY(fwrite(p, static_cast<size_t>(n), 1, &strm) == 1);
 	}
 }
 
@@ -390,18 +390,18 @@ GLIBC_FMT_TEST(d6, "in %lld.", -123456LL);
 GLIBC_FMT_TEST(i1, "in %i.", 123);
 GLIBC_FMT_TEST(i2, "in %i.", -123);
 
-GLIBC_FMT_TEST(x1, "in %x.", 123);
-GLIBC_FMT_TEST(x2, "in %x %d.", 123, 256);
-GLIBC_FMT_TEST(x3, "in %d %x.", 123, 1024);
-GLIBC_FMT_TEST(x4, "in %X %x.", 123, 13);
-GLIBC_FMT_TEST(x5, "in %X %s.", 123, "miXED case after UPPER X");
-GLIBC_FMT_TEST(x6, "in %#x.", 123);
-GLIBC_FMT_TEST(x7, "in %#X.", 123);
-GLIBC_FMT_TEST(x8, "in %#X %x.", 123, 150);
+GLIBC_FMT_TEST(x1, "in %x.", 123U);
+GLIBC_FMT_TEST(x2, "in %x %d.", 123U, 256);
+GLIBC_FMT_TEST(x3, "in %d %x.", 123, 1024U);
+GLIBC_FMT_TEST(x4, "in %X %x.", 123U, 13U);
+GLIBC_FMT_TEST(x5, "in %X %s.", 123U, "miXED case after UPPER X");
+GLIBC_FMT_TEST(x6, "in %#x.", 123U);
+GLIBC_FMT_TEST(x7, "in %#X.", 123U);
+GLIBC_FMT_TEST(x8, "in %#X %x.", 123U, 150U);
 
-GLIBC_FMT_TEST(o1, "in %o.", 123);
-GLIBC_FMT_TEST(o2, "in %o %d.", 123, 256);
-GLIBC_FMT_TEST(o3, "in %d %o.", 123, 1024);
+GLIBC_FMT_TEST(o1, "in %o.", 123U);
+GLIBC_FMT_TEST(o2, "in %o %d.", 123U, 256);
+GLIBC_FMT_TEST(o3, "in %d %o.", 123, 1024U);
 
 GLIBC_FMT_TEST(a1, "in %a.", 123.456789);
 GLIBC_FMT_TEST(a2, "in %a.", -123.456789);
@@ -439,13 +439,13 @@ GLIBC_FMT_TEST(g6, "in %G.", -123.456789);
 GLIBC_FMT_TEST(g7, "in %g.", 123456789.123);
 GLIBC_FMT_TEST(g8, "in %g.", -123456789.123);
 
-GLIBC_FMT_TEST(fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n", 1.234, 42, 3.13, "str", reinterpret_cast<void *>(1000),
-		static_cast<int>('X'));
+GLIBC_FMT_TEST(
+		fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n", 1.234, 42, 3.13, "str", reinterpret_cast<void *>(1000), 'X');
 
 AdHocFormatter(chars_written_fmt, "%n %s %n %d %n");
 BOOST_AUTO_TEST_CASE(chars_written)
 {
-	int a = -1, b = -1, c = -1;
+	std::streamoff a = -1, b = -1, c = -1;
 	auto s = chars_written_fmt::get(&a, "some string", &b, 10, &c);
 	BOOST_CHECK_EQUAL(s, " some string  10 ");
 	BOOST_CHECK_EQUAL(a, 0);

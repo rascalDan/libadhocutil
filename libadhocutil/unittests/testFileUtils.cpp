@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(memmap)
 	auto i = f.sv<int>();
 	BOOST_REQUIRE_EQUAL(i[0], *reinterpret_cast<const int *>("#def"));
 	BOOST_REQUIRE_EQUAL(i[1], *reinterpret_cast<const int *>("ine "));
-	BOOST_REQUIRE_EQUAL(i.length(), f.getStat().st_size / sizeof(int));
+	BOOST_REQUIRE_EQUAL(i.length(), static_cast<size_t>(f.getStat().st_size) / sizeof(int));
 }
 
 BOOST_AUTO_TEST_CASE(openmode)
