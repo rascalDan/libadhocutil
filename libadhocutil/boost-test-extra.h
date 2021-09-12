@@ -7,4 +7,10 @@
 	} \
 	else
 
+#define BOOST_CHECK_EQUAL_IF(EQ, EXPR) \
+	if (auto VAR = (EXPR); !(VAR == EQ)) { \
+		BOOST_CHECK_EQUAL(VAR, EQ); \
+	} \
+	else
+
 #endif
