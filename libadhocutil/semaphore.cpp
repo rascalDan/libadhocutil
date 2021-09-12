@@ -2,7 +2,7 @@
 #include <chrono>
 
 namespace AdHoc {
-	Semaphore::Semaphore(unsigned int initial) : count(initial) { }
+	Semaphore::Semaphore(std::size_t initial) : count(initial) { }
 
 	void
 	Semaphore::notify()
@@ -36,7 +36,7 @@ namespace AdHoc {
 		return true;
 	}
 
-	unsigned int
+	std::size_t
 	Semaphore::freeCount() const
 	{
 		return count;

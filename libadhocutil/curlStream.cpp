@@ -23,8 +23,8 @@ namespace AdHoc::Net {
 				return 0;
 			}
 		}
-		size_t bytes = std::min<size_t>(buflen, targetSize);
-		memcpy(target, buf, bytes);
+		auto bytes = std::min(buflen, targetSize);
+		memcpy(target, buf, static_cast<size_t>(bytes));
 		buflen -= bytes;
 		buf += bytes;
 		return bytes;
@@ -42,11 +42,12 @@ namespace AdHoc::Net {
 	size_t
 	CurlStreamSource::recvWrapper(void * data, size_t sz, size_t nm, void * css)
 	{
-		return static_cast<CurlStreamSource *>(css)->recv(data, sz * nm);
+		return static_cast<size_t>(
+				static_cast<CurlStreamSource *>(css)->recv(data, static_cast<std::streamsize>(sz * nm)));
 	}
 
-	size_t
-	CurlStreamSource::recv(void * data, size_t datalen)
+	std::streamsize
+	CurlStreamSource::recv(void * data, std::streamsize datalen)
 	{
 		buf = static_cast<char *>(data);
 		buflen = datalen;

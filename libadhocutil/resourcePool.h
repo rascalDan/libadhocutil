@@ -42,7 +42,7 @@ namespace AdHoc {
 		explicit operator bool() const noexcept;
 
 		/// Get number of handles to this resource.
-		[[nodiscard]] unsigned int handleCount() const;
+		[[nodiscard]] std::size_t handleCount() const;
 
 	private:
 		DLL_PRIVATE void decRef() noexcept;
@@ -58,7 +58,7 @@ namespace AdHoc {
 		/// Create a new resource pool.
 		/// @param maxSize The upper limit of how many concurrent active resources there can be.
 		/// @param keep The number of resources to cache for reuse.
-		ResourcePool(unsigned int maxSize, unsigned int keep);
+		ResourcePool(std::size_t maxSize, std::size_t keep);
 		virtual ~ResourcePool();
 
 		/// Standard move/copy support
@@ -75,11 +75,11 @@ namespace AdHoc {
 		void idle();
 
 		/// Get number of active resources.
-		unsigned int inUseCount() const;
+		std::size_t inUseCount() const;
 		/// Get number of available cached resources.
-		unsigned int availableCount() const;
+		std::size_t availableCount() const;
 		/// Get number of free slots.
-		unsigned int freeCount() const;
+		std::size_t freeCount() const;
 
 	protected:
 		/// Create a new resource instance to add to the pool.
@@ -101,7 +101,7 @@ namespace AdHoc {
 
 		mutable std::shared_mutex lock;
 		Semaphore poolSize;
-		unsigned int keep;
+		std::size_t keep;
 		Available available;
 		InUse inUse;
 	};

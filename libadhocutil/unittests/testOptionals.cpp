@@ -27,8 +27,8 @@ BOOST_AUTO_TEST_CASE(general)
 	BOOST_REQUIRE_EQUAL(2.3, *a1);
 	auto a2 = x / 10;
 	BOOST_REQUIRE_EQUAL(10, a2);
-	auto a3 = ix / 11;
-	BOOST_REQUIRE_EQUAL(11, a3);
+	auto a3 = ix / 11.F;
+	BOOST_REQUIRE_EQUAL(11.F, a3);
 	auto a4 = iy / 11;
 	BOOST_REQUIRE_EQUAL(4, a4);
 

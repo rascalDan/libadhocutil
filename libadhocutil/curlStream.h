@@ -37,9 +37,9 @@ namespace AdHoc {
 			DLL_PRIVATE void callback() override;
 
 			DLL_PRIVATE static size_t recvWrapper(void * data, size_t sz, size_t nm, void * css);
-			DLL_PRIVATE size_t recv(void * data, size_t datalen);
+			DLL_PRIVATE std::streamsize recv(void * data, std::streamsize datalen);
 
-			size_t buflen;
+			std::streamsize buflen;
 			char * buf;
 			CURLcode res;
 		};

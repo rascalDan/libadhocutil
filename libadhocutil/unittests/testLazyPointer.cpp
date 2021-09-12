@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_CASE(rawPointerNonNull)
 int *
 rawFactory(const std::string & s)
 {
-	return new int(s.length());
+	return new int(static_cast<int>(s.length()));
 }
 
 BOOST_AUTO_TEST_CASE(rawPointerFactory)

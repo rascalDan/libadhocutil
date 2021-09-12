@@ -8,6 +8,7 @@
 
 %{
 #include "nvpParse.h"
+#pragma GCC diagnostic ignored "-Wconversion"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 #pragma GCC diagnostic ignored "-Wold-style-cast"

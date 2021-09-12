@@ -12,7 +12,7 @@ using namespace AdHoc;
 
 class NotFound : std::runtime_error {
 public:
-	explicit NotFound(int key) : std::runtime_error(boost::lexical_cast<std::string>("Key not found: %d", key)) { }
+	explicit NotFound(int key) : std::runtime_error("Key not found: %d" + std::to_string(key)) { }
 };
 
 const std::map<int, std::string> sample {{1, "one"}, {2, "two"}, {4, "four"}, {8, "eight"}, {16, "sixteen"}};

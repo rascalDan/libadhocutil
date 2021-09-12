@@ -155,7 +155,7 @@ namespace AdHoc {
 	Buffer::vappendf(const char * fmt, va_list args)
 	{
 		char * frag;
-		size_t len = vasprintf(&frag, fmt, args);
+		const auto len = vasprintf(&frag, fmt, args);
 		if (len > 0) {
 			content.push_back(std::make_shared<CStringFragment>(frag, Free, len));
 		}
@@ -299,7 +299,7 @@ std::ostream &
 std::operator<<(std::ostream & os, const AdHoc::Buffer & b)
 {
 	for (const auto & f : b.content) {
-		os.write(f->c_str(), f->length());
+		os.write(f->c_str(), static_cast<std::streamsize>(f->length()));
 	}
 	return os;
 }

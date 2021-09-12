@@ -23,12 +23,12 @@ namespace AdHoc {
 	}
 
 	template<typename R>
-	unsigned int
+	std::size_t
 	ResourceHandle<R>::handleCount() const
 	{
 		BOOST_ASSERT(resource);
 		// InUse has one, we don't count that
-		return resource.use_count() - 1;
+		return static_cast<std::size_t>(resource.use_count() - 1);
 	}
 
 	template<typename R>
@@ -108,7 +108,7 @@ namespace AdHoc {
 	// ResourcePool
 	//
 
-	template<typename R> ResourcePool<R>::ResourcePool(unsigned int max, unsigned int k) : poolSize(max), keep(k) { }
+	template<typename R> ResourcePool<R>::ResourcePool(std::size_t max, std::size_t k) : poolSize(max), keep(k) { }
 
 	template<typename R> ResourcePool<R>::~ResourcePool()
 	{
@@ -130,7 +130,7 @@ namespace AdHoc {
 	}
 
 	template<typename R>
-	unsigned int
+	std::size_t
 	ResourcePool<R>::inUseCount() const
 	{
 		SharedLock(lock);
@@ -138,7 +138,7 @@ namespace AdHoc {
 	}
 
 	template<typename R>
-	unsigned int
+	std::size_t
 	ResourcePool<R>::availableCount() const
 	{
 		SharedLock(lock);
@@ -146,7 +146,7 @@ namespace AdHoc {
 	}
 
 	template<typename R>
-	unsigned int
+	std::size_t
 	ResourcePool<R>::freeCount() const
 	{
 		SharedLock(lock);

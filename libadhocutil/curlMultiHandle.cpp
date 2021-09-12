@@ -59,7 +59,7 @@ namespace AdHoc::Net {
 			while (!curls.empty() && running.size() < 5) {
 				addRunner(curlm, running, curls);
 			}
-			int act = running.size();
+			int act = static_cast<int>(running.size());
 			while (act) {
 				while (curl_multi_perform(curlm, &act) == CURLM_CALL_MULTI_PERFORM) { }
 				// Has anything finished

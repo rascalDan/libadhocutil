@@ -1,5 +1,6 @@
 #include "lexer-regex.h"
 #include "c++11Helpers.h"
+#include <cassert>
 #include <cstddef>
 #include <memory>
 #include <optional>
@@ -38,7 +39,8 @@ namespace AdHoc::LexerMatchers {
 			if (info) {
 				g_match_info_free(info);
 			}
-			g_regex_match_full(regex, string, length, position, G_REGEX_MATCH_ANCHORED, &info, &err);
+			g_regex_match_full(regex, string, static_cast<gssize>(length), static_cast<gint>(position),
+					G_REGEX_MATCH_ANCHORED, &info, &err);
 			if (err) {
 				auto msg = std::string("Failed to create GRegex: ") + err->message;
 				g_error_free(err);
@@ -53,7 +55,8 @@ namespace AdHoc::LexerMatchers {
 		{
 			gint start, end;
 			g_match_info_fetch_pos(info, 0, &start, &end);
-			return end - start;
+			assert(start <= end);
+			return static_cast<size_t>(end - start);
 		}
 
 		std::optional<Glib::ustring>

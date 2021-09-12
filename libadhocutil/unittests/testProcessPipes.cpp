@@ -19,12 +19,14 @@ BOOST_AUTO_TEST_CASE(readfind)
 	BOOST_REQUIRE_EQUAL(pp.fdIn(), -1);
 	BOOST_REQUIRE_NE(pp.fdOut(), -1);
 	BOOST_REQUIRE_NE(pp.fdError(), -1);
-	std::string buf(BUFSIZ, '\0');
-	ssize_t bytes = read(pp.fdOut(), buf.data(), BUFSIZ);
+	std::array<char, BUFSIZ> buf {};
+	const auto bytes = read(pp.fdOut(), buf.data(), BUFSIZ);
 	BOOST_REQUIRE_MESSAGE(bytes > 0, "bytes = " << bytes);
-	buf[bytes] = '\0';
-	const char * lnf = strstr(buf.data(), "testProcessPipes.cpp");
-	BOOST_REQUIRE_MESSAGE(lnf, buf);
+	std::string_view str {buf.data(), buf.data() + bytes};
+	BOOST_TEST_CONTEXT(str) {
+		const auto lnf = str.find("testProcessPipes.cpp");
+		BOOST_REQUIRE_NE(lnf, std::string_view::npos);
+	}
 	int status;
 	waitpid(pp.pid(), &status, 0);
 }
