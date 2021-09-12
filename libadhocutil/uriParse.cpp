@@ -3,178 +3,140 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cctype>
+#include <charconv>
 #include <cstdint>
 #include <cstring>
 #include <utility>
 
 namespace AdHoc {
-	static inline int
-	_is_scheme_char(int c)
-	{
-		return (!isalpha(c) && '+' != c && '-' != c && '.' != c) ? 0 : 1;
-	}
-
 	Uri::Uri(const std::string & uri)
 	{
-		auto * puri = this;
-		const char * curstr;
-		int userpass_flag;
-		int bracket_flag;
+		auto is_scheme_char = [](int c) {
+			return (!std::isalpha(c) && '+' != c && '-' != c && '.' != c) ? 0 : 1;
+		};
+		auto endor = [](std::string_view haystack, auto needle) {
+			if (const auto n = haystack.find_first_of(needle); n != std::string_view::npos) {
+				return n;
+			}
+			return haystack.length();
+		};
+		auto parsePort = [&uri, this](const std::string_view in) {
+			if (in.empty()) {
+				throw InvalidUri("Invalid format; no port after :", uri);
+			}
+			port.emplace();
+			if (const auto rc = std::from_chars(in.begin(), in.end(), *port);
+					rc.ptr != in.end() || rc.ec != std::errc {}) {
+				throw InvalidUri("Invalid port", uri);
+			}
+		};
 
-		curstr = uri.c_str();
-
-		const char * tmpstr = ::strchr(curstr, ':');
-		if (!tmpstr) {
-			throw InvalidUri("Schema marker not found", uri);
-		}
-		auto len = tmpstr - curstr;
-		for (decltype(len) i = 0; i < len; i++) {
-			if (!_is_scheme_char(curstr[i])) {
-				throw InvalidUri("Invalid format", uri);
-			}
-		}
-		puri->scheme = std::string(curstr, len);
-		boost::algorithm::to_lower(puri->scheme);
-		tmpstr++;
-		curstr = tmpstr;
-
-		for (int i = 0; i < 2; i++) {
-			if ('/' != *curstr) {
-				throw InvalidUri("Invalid format", uri);
-			}
-			curstr++;
-		}
-
-		userpass_flag = 0;
-		tmpstr = curstr;
-		while ('\0' != *tmpstr) {
-			if ('@' == *tmpstr) {
-				userpass_flag = 1;
-				break;
-			}
-			else if ('/' == *tmpstr) {
-				userpass_flag = 0;
-				break;
-			}
-			tmpstr++;
-		}
-
-		tmpstr = curstr;
-		if (userpass_flag) {
-			while ('\0' != *tmpstr && ':' != *tmpstr && '@' != *tmpstr) {
-				tmpstr++;
-			}
-			len = tmpstr - curstr;
-			puri->username = std::string(curstr, len);
-			curstr = tmpstr;
-			if (':' == *curstr) {
-				curstr++;
-				tmpstr = curstr;
-				while ('\0' != *tmpstr && '@' != *tmpstr) {
-					tmpstr++;
-				}
-				len = tmpstr - curstr;
-				puri->password = std::string(curstr, len);
-				curstr = tmpstr;
-			}
-			if ('@' != *curstr) {
-				throw InvalidUri("Invalid format", uri);
-			}
-			curstr++;
-		}
-
-		if ('[' == *curstr) {
-			bracket_flag = 1;
+		std::string_view curstr = uri;
+		if (auto colon = curstr.find(':'); colon == std::string_view::npos) {
+			throw InvalidUri("Scheme marker not found", uri);
 		}
 		else {
-			bracket_flag = 0;
-		}
-
-		tmpstr = curstr;
-		while ('\0' != *tmpstr) {
-			if (bracket_flag && ']' == *tmpstr) {
-				tmpstr++;
-				break;
+			if (!std::all_of(curstr.begin(), curstr.begin() + colon, is_scheme_char)) {
+				throw InvalidUri("Invalid format; no scheme end", uri);
 			}
-			else if (!bracket_flag && (':' == *tmpstr || '/' == *tmpstr)) {
-				break;
+			scheme = curstr.substr(0, colon);
+			boost::algorithm::to_lower(scheme);
+			curstr.remove_prefix(colon + 1);
+		}
+
+		if (!curstr.starts_with("//")) {
+			throw InvalidUri("Invalid format; // not where expected", uri);
+		}
+		curstr.remove_prefix(2);
+
+		if (const auto n = curstr.find_first_of("@/"); n != std::string_view::npos && curstr[n] == '@') {
+			if (const auto colon = curstr.find_first_of("@:"); curstr[colon] == ':') {
+				username = curstr.substr(0, colon);
+				password = curstr.substr(colon + 1, n - colon - 1);
 			}
-			tmpstr++;
-		}
-		if (tmpstr == curstr) {
-			throw InvalidUri("Host cannot be blank", uri);
-		}
-		len = tmpstr - curstr;
-		puri->host = std::string(curstr, len);
-		boost::algorithm::to_lower(puri->host);
-		curstr = tmpstr;
-
-		if (':' == *curstr) {
-			curstr++;
-			tmpstr = curstr;
-			while ('\0' != *tmpstr && '/' != *tmpstr) {
-				tmpstr++;
+			else {
+				username = curstr.substr(0, n);
 			}
-			len = tmpstr - curstr;
-			puri->port = boost::lexical_cast<uint16_t>(std::string(curstr, len));
-			curstr = tmpstr;
+			curstr.remove_prefix(n + 1);
 		}
 
-		if ('\0' == *curstr) {
-			return;
-		}
-
-		if ('/' != *curstr) {
+		if (curstr.empty()) {
 			throw InvalidUri("Invalid format", uri);
 		}
-		curstr++;
-
-		tmpstr = curstr;
-		while ('\0' != *tmpstr && '#' != *tmpstr && '?' != *tmpstr) {
-			tmpstr++;
+		if (curstr.starts_with('[')) {
+			if (const auto closeb = curstr.find(']'); closeb == std::string_view::npos) {
+				throw InvalidUri("IPv6 address not terminated", uri);
+			}
+			else {
+				host = curstr.substr(0, closeb + 1);
+				curstr.remove_prefix(closeb + 1);
+			}
 		}
-		len = tmpstr - curstr;
-		puri->path = std::string(curstr, len);
-		curstr = tmpstr;
+		else {
+			if (const auto hostend = curstr.find_first_of(":/"); hostend == std::string_view::npos) {
+				host = curstr;
+				return;
+			}
+			else {
+				if (hostend == 0) {
+					throw InvalidUri("Host cannot be blank", uri);
+				}
+				host = curstr.substr(0, hostend);
+				boost::algorithm::to_lower(host);
+				curstr.remove_prefix(hostend);
+			}
+		}
+		boost::algorithm::to_lower(host);
 
-		if ('?' == *curstr) {
-			curstr++;
-			tmpstr = curstr;
-			while ('\0' != *tmpstr && '#' != *tmpstr) {
-				while ('\0' != *tmpstr && '#' != *tmpstr && '=' != *tmpstr && '&' != *tmpstr) {
-					tmpstr++;
+		if (curstr.empty()) {
+			return;
+		}
+		if (curstr.starts_with(':')) {
+			curstr.remove_prefix(1);
+			if (curstr.empty()) {
+				throw InvalidUri("Invalid format; no port after :", uri);
+			}
+			if (const auto portend = curstr.find('/'); portend == std::string_view::npos) {
+				parsePort(curstr);
+				return;
+			}
+			else {
+				parsePort(curstr.substr(0, portend));
+				curstr.remove_prefix(portend);
+			}
+		}
+		curstr.remove_prefix(1);
+
+		if (const auto pathend = curstr.find_first_of("#?"); pathend == std::string_view::npos) {
+			path = curstr;
+			return;
+		}
+		else {
+			path = curstr.substr(0, pathend);
+			curstr.remove_prefix(pathend);
+		}
+
+		if (curstr.starts_with('?')) {
+			curstr.remove_prefix(1);
+			auto params = curstr.substr(0, endor(curstr, '#'));
+			while (!params.empty()) {
+				const auto pair = params.substr(0, endor(params, '&'));
+				if (const auto eq = pair.find('='); eq != std::string_view::npos) {
+					query.emplace(pair.substr(0, eq), pair.substr(eq + 1));
 				}
-				len = tmpstr - curstr;
-				auto q = puri->query.insert({std::string(curstr, len), std::string()});
-				curstr = tmpstr;
-				if ('=' == *curstr) {
-					curstr++;
-					while ('\0' != *tmpstr && '#' != *tmpstr && '&' != *tmpstr) {
-						tmpstr++;
-					}
-					len = tmpstr - curstr;
-					q->second = std::string(curstr, len);
-					curstr = tmpstr;
+				else {
+					query.emplace(pair, std::string {});
 				}
-				if ('&' == *tmpstr) {
-					tmpstr++;
-					curstr = tmpstr;
-				}
-				else if ('\0' != *tmpstr && '#' != *tmpstr) {
-					throw InvalidUri("Parse error in query params", uri);
+				params.remove_prefix(pair.length());
+				if (!params.empty()) {
+					params.remove_prefix(1);
 				}
 			}
-			curstr = tmpstr;
 		}
 
-		if ('#' == *curstr) {
-			curstr++;
-			tmpstr = curstr;
-			while ('\0' != *tmpstr) {
-				tmpstr++;
-			}
-			len = tmpstr - curstr;
-			puri->fragment = std::string(curstr, len);
+		if (curstr.starts_with('#')) {
+			curstr.remove_prefix(1);
+			fragment = curstr;
 		}
 	}
 

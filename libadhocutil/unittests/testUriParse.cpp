@@ -23,6 +23,19 @@ BOOST_AUTO_TEST_CASE(simple)
 	BOOST_CHECK(!u.fragment);
 }
 
+BOOST_AUTO_TEST_CASE(simple_ipv6)
+{
+	AdHoc::Uri u("http://[fe80::20e2:d5ff:fed7:c631]");
+	BOOST_CHECK_EQUAL("http", u.scheme);
+	BOOST_CHECK_EQUAL("[fe80::20e2:d5ff:fed7:c631]", u.host);
+	BOOST_CHECK(!u.port);
+	BOOST_CHECK(!u.username);
+	BOOST_CHECK(!u.password);
+	BOOST_CHECK(!u.path);
+	BOOST_CHECK(u.query.empty());
+	BOOST_CHECK(!u.fragment);
+}
+
 BOOST_AUTO_TEST_CASE(lowerScheme)
 {
 	AdHoc::Uri u("HtTP://localhost");
@@ -132,7 +145,7 @@ BOOST_AUTO_TEST_CASE(query0)
 	AdHoc::Uri u("http://localhost/?");
 	BOOST_CHECK_EQUAL("http", u.scheme);
 	BOOST_CHECK_EQUAL("localhost", u.host);
-	BOOST_CHECK_EQUAL(0, u.query.size());
+	BOOST_CHECK(u.query.empty());
 }
 
 BOOST_AUTO_TEST_CASE(query1)
@@ -140,9 +153,10 @@ BOOST_AUTO_TEST_CASE(query1)
 	AdHoc::Uri u("http://localhost/?var=val");
 	BOOST_CHECK_EQUAL("http", u.scheme);
 	BOOST_CHECK_EQUAL("localhost", u.host);
-	BOOST_CHECK_EQUAL(1, u.query.size());
-	BOOST_CHECK_EQUAL("var", u.query.begin()->first);
-	BOOST_CHECK_EQUAL("val", u.query.begin()->second);
+	BOOST_CHECK_EQUAL_IF(1, u.query.size()) {
+		BOOST_CHECK_EQUAL("var", u.query.begin()->first);
+		BOOST_CHECK_EQUAL("val", u.query.begin()->second);
+	}
 }
 
 BOOST_AUTO_TEST_CASE(query2)
@@ -150,11 +164,12 @@ BOOST_AUTO_TEST_CASE(query2)
 	AdHoc::Uri u("http://localhost/?var=val&name=value");
 	BOOST_CHECK_EQUAL("http", u.scheme);
 	BOOST_CHECK_EQUAL("localhost", u.host);
-	BOOST_CHECK_EQUAL(2, u.query.size());
-	BOOST_CHECK_EQUAL("name", u.query.begin()->first);
-	BOOST_CHECK_EQUAL("value", u.query.begin()->second);
-	BOOST_CHECK_EQUAL("var", u.query.rbegin()->first);
-	BOOST_CHECK_EQUAL("val", u.query.rbegin()->second);
+	BOOST_CHECK_EQUAL_IF(2, u.query.size()) {
+		BOOST_CHECK_EQUAL("name", u.query.begin()->first);
+		BOOST_CHECK_EQUAL("value", u.query.begin()->second);
+		BOOST_CHECK_EQUAL("var", u.query.rbegin()->first);
+		BOOST_CHECK_EQUAL("val", u.query.rbegin()->second);
+	}
 }
 
 BOOST_AUTO_TEST_CASE(queryMany)
@@ -162,11 +177,12 @@ BOOST_AUTO_TEST_CASE(queryMany)
 	AdHoc::Uri u("http://localhost/?name=val&name=value");
 	BOOST_CHECK_EQUAL("http", u.scheme);
 	BOOST_CHECK_EQUAL("localhost", u.host);
-	BOOST_CHECK_EQUAL(2, u.query.size());
-	BOOST_CHECK_EQUAL("name", u.query.begin()->first);
-	BOOST_CHECK_EQUAL("val", u.query.begin()->second);
-	BOOST_CHECK_EQUAL("name", u.query.rbegin()->first);
-	BOOST_CHECK_EQUAL("value", u.query.rbegin()->second);
+	BOOST_CHECK_EQUAL_IF(2, u.query.size()) {
+		BOOST_CHECK_EQUAL("name", u.query.begin()->first);
+		BOOST_CHECK_EQUAL("val", u.query.begin()->second);
+		BOOST_CHECK_EQUAL("name", u.query.rbegin()->first);
+		BOOST_CHECK_EQUAL("value", u.query.rbegin()->second);
+	}
 }
 
 BOOST_AUTO_TEST_CASE(queryNoValue1)
@@ -174,9 +190,10 @@ BOOST_AUTO_TEST_CASE(queryNoValue1)
 	AdHoc::Uri u("http://localhost/?n1");
 	BOOST_CHECK_EQUAL("http", u.scheme);
 	BOOST_CHECK_EQUAL("localhost", u.host);
-	BOOST_CHECK_EQUAL(1, u.query.size());
-	BOOST_CHECK_EQUAL("n1", u.query.begin()->first);
-	BOOST_CHECK_EQUAL("", u.query.begin()->second);
+	BOOST_CHECK_EQUAL_IF(1, u.query.size()) {
+		BOOST_CHECK_EQUAL("n1", u.query.begin()->first);
+		BOOST_CHECK_EQUAL("", u.query.begin()->second);
+	}
 }
 
 BOOST_AUTO_TEST_CASE(queryNoValue1eq)
@@ -184,9 +201,10 @@ BOOST_AUTO_TEST_CASE(queryNoValue1eq)
 	AdHoc::Uri u("http://localhost/?n1=");
 	BOOST_CHECK_EQUAL("http", u.scheme);
 	BOOST_CHECK_EQUAL("localhost", u.host);
-	BOOST_CHECK_EQUAL(1, u.query.size());
-	BOOST_CHECK_EQUAL("n1", u.query.begin()->first);
-	BOOST_CHECK_EQUAL("", u.query.begin()->second);
+	BOOST_CHECK_EQUAL_IF(1, u.query.size()) {
+		BOOST_CHECK_EQUAL("n1", u.query.begin()->first);
+		BOOST_CHECK_EQUAL("", u.query.begin()->second);
+	}
 }
 
 BOOST_AUTO_TEST_CASE(queryNoValue2)
@@ -194,11 +212,12 @@ BOOST_AUTO_TEST_CASE(queryNoValue2)
 	AdHoc::Uri u("http://localhost/?n1=&n2");
 	BOOST_CHECK_EQUAL("http", u.scheme);
 	BOOST_CHECK_EQUAL("localhost", u.host);
-	BOOST_CHECK_EQUAL(2, u.query.size());
-	BOOST_CHECK_EQUAL("n1", u.query.begin()->first);
-	BOOST_CHECK_EQUAL("", u.query.begin()->second);
-	BOOST_CHECK_EQUAL("n2", u.query.rbegin()->first);
-	BOOST_CHECK_EQUAL("", u.query.rbegin()->second);
+	BOOST_CHECK_EQUAL_IF(2, u.query.size()) {
+		BOOST_CHECK_EQUAL("n1", u.query.begin()->first);
+		BOOST_CHECK_EQUAL("", u.query.begin()->second);
+		BOOST_CHECK_EQUAL("n2", u.query.rbegin()->first);
+		BOOST_CHECK_EQUAL("", u.query.rbegin()->second);
+	}
 }
 
 BOOST_AUTO_TEST_CASE(fragment)
@@ -239,8 +258,18 @@ BOOST_AUTO_TEST_CASE(bad)
 	BOOST_CHECK_THROW(AdHoc::Uri("http:/"), AdHoc::InvalidUri);
 	BOOST_CHECK_THROW(AdHoc::Uri("tcp://"), AdHoc::InvalidUri);
 	BOOST_CHECK_THROW(AdHoc::Uri("ftp/local"), AdHoc::InvalidUri);
-	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:"), std::bad_cast);
-	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:foo"), std::bad_cast);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:foo"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://:"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp:///"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://[abcd"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:foo/"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:80a/"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:80a"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:-80"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:-1"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:65536"), AdHoc::InvalidUri);
+	BOOST_CHECK_THROW(AdHoc::Uri("tcp://local:/"), AdHoc::InvalidUri);
 	BOOST_CHECK_THROW(AdHoc::Uri("tcp://user:pass@"), AdHoc::InvalidUri);
 
 	AdHoc::InvalidUri ui("message", "http://localhost");
