@@ -31,6 +31,7 @@ project
 			<toolset>gcc,<variant>debug:<cflags>-Wduplicated-cond
 			<toolset>gcc,<variant>debug:<cflags>-Wduplicated-branches
 			<toolset>gcc,<variant>debug:<cflags>-Wlogical-op
+			<toolset>gcc,<variant>debug:<cflags>-Wuseless-cast
 			<variant>coverage:<coverage>on
 			<toolset>tidy:<exclude>bin/sys.h
 			<toolset>tidy:<exclude>bin/net.h
@@ -51,6 +52,8 @@ project
 			<toolset>tidy:<checkxx>performance-*
 			<toolset>tidy:<define>ICE_IGNORE_VERSION
 			<toolset>tidy:<mapping>iwyu.json
+			<toolset>tidy:<librarydef>boost
+			<toolset>tidy:<librarydef>std
 	;
 
 build-project libadhocutil ;

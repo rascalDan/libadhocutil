@@ -7,6 +7,9 @@
 #include <functional>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#ifndef __clang__
+#	pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
 #include <glib.h>
 #pragma GCC diagnostic pop
 #include <memory>

@@ -66,8 +66,9 @@ BOOST_AUTO_TEST_CASE(appendthings)
 	BOOST_REQUIRE_EQUAL(22, b.length());
 	BOOST_REQUIRE_EQUAL("string a b num 1 num 2", b.str());
 	const char * cstring = b;
-	BOOST_REQUIRE_EQUAL(22, strlen(cstring));
-	BOOST_REQUIRE_EQUAL("string a b num 1 num 2", cstring);
+	std::string_view sv {cstring};
+	BOOST_REQUIRE_EQUAL(22, sv.length());
+	BOOST_REQUIRE_EQUAL("string a b num 1 num 2", sv);
 }
 
 BOOST_AUTO_TEST_CASE(writeto)

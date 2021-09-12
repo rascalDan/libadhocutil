@@ -17,6 +17,7 @@ BOOST_AUTO_TEST_CASE(initial)
 	AdHoc::Semaphore s(2);
 	s.wait();
 	s.wait();
+	// cppcheck-suppress assertWithSideEffect
 	BOOST_REQUIRE_EQUAL(false, s.wait(0));
 }
 
@@ -43,7 +44,9 @@ BOOST_AUTO_TEST_CASE(addRemoveTimeOut)
 	AdHoc::Semaphore s;
 	s.notify();
 	s.wait();
+	// cppcheck-suppress assertWithSideEffect
 	BOOST_REQUIRE_EQUAL(false, s.wait(100));
+	// cppcheck-suppress assertWithSideEffect
 	BOOST_REQUIRE_EQUAL(false, s.wait(0));
 }
 
@@ -56,6 +59,7 @@ BOOST_AUTO_TEST_CASE(addRemoveWait)
 		usleep(100000);
 		s.notify();
 	});
+	// cppcheck-suppress assertWithSideEffect
 	BOOST_REQUIRE_EQUAL(false, s.wait(1));
 	s.wait();
 	th.join();

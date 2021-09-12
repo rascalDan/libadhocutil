@@ -273,5 +273,5 @@ BOOST_AUTO_TEST_CASE(bad)
 	BOOST_CHECK_THROW(AdHoc::Uri("tcp://user:pass@"), AdHoc::InvalidUri);
 
 	AdHoc::InvalidUri ui("message", "http://localhost");
-	BOOST_CHECK_EQUAL("InvalidUri (message) parsing [http://localhost]", ui.what());
+	BOOST_CHECK_EQUAL("InvalidUri (message) parsing [http://localhost]", std::string_view {ui.what()});
 }

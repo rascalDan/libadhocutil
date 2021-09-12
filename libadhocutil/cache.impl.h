@@ -19,6 +19,7 @@ namespace AdHoc {
 	}
 
 	template<typename T, typename K>
+	// cppcheck-suppress passedByValue
 	ObjectCacheable<T, K>::ObjectCacheable(typename Cacheable<T, K>::Value t, const K & k, time_t vu) :
 		Cacheable<T, K>(k, vu), value(std::move(t))
 	{

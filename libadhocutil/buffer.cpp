@@ -155,7 +155,10 @@ namespace AdHoc {
 	Buffer::vappendf(const char * fmt, va_list args)
 	{
 		char * frag;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 		const auto len = vasprintf(&frag, fmt, args);
+#pragma GCC diagnostic pop
 		if (len > 0) {
 			content.push_back(std::make_shared<CStringFragment>(frag, Free, len));
 		}
@@ -214,7 +217,7 @@ namespace AdHoc {
 			return res;
 		}
 		else if (content.size() == 1) {
-			return std::string(content.front()->str());
+			return content.front()->str();
 		}
 		return std::string();
 	}

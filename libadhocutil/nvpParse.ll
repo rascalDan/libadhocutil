@@ -14,6 +14,8 @@
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #if __clang__
 #pragma GCC diagnostic ignored "-Wnull-conversion"
+#else
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
 %}
 

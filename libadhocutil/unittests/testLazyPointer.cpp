@@ -17,7 +17,9 @@ using TestLazyPointer = LazyPointer<Test>;
 using RawLazyPointer = LazyPointer<int, int *>;
 
 /// LCOV_EXCL_START (diagnostics)
+// cppcheck-suppress unknownMacro
 BOOST_TEST_DONT_PRINT_LOG_VALUE(TestLazyPointer)
+// cppcheck-suppress unknownMacro
 BOOST_TEST_DONT_PRINT_LOG_VALUE(RawLazyPointer)
 /// LCOV_EXCL_STOP
 

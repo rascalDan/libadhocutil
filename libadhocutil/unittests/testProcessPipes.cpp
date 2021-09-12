@@ -38,6 +38,7 @@ BOOST_AUTO_TEST_CASE(readwrite)
 	BOOST_REQUIRE_NE(pp.fdOut(), -1);
 	BOOST_REQUIRE_EQUAL(pp.fdError(), -1);
 	BOOST_REQUIRE_EQUAL(11, write(pp.fdIn(), "some string", 11));
+	// cppcheck-suppress assertWithSideEffect
 	BOOST_REQUIRE_EQUAL(0, pp.closeIn());
 	std::string out(32, ' ');
 	BOOST_REQUIRE_EQUAL(32, read(pp.fdOut(), out.data(), 32));
