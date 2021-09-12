@@ -29,7 +29,7 @@ namespace AdHoc {
 	BASICCONV(BASE, OP, CONV); \
 	BASICCONV(short BASE, OP, 'h', CONV); \
 	BASICCONV(long BASE, OP, 'l', CONV); \
-	BASICCONV(long long BASE, OP, 'l', 'l', CONV);
+	BASICCONV(long long BASE, OP, 'l', 'l', CONV)
 	INTCONV(int, s << std::dec << p, 'i');
 	INTCONV(int, s << std::dec << p, 'd');
 	INTCONV(unsigned int, s << std::oct << p, 'o');
@@ -52,7 +52,7 @@ namespace AdHoc {
 	// Floating point (a, A, e, E, f, F, g, G)
 #define FPCONV(BASE, OP, CONV) \
 	BASICCONV(BASE, OP, CONV); \
-	BASICCONV(long BASE, OP, 'L', CONV);
+	BASICCONV(long BASE, OP, 'L', CONV)
 	FPCONV(double, s << std::nouppercase << std::hexfloat << p, 'a');
 	FPCONV(double, s << std::uppercase << std::hexfloat << p, 'A');
 	FPCONV(double, s << std::nouppercase << std::scientific << p, 'e');
@@ -144,7 +144,7 @@ namespace AdHoc {
 			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 1), stream, void, '%', nn, sn...>::write(s, pn...); \
 		} \
 	};
-	BOOST_PP_REPEAT(6, FMTWIDTH, void);
+	BOOST_PP_REPEAT(6, FMTWIDTH, void)
 #define FMTPRECISION(unused, d, data) \
 	template<CtfString S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, \
 			auto... sn> \
@@ -160,7 +160,7 @@ namespace AdHoc {
 			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 2), stream, void, '%', nn, sn...>::write(s, pn...); \
 		} \
 	};
-	BOOST_PP_REPEAT(6, FMTPRECISION, void);
+	BOOST_PP_REPEAT(6, FMTPRECISION, void)
 #undef AUTON
 #undef NS
 #undef ISDIGIT
@@ -202,7 +202,7 @@ namespace AdHoc {
 			OP; \
 			StreamWriter<S, L, pos + 1, stream, void, '%', sn...>::write(s, pn...); \
 		} \
-	};
+	}
 	FLAGCONV(s << std::showbase, '#');
 	FLAGCONV(s << std::setfill('0'), '0');
 	FLAGCONV(s << std::left, '-');

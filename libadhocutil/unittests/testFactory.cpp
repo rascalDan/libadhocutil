@@ -44,14 +44,14 @@ public:
 
 using BaseThingFactory = AdHoc::Factory<BaseThing, int, std::string *>;
 
-NAMEDFACTORY("a", ImplOfThing, BaseThingFactory);
-FACTORY(OtherImplOfThing, BaseThingFactory);
+NAMEDFACTORY("a", ImplOfThing, BaseThingFactory)
+FACTORY(OtherImplOfThing, BaseThingFactory)
 
-INSTANTIATEFACTORY(BaseThing, int, std::string *);
+INSTANTIATEFACTORY(BaseThing, int, std::string *)
 // Multiple factories in one compilation unit
-INSTANTIATEFACTORY(BaseThing, std::string, std::string);
+INSTANTIATEFACTORY(BaseThing, std::string, std::string)
 // Factories of things with commas
-INSTANTIATEFACTORY(BaseThing, std::map<std::string, std::string>);
+INSTANTIATEFACTORY(BaseThing, std::map<std::string, std::string>)
 
 BOOST_AUTO_TEST_CASE(ready)
 {

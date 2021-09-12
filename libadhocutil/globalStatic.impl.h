@@ -33,6 +33,6 @@ namespace AdHoc {
 		static Ptr _instance;
 		return _instance;
 	}
-};
+}
 
 #endif

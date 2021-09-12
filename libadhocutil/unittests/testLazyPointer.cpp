@@ -17,8 +17,8 @@ using TestLazyPointer = LazyPointer<Test>;
 using RawLazyPointer = LazyPointer<int, int *>;
 
 /// LCOV_EXCL_START (diagnostics)
-BOOST_TEST_DONT_PRINT_LOG_VALUE(TestLazyPointer);
-BOOST_TEST_DONT_PRINT_LOG_VALUE(RawLazyPointer);
+BOOST_TEST_DONT_PRINT_LOG_VALUE(TestLazyPointer)
+BOOST_TEST_DONT_PRINT_LOG_VALUE(RawLazyPointer)
 /// LCOV_EXCL_STOP
 
 static TestLazyPointer::pointer_type

@@ -106,15 +106,15 @@ namespace AdHoc {
 		}
 	};
 
-#define StreamWriterT(C...) \
+#define StreamWriterT(...) \
 	template<CtfString S, auto L, auto pos, typename stream, auto... sn> \
-	struct StreamWriter<S, L, pos, stream, void, '%', C, sn...> : \
-		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
+	struct StreamWriter<S, L, pos, stream, void, '%', __VA_ARGS__, sn...> : \
+		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(__VA_ARGS__) + pos, stream>
 
-#define StreamWriterTP(P, C...) \
+#define StreamWriterTP(P, ...) \
 	template<CtfString S, auto L, auto pos, typename stream, auto P, auto... sn> \
-	struct StreamWriter<S, L, pos, stream, void, '%', C, sn...> : \
-		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(C) + pos, stream>
+	struct StreamWriter<S, L, pos, stream, void, '%', __VA_ARGS__, sn...> : \
+		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(__VA_ARGS__) + pos, stream>
 
 	// Default stream writer formatter
 	StreamWriterT('?') {
@@ -317,6 +317,8 @@ namespace AdHoc {
 			return AdHoc::FormatterDetail<Str, Str.size()>();
 		}
 #else
+#	pragma GCC diagnostic push
+#	pragma GCC diagnostic ignored "-Wpedantic"
 #	ifdef __clang__
 #		pragma clang diagnostic push
 #		pragma clang diagnostic ignored "-Wgnu-string-literal-operator-template"
@@ -335,6 +337,7 @@ namespace AdHoc {
 #ifdef __clang__
 #	pragma clang diagnostic pop
 #endif
+#pragma GCC diagnostic pop
 	}
 }
 

@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-BOOST_FIXTURE_TEST_SUITE(l, AdHoc::case_less);
+BOOST_FIXTURE_TEST_SUITE(l, AdHoc::case_less)
 
 BOOST_AUTO_TEST_CASE(case_less_test)
 {

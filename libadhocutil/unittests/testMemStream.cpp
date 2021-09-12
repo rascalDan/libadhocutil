@@ -9,7 +9,7 @@
 
 using namespace AdHoc;
 
-BOOST_FIXTURE_TEST_SUITE(s, MemStream);
+BOOST_FIXTURE_TEST_SUITE(s, MemStream)
 
 BOOST_AUTO_TEST_CASE(empty)
 {
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(simple)
 	BOOST_CHECK_EQUAL(len, this->length());
 }
 
-BOOST_AUTO_TEST_SUITE_END();
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(move_construct)
 {

@@ -132,7 +132,7 @@ static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
 static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
 #endif
 
-BOOST_FIXTURE_TEST_SUITE(TestStreamWrite, std::stringstream);
+BOOST_FIXTURE_TEST_SUITE(TestStreamWrite, std::stringstream)
 
 BOOST_AUTO_TEST_CASE(empty)
 {
@@ -268,7 +268,7 @@ BOOST_AUTO_TEST_CASE(longFormatString)
 	BOOST_CHECK_EQUAL(this->str().length(), 246);
 }
 
-BOOST_AUTO_TEST_SUITE_END();
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(customMultiArgRightAlign)
 {
@@ -361,86 +361,86 @@ static_assert(419 == decdigits<'0', '4', '1', '9'>());
 		} \
 	}
 
-GLIBC_FMT_TEST(s1, "in %s.", "string");
-GLIBC_FMT_TEST(s2, "in %s %s.", "string", "other");
-GLIBC_FMT_TEST(s3, "in %.*s.", 3, "other");
-GLIBC_FMT_TEST(s4, "in %.*s.", 5, "other");
-GLIBC_FMT_TEST(s5, "in %.*s.", 7, "other");
-GLIBC_FMT_TEST(s35, "in %3s.", "other");
-GLIBC_FMT_TEST(s55, "in %5s.", "other");
-GLIBC_FMT_TEST(s115, "in %11s.", "other");
+GLIBC_FMT_TEST(s1, "in %s.", "string")
+GLIBC_FMT_TEST(s2, "in %s %s.", "string", "other")
+GLIBC_FMT_TEST(s3, "in %.*s.", 3, "other")
+GLIBC_FMT_TEST(s4, "in %.*s.", 5, "other")
+GLIBC_FMT_TEST(s5, "in %.*s.", 7, "other")
+GLIBC_FMT_TEST(s35, "in %3s.", "other")
+GLIBC_FMT_TEST(s55, "in %5s.", "other")
+GLIBC_FMT_TEST(s115, "in %11s.", "other")
 // std::setw does not truncate strings
-// GLIBC_FMT_TEST(sd35, "in %.3s.", "other");
-GLIBC_FMT_TEST(sd55, "in %.5s.", "other");
-GLIBC_FMT_TEST(sd115, "in %.11s.", "other");
+// GLIBC_FMT_TEST(sd35, "in %.3s.", "other")
+GLIBC_FMT_TEST(sd55, "in %.5s.", "other")
+GLIBC_FMT_TEST(sd115, "in %.11s.", "other")
 
-GLIBC_FMT_TEST(c1, "in %c.", 'b');
-GLIBC_FMT_TEST(c2, "in %c.", 'B');
+GLIBC_FMT_TEST(c1, "in %c.", 'b')
+GLIBC_FMT_TEST(c2, "in %c.", 'B')
 
-GLIBC_FMT_TEST(d1, "in %d.", 123);
-GLIBC_FMT_TEST(d01, "in %0d.", 123);
-GLIBC_FMT_TEST(d051, "in %05d.", 123);
-GLIBC_FMT_TEST(d0511, "in % 50d.", 123);
-GLIBC_FMT_TEST(d05121, "in %0510d.", 123);
-GLIBC_FMT_TEST(d2, "in %d.", 123456);
-GLIBC_FMT_TEST(d3, "in %hd.", static_cast<int16_t>(-12345));
-GLIBC_FMT_TEST(d4, "in %hhd.", static_cast<int8_t>(-123));
-GLIBC_FMT_TEST(d5, "in %ld.", -123456L);
-GLIBC_FMT_TEST(d6, "in %lld.", -123456LL);
-GLIBC_FMT_TEST(i1, "in %i.", 123);
-GLIBC_FMT_TEST(i2, "in %i.", -123);
+GLIBC_FMT_TEST(d1, "in %d.", 123)
+GLIBC_FMT_TEST(d01, "in %0d.", 123)
+GLIBC_FMT_TEST(d051, "in %05d.", 123)
+GLIBC_FMT_TEST(d0511, "in % 50d.", 123)
+GLIBC_FMT_TEST(d05121, "in %0510d.", 123)
+GLIBC_FMT_TEST(d2, "in %d.", 123456)
+GLIBC_FMT_TEST(d3, "in %hd.", static_cast<int16_t>(-12345))
+GLIBC_FMT_TEST(d4, "in %hhd.", static_cast<int8_t>(-123))
+GLIBC_FMT_TEST(d5, "in %ld.", -123456L)
+GLIBC_FMT_TEST(d6, "in %lld.", -123456LL)
+GLIBC_FMT_TEST(i1, "in %i.", 123)
+GLIBC_FMT_TEST(i2, "in %i.", -123)
 
-GLIBC_FMT_TEST(x1, "in %x.", 123U);
-GLIBC_FMT_TEST(x2, "in %x %d.", 123U, 256);
-GLIBC_FMT_TEST(x3, "in %d %x.", 123, 1024U);
-GLIBC_FMT_TEST(x4, "in %X %x.", 123U, 13U);
-GLIBC_FMT_TEST(x5, "in %X %s.", 123U, "miXED case after UPPER X");
-GLIBC_FMT_TEST(x6, "in %#x.", 123U);
-GLIBC_FMT_TEST(x7, "in %#X.", 123U);
-GLIBC_FMT_TEST(x8, "in %#X %x.", 123U, 150U);
+GLIBC_FMT_TEST(x1, "in %x.", 123U)
+GLIBC_FMT_TEST(x2, "in %x %d.", 123U, 256)
+GLIBC_FMT_TEST(x3, "in %d %x.", 123, 1024U)
+GLIBC_FMT_TEST(x4, "in %X %x.", 123U, 13U)
+GLIBC_FMT_TEST(x5, "in %X %s.", 123U, "miXED case after UPPER X")
+GLIBC_FMT_TEST(x6, "in %#x.", 123U)
+GLIBC_FMT_TEST(x7, "in %#X.", 123U)
+GLIBC_FMT_TEST(x8, "in %#X %x.", 123U, 150U)
 
-GLIBC_FMT_TEST(o1, "in %o.", 123U);
-GLIBC_FMT_TEST(o2, "in %o %d.", 123U, 256);
-GLIBC_FMT_TEST(o3, "in %d %o.", 123, 1024U);
+GLIBC_FMT_TEST(o1, "in %o.", 123U)
+GLIBC_FMT_TEST(o2, "in %o %d.", 123U, 256)
+GLIBC_FMT_TEST(o3, "in %d %o.", 123, 1024U)
 
-GLIBC_FMT_TEST(a1, "in %a.", 123.456789);
-GLIBC_FMT_TEST(a2, "in %a.", -123.456789);
-GLIBC_FMT_TEST(a3, "in %a.", .123456789);
-GLIBC_FMT_TEST(a4, "in %a.", -.123456789);
-GLIBC_FMT_TEST(a5, "in %A.", -.123456789);
-GLIBC_FMT_TEST(a6, "in %A.", -123.456789);
-GLIBC_FMT_TEST(a7, "in %a.", 123456789.123);
-GLIBC_FMT_TEST(a8, "in %a.", -123456789.123);
+GLIBC_FMT_TEST(a1, "in %a.", 123.456789)
+GLIBC_FMT_TEST(a2, "in %a.", -123.456789)
+GLIBC_FMT_TEST(a3, "in %a.", .123456789)
+GLIBC_FMT_TEST(a4, "in %a.", -.123456789)
+GLIBC_FMT_TEST(a5, "in %A.", -.123456789)
+GLIBC_FMT_TEST(a6, "in %A.", -123.456789)
+GLIBC_FMT_TEST(a7, "in %a.", 123456789.123)
+GLIBC_FMT_TEST(a8, "in %a.", -123456789.123)
 
-GLIBC_FMT_TEST(e1, "in %e.", 123.456789);
-GLIBC_FMT_TEST(e2, "in %e.", -123.456789);
-GLIBC_FMT_TEST(e3, "in %e.", .123456789);
-GLIBC_FMT_TEST(e4, "in %e.", -.123456789);
-GLIBC_FMT_TEST(e5, "in %E.", -.123456789);
-GLIBC_FMT_TEST(e6, "in %E.", -123.456789);
-GLIBC_FMT_TEST(e7, "in %e.", 123456789.123);
-GLIBC_FMT_TEST(e8, "in %e.", -123456789.123);
+GLIBC_FMT_TEST(e1, "in %e.", 123.456789)
+GLIBC_FMT_TEST(e2, "in %e.", -123.456789)
+GLIBC_FMT_TEST(e3, "in %e.", .123456789)
+GLIBC_FMT_TEST(e4, "in %e.", -.123456789)
+GLIBC_FMT_TEST(e5, "in %E.", -.123456789)
+GLIBC_FMT_TEST(e6, "in %E.", -123.456789)
+GLIBC_FMT_TEST(e7, "in %e.", 123456789.123)
+GLIBC_FMT_TEST(e8, "in %e.", -123456789.123)
 
-GLIBC_FMT_TEST(f1, "in %f.", 123.456789);
-GLIBC_FMT_TEST(f2, "in %f.", -123.456789);
-GLIBC_FMT_TEST(f3, "in %f.", .123456789);
-GLIBC_FMT_TEST(f4, "in %f.", -.123456789);
-GLIBC_FMT_TEST(f5, "in %F.", -.123456789);
-GLIBC_FMT_TEST(f6, "in %F.", -123.456789);
-GLIBC_FMT_TEST(f7, "in %f.", 123456789.123);
-GLIBC_FMT_TEST(f8, "in %f.", -123456789.123);
+GLIBC_FMT_TEST(f1, "in %f.", 123.456789)
+GLIBC_FMT_TEST(f2, "in %f.", -123.456789)
+GLIBC_FMT_TEST(f3, "in %f.", .123456789)
+GLIBC_FMT_TEST(f4, "in %f.", -.123456789)
+GLIBC_FMT_TEST(f5, "in %F.", -.123456789)
+GLIBC_FMT_TEST(f6, "in %F.", -123.456789)
+GLIBC_FMT_TEST(f7, "in %f.", 123456789.123)
+GLIBC_FMT_TEST(f8, "in %f.", -123456789.123)
 
-GLIBC_FMT_TEST(g1, "in %g.", 123.456789);
-GLIBC_FMT_TEST(g2, "in %g.", -123.456789);
-GLIBC_FMT_TEST(g3, "in %g.", .123456789);
-GLIBC_FMT_TEST(g4, "in %g.", -.123456789);
-GLIBC_FMT_TEST(g5, "in %G.", -.123456789);
-GLIBC_FMT_TEST(g6, "in %G.", -123.456789);
-GLIBC_FMT_TEST(g7, "in %g.", 123456789.123);
-GLIBC_FMT_TEST(g8, "in %g.", -123456789.123);
+GLIBC_FMT_TEST(g1, "in %g.", 123.456789)
+GLIBC_FMT_TEST(g2, "in %g.", -123.456789)
+GLIBC_FMT_TEST(g3, "in %g.", .123456789)
+GLIBC_FMT_TEST(g4, "in %g.", -.123456789)
+GLIBC_FMT_TEST(g5, "in %G.", -.123456789)
+GLIBC_FMT_TEST(g6, "in %G.", -123.456789)
+GLIBC_FMT_TEST(g7, "in %g.", 123456789.123)
+GLIBC_FMT_TEST(g8, "in %g.", -123456789.123)
 
 GLIBC_FMT_TEST(
-		fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n", 1.234, 42, 3.13, "str", reinterpret_cast<void *>(1000), 'X');
+		fmtlibt_fmt, "%0.10f:%04d:%+g:%s:%p:%c:%%\n", 1.234, 42, 3.13, "str", reinterpret_cast<void *>(1000), 'X')
 
 AdHocFormatter(chars_written_fmt, "%n %s %n %d %n");
 BOOST_AUTO_TEST_CASE(chars_written)
@@ -453,7 +453,7 @@ BOOST_AUTO_TEST_CASE(chars_written)
 	BOOST_CHECK_EQUAL(c, s.length());
 }
 
-GLIBC_FMT_TEST(p2, "in %p.", this);
+GLIBC_FMT_TEST(p2, "in %p.", static_cast<void *>(this))
 
 AdHocFormatter(smartptr_fmt, "Address is %p.");
 BOOST_AUTO_TEST_CASE(smartptr)

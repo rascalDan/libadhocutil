@@ -22,6 +22,6 @@ namespace AdHoc {
 		DLL_PUBLIC Lexer::PatternPtr regex(const Glib::ustring & regex,
 				GRegexCompileFlags compile = GRegexCompileFlags {}, GRegexMatchFlags match = GRegexMatchFlags {});
 	}
-};
+}
 
 #endif

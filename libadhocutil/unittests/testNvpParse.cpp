@@ -26,7 +26,7 @@ NvpTarget(TestTarget) TestTargetMap {
 };
 
 /// LCOV_EXCL_START (diagnostics)
-BOOST_TEST_DONT_PRINT_LOG_VALUE(decltype(TestTargetMap.find("")));
+BOOST_TEST_DONT_PRINT_LOG_VALUE(decltype(TestTargetMap.find("")))
 /// LCOV_EXCL_STOP
 
 BOOST_AUTO_TEST_CASE(targetmap)
