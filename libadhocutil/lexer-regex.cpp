@@ -1,12 +1,15 @@
 #include "lexer-regex.h"
 #include "c++11Helpers.h"
-#include <cassert>
 #include <cstddef>
+#include <glib/gtypes.h>
 #include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
 
+namespace Glib {
+	class ustring;
+}
 namespace AdHoc::LexerMatchers {
 	class Regex : public Lexer::Pattern {
 	public:
@@ -55,7 +58,6 @@ namespace AdHoc::LexerMatchers {
 		{
 			gint start, end;
 			g_match_info_fetch_pos(info, 0, &start, &end);
-			assert(start <= end);
 			return static_cast<size_t>(end - start);
 		}
 

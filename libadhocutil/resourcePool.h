@@ -5,6 +5,7 @@
 #include "exception.h"
 #include "semaphore.h"
 #include "visibility.h"
+#include <cstddef>
 #include <list>
 #include <map>
 #include <memory>

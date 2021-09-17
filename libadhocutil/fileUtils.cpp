@@ -134,7 +134,8 @@ namespace AdHoc::FileUtils {
 	MemMap::setupMap(int flags) const
 	{
 		auto data = setupMapInt(flags);
-		if (data == reinterpret_cast<void *>(-1)) {
+		// NOLINTNEXTLINE(performance-no-int-to-ptr)
+		if (data == MAP_FAILED) {
 			throw SystemExceptionOn("mmap(2) failed", strerror(errno), errno, FD::get(fh));
 		}
 		return data;
@@ -144,7 +145,8 @@ namespace AdHoc::FileUtils {
 	MemMap::setupMap(const std::filesystem::path & path, int flags) const
 	{
 		auto data = setupMapInt(flags);
-		if (data == reinterpret_cast<void *>(-1)) {
+		// NOLINTNEXTLINE(performance-no-int-to-ptr)
+		if (data == MAP_FAILED) {
 			throw SystemExceptionOn("mmap(2) failed", strerror(errno), errno, path);
 		}
 		return data;

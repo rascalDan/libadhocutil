@@ -6,6 +6,7 @@
 #include <cstring>
 #include <iosfwd>
 #include <string>
+#include <string_view>
 
 using namespace AdHoc;
 

@@ -6,6 +6,7 @@
 
 #include "visibility.h"
 #include <condition_variable>
+#include <cstddef>
 #include <mutex>
 
 namespace AdHoc {

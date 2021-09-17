@@ -2,7 +2,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include "safeMapFind.h"
-#include <boost/lexical_cast.hpp>
 #include <map>
 #include <stdexcept>
 #include <string>

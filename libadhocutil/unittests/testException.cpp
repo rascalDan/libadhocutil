@@ -4,7 +4,6 @@
 #include <buffer.h>
 #include <cstdlib>
 #include <exception.h>
-#include <stdexcept>
 #include <string>
 
 using namespace AdHoc;

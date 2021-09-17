@@ -3,11 +3,12 @@
 
 #include "definedDirs.h"
 #include "processPipes.h"
+#include <array>
 #include <cstdio>
-#include <cstring>
 #include <filesystem>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <sys/wait.h>
 #include <unistd.h>
 

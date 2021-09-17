@@ -1,5 +1,13 @@
 [
 	{
+		"symbol": [
+			"Glib::ustring",
+			"private",
+			"<glibmm/ustring.h>",
+			"public"
+		]
+	},
+	{
 		"include": [
 			"<bits/types/stack_t.h>",
 			"private",
@@ -112,6 +120,6 @@
 		]
 	},
 	{
-		"ref": "/usr/lib/llvm/11/share/include-what-you-use/boost-all-private.imp"
+		"ref": "/usr/lib/llvm/12/share/include-what-you-use/boost-all-private.imp"
 	}
 ]

@@ -7,7 +7,7 @@
 #include <map>
 #include <optional>
 #include <string>
-#include <typeinfo>
+#include <string_view>
 #include <utility>
 
 BOOST_AUTO_TEST_CASE(simple)

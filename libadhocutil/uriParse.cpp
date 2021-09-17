@@ -1,11 +1,12 @@
 #include "uriParse.h"
 #include "compileTimeFormatter.h"
+#include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/lexical_cast.hpp>
 #include <cctype>
 #include <charconv>
 #include <cstdint>
-#include <cstring>
+#include <string_view>
+#include <system_error>
 #include <utility>
 
 namespace AdHoc {

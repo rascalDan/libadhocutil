@@ -2,6 +2,11 @@
 #include <boost/test/unit_test.hpp>
 
 #include <functional>
+#include <lexer-regex.h>
+#include <memory>
+#include <optional>
+#include <stdexcept>
+#include <string>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
@@ -11,11 +16,6 @@
 #include <glib.h>
 #include <glibmm/ustring.h>
 #pragma GCC diagnostic pop
-#include <lexer-regex.h>
-#include <memory>
-#include <optional>
-#include <stdexcept>
-#include <string>
 
 using namespace AdHoc;
 using namespace AdHoc::LexerMatchers;
