@@ -4,8 +4,10 @@
 #include "cache.h" // IWYU pragma: export
 #include "lockHelpers.h"
 #include <boost/lambda/lambda.hpp>
-#include <mutex>
-#include <shared_mutex>
+#include <ctime>
+#include <memory>
+#include <variant>
+// IWYU pragma: no_include <boost/multi_index/detail/unbounded.hpp>
 
 namespace AdHoc {
 

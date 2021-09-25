@@ -3,6 +3,8 @@
 
 #include "factory.h" // IWYU pragma: export
 #include "plugins.impl.h" // IWYU pragma: export
+#include <memory>
+#include <string_view>
 
 namespace AdHoc {
 	template<typename Base, typename... Params>

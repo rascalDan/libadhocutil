@@ -51,6 +51,7 @@ project
 			<toolset>tidy:<xcheckxx>hicpp-no-array-decay
 			<toolset>tidy:<checkxx>performance-*
 			<toolset>tidy:<define>ICE_IGNORE_VERSION
+			<toolset>tidy:<define>ICE_MEMBER_IMPORT_EXPORT
 			<toolset>tidy:<mapping>iwyu.json
 			<toolset>tidy:<librarydef>boost
 			<toolset>tidy:<librarydef>std

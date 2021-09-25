@@ -8,6 +8,14 @@
 		]
 	},
 	{
+		"symbol": [
+			"strncasecmp",
+			"private",
+			"<cstring>",
+			"public"
+		]
+	},
+	{
 		"include": [
 			"<bits/types/stack_t.h>",
 			"private",
@@ -92,6 +100,22 @@
 			"@<boost/iostreams/detail/.*>",
 			"private",
 			"<boost/iostreams/stream.hpp>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"<boost/lambda/core.hpp>",
+			"private",
+			"<boost/lambda/lambda.hpp>",
+			"public"
+		]
+	},
+	{
+		"include": [
+			"@<boost/lambda/detail/.*>",
+			"private",
+			"<boost/lambda/lambda.hpp>",
 			"public"
 		]
 	},

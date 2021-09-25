@@ -7,7 +7,6 @@
 #include <ostream>
 #include <string>
 #include <unistd.h>
-#include <variant>
 
 // NOLINTNEXTLINE(hicpp-special-member-functions)
 class Obj {

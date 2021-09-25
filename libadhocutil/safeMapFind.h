@@ -52,7 +52,7 @@ namespace AdHoc {
 	 * Simple search, true if found, false otherwise
 	 */
 	template<class Cont>
-	bool
+	constexpr bool
 	containerContains(const Cont & c, const typename Cont::value_type & v)
 	{
 		return (std::find(c.begin(), c.end(), v) != c.end());

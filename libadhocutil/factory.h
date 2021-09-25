@@ -3,6 +3,8 @@
 
 #include "plugins.h"
 #include "visibility.h"
+#include <memory>
+#include <string_view>
 
 namespace AdHoc {
 	/**

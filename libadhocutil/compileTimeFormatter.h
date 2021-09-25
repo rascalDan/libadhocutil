@@ -1,23 +1,26 @@
 #ifndef ADHOCUTIL_COMPILE_TIME_FORMATTER_H
 #define ADHOCUTIL_COMPILE_TIME_FORMATTER_H
 
-#include <array>
-#include <boost/preprocessor/variadic/size.hpp>
-#include <cstring>
-#include <iostream>
+#include <boost/preprocessor/control/iif.hpp> // IWYU pragma: keep
+#include <boost/preprocessor/variadic/size.hpp> // IWYU pragma: keep
 #include <optional>
 #include <sstream> // IWYU pragma: export
+#include <type_traits>
+// Mapped for for BOOST_PP_VARIADIC_SIZE, BOOST_PP... in tests
+// IWYU pragma: no_include <boost/test/unit_test.hpp>
 
-namespace AdHoc {
 #ifdef __cpp_nontype_template_parameter_class
 #	define USE_FIXED_STRING
 #endif
 
 #ifdef USE_FIXED_STRING
 #	define CtfString const auto
+#	include <array>
+#	include <iostream>
 #else
 #	define CtfString const auto &
 #endif
+namespace AdHoc {
 	// Template char utils
 	template<typename char_type>
 	constexpr bool
@@ -248,6 +251,7 @@ namespace AdHoc {
 	namespace support {
 		template<typename CharT, std::size_t N> class basic_fixed_string : public std::array<CharT, N> {
 		public:
+			// cppcheck-suppress noExplicitConstructor
 			constexpr basic_fixed_string(const CharT (&str)[N + 1])
 			{
 				for (decltype(N) x = 0; x < N; x++) {
@@ -333,11 +337,11 @@ namespace AdHoc {
 		{
 			return AdHoc::FormatterDetail<FMT<T, t...>::fmtstr, sizeof...(t)>();
 		}
+#	ifdef __clang__
+#		pragma clang diagnostic pop
+#	endif
+#	pragma GCC diagnostic pop
 #endif
-#ifdef __clang__
-#	pragma clang diagnostic pop
-#endif
-#pragma GCC diagnostic pop
 	}
 }
 

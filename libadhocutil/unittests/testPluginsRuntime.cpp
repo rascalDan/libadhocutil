@@ -5,7 +5,6 @@
 #include "utilTestClasses.h"
 #include <dlfcn.h>
 #include <filesystem>
-#include <memory>
 #include <optional>
 #include <set>
 #include <string>

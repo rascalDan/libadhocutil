@@ -1,20 +1,19 @@
 #define BOOST_TEST_MODULE ResourcePool
 #include <boost/test/unit_test.hpp>
 
-#include "c++11Helpers.h" // for SPECIAL_MEMBERS_DELETE
-#include "lockHelpers.h" // for ScopeLock
-#include "semaphore.h" // for Semaphore
-#include <atomic> // for atomic, __atomic_base
-#include <list> // for list, operator==, _List_iterator
-#include <map> // for operator==
-#include <memory> // for make_shared, shared_ptr
-#include <mutex> // for unique_lock, mutex
-#include <resourcePool.impl.h>
-#include <stdexcept> // for exception
-#include <thread> // for thread, get_id
-#include <tuple> // for get
-#include <unistd.h> // for usleep, sleep
-#include <utility> // for move
+#include "c++11Helpers.h"
+#include "lockHelpers.h"
+#include "resourcePool.impl.h"
+#include "semaphore.h"
+#include <atomic>
+#include <list>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <stdexcept>
+#include <thread>
+#include <unistd.h>
+#include <utility>
 
 class MockResource {
 public:

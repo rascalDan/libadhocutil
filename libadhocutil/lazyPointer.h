@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <memory>
-#include <ostream>
 #include <variant>
 
 namespace AdHoc {

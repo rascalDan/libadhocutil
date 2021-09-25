@@ -1,4 +1,5 @@
 #include <strUtil.h>
+#include <string_view>
 
 constexpr auto
 ltrim(std::string_view s, const auto c)

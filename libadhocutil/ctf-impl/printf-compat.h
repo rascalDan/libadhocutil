@@ -8,6 +8,7 @@
 #include <boost/preprocessor/comma_if.hpp>
 #include <boost/preprocessor/if.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
+#include <cstring>
 #include <iomanip>
 #include <type_traits>
 

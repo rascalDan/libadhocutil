@@ -1,8 +1,6 @@
 #ifndef ADHOCUTIL_GLOBALSTATIC_H
 #define ADHOCUTIL_GLOBALSTATIC_H
 
-#include <memory>
-
 namespace AdHoc {
 	/**
 	 * Wrapper class for initialising/destroying a global static object via

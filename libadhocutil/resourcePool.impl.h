@@ -4,7 +4,13 @@
 #include "lockHelpers.h"
 #include "resourcePool.h" // IWYU pragma: export
 #include "safeMapFind.h"
+#include "semaphore.h"
 #include <boost/assert.hpp>
+#include <cstddef>
+#include <exception>
+#include <memory>
+#include <thread>
+#include <typeinfo>
 
 namespace AdHoc {
 	//

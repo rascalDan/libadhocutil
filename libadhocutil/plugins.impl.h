@@ -2,6 +2,12 @@
 #define ADHOCUTIL_PLUGINS_IMPL_H
 
 #include "plugins.h" // IWYU pragma: export
+#include "unique.h"
+#include "visibility.h"
+#include <memory>
+#include <set>
+#include <string_view>
+#include <typeinfo>
 
 namespace AdHoc {
 	template<typename T>

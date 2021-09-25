@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE CompileTimeFormatter
 #include <boost/test/unit_test.hpp>
 
+#include "compileTimeFormatter.h"
 #include "memstream.h"
 #include <boost/assert.hpp>
-#include <compileTimeFormatter.h>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>

@@ -1,0 +1,1 @@
+#include "resourcePool.impl.h"
