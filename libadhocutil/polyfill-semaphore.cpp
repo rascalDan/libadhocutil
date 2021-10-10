@@ -1,11 +1,11 @@
-#include "semaphore.h"
+#include "polyfill-semaphore.h"
 #include <chrono>
 
 namespace AdHoc {
-	Semaphore::Semaphore(std::size_t initial) : count(initial) { }
+	Semaphore::Semaphore(std::ptrdiff_t initial) : count(initial) { }
 
 	void
-	Semaphore::notify()
+	Semaphore::release()
 	{
 		std::scoped_lock lock(mutex);
 		++count;
@@ -13,7 +13,7 @@ namespace AdHoc {
 	}
 
 	void
-	Semaphore::wait()
+	Semaphore::acquire()
 	{
 		std::unique_lock lock(mutex);
 		while (!count) {
@@ -23,12 +23,11 @@ namespace AdHoc {
 	}
 
 	bool
-	Semaphore::wait(unsigned int timeout)
+	Semaphore::try_acquire_for(std::chrono::milliseconds timeout)
 	{
-		const auto expiry = std::chrono::milliseconds(timeout);
 		std::unique_lock lock(mutex);
 		while (!count) {
-			if (condition.wait_for(lock, expiry) == std::cv_status::timeout) {
+			if (condition.wait_for(lock, timeout) == std::cv_status::timeout) {
 				return false;
 			}
 		}
@@ -36,7 +35,7 @@ namespace AdHoc {
 		return true;
 	}
 
-	std::size_t
+	std::ptrdiff_t
 	Semaphore::freeCount() const
 	{
 		return count;

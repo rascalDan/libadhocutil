@@ -4,7 +4,11 @@
 #include "lockHelpers.h"
 #include "resourcePool.h" // IWYU pragma: export
 #include "safeMapFind.h"
-#include "semaphore.h"
+#ifdef __cpp_lib_semaphore
+#	include <semaphore>
+#else
+#	include "polyfill-semaphore.h"
+#endif
 #include <boost/assert.hpp>
 #include <cstddef>
 #include <exception>
@@ -114,7 +118,7 @@ namespace AdHoc {
 	// ResourcePool
 	//
 
-	template<typename R> ResourcePool<R>::ResourcePool(std::size_t max, std::size_t k) : poolSize(max), keep(k) { }
+	template<typename R> ResourcePool<R>::ResourcePool(std::ptrdiff_t max, std::size_t k) : poolSize(max), keep(k) { }
 
 	template<typename R> ResourcePool<R>::~ResourcePool()
 	{
@@ -151,13 +155,15 @@ namespace AdHoc {
 		return available.size();
 	}
 
+#ifndef __cpp_lib_semaphore
 	template<typename R>
-	std::size_t
+	std::ptrdiff_t
 	ResourcePool<R>::freeCount() const
 	{
 		SharedLock(lock);
 		return poolSize.freeCount();
 	}
+#endif
 
 	template<typename R>
 	ResourceHandle<R>
@@ -179,30 +185,37 @@ namespace AdHoc {
 	ResourceHandle<R>
 	ResourcePool<R>::get()
 	{
-		poolSize.wait();
+		poolSize.acquire();
 		try {
 			return ResourceHandle(getOne());
 		}
 		catch (...) {
-			poolSize.notify();
+			poolSize.release();
 			throw;
 		}
 	}
 
 	template<typename R>
 	ResourceHandle<R>
-	ResourcePool<R>::get(unsigned int timeout)
+	ResourcePool<R>::get(const std::chrono::milliseconds timeout)
 	{
-		if (!poolSize.wait(timeout)) {
+		if (!poolSize.try_acquire_for(timeout)) {
 			throw TimeOutOnResourcePoolT<R>();
 		}
 		try {
 			return getOne();
 		}
 		catch (...) {
-			poolSize.notify();
+			poolSize.release();
 			throw;
 		}
+	}
+
+	template<typename R>
+	ResourceHandle<R>
+	ResourcePool<R>::get(unsigned int ms)
+	{
+		return get(std::chrono::milliseconds(ms));
 	}
 
 	template<typename R>
@@ -242,7 +255,7 @@ namespace AdHoc {
 		}
 		catch (...) {
 		}
-		poolSize.notify();
+		poolSize.release();
 	}
 
 	template<typename R>
@@ -251,7 +264,7 @@ namespace AdHoc {
 	{
 		Lock(lock);
 		removeFrom(r, inUse);
-		poolSize.notify();
+		poolSize.release();
 	}
 
 	template<typename R>
@@ -275,7 +288,6 @@ namespace AdHoc {
 	NoCurrentResourceT<R>::NoCurrentResourceT(const std::thread::id & id) : NoCurrentResource(id, typeid(R).name())
 	{
 	}
-
 }
 
 #endif

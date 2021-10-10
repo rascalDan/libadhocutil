@@ -3,7 +3,11 @@
 
 #include "c++11Helpers.h"
 #include "exception.h"
-#include "semaphore.h"
+#ifdef __cpp_lib_semaphore
+#	include <semaphore>
+#else
+#	include "polyfill-semaphore.h"
+#endif
 #include "visibility.h"
 #include <cstddef>
 #include <list>
@@ -15,6 +19,11 @@
 #include <tuple>
 
 namespace AdHoc {
+#ifdef __cpp_lib_semaphore
+	using SemaphoreType = std::counting_semaphore<>;
+#else
+	using SemaphoreType = Semaphore;
+#endif
 	template<typename Resource> class ResourcePool;
 
 	/// A handle to a resource allocated from a ResourcePool.
@@ -59,7 +68,7 @@ namespace AdHoc {
 		/// Create a new resource pool.
 		/// @param maxSize The upper limit of how many concurrent active resources there can be.
 		/// @param keep The number of resources to cache for reuse.
-		ResourcePool(std::size_t maxSize, std::size_t keep);
+		ResourcePool(std::ptrdiff_t maxSize, std::size_t keep);
 		virtual ~ResourcePool();
 
 		/// Standard move/copy support
@@ -67,6 +76,9 @@ namespace AdHoc {
 
 		/// Get a resource from the pool (maybe cached, maybe constructed afresh)
 		ResourceHandle<Resource> get();
+		/// Get a resource from the pool (with timeout on max size of pool)
+		/// @param ms Timeout in milliseconds.
+		ResourceHandle<Resource> get(const std::chrono::milliseconds ms);
 		/// Get a resource from the pool (with timeout on max size of pool)
 		/// @param ms Timeout in milliseconds.
 		ResourceHandle<Resource> get(unsigned int ms);
@@ -79,8 +91,10 @@ namespace AdHoc {
 		std::size_t inUseCount() const;
 		/// Get number of available cached resources.
 		std::size_t availableCount() const;
+#ifndef __cpp_lib_semaphore
 		/// Get number of free slots.
-		std::size_t freeCount() const;
+		std::ptrdiff_t freeCount() const;
+#endif
 
 	protected:
 		/// Create a new resource instance to add to the pool.
@@ -101,7 +115,7 @@ namespace AdHoc {
 		DLL_PRIVATE ResourceHandle<Resource> getOne();
 
 		mutable std::shared_mutex lock;
-		Semaphore poolSize;
+		SemaphoreType poolSize;
 		std::size_t keep;
 		Available available;
 		InUse inUse;
