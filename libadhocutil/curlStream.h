@@ -14,38 +14,36 @@ namespace boost {
 	template<class T> class reference_wrapper;
 }
 
-namespace AdHoc {
-	namespace Net {
+namespace AdHoc::Net {
 
-		/// boost::iostreams::source implementation for CURL downloads.
-		class DLL_PUBLIC CurlStreamSource :
-			public boost::iostreams::source,
-			public CurlHandle,
-			::AdHoc::System::RuntimeContext {
-		public:
-			/** Construct a new stream source for the given URL. */
-			explicit CurlStreamSource(const std::string & url);
-			/// Standard move/copy support
-			SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(CurlStreamSource);
-			~CurlStreamSource() override;
+	/// boost::iostreams::source implementation for CURL downloads.
+	class DLL_PUBLIC CurlStreamSource :
+		public boost::iostreams::source,
+		public CurlHandle,
+		::AdHoc::System::RuntimeContext {
+	public:
+		/** Construct a new stream source for the given URL. */
+		explicit CurlStreamSource(const std::string & url);
+		/// Standard move/copy support
+		SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(CurlStreamSource);
+		~CurlStreamSource() override;
 
-			/** Required member function for reading of the stream source by boost::iostreams::stream. */
-			std::streamsize read(char * target, std::streamsize targetSize);
+		/** Required member function for reading of the stream source by boost::iostreams::stream. */
+		std::streamsize read(char * target, std::streamsize targetSize);
 
-		private:
-			friend class CurlMultiHandle;
-			DLL_PRIVATE void callback() override;
+	private:
+		friend class CurlMultiHandle;
+		DLL_PRIVATE void callback() override;
 
-			DLL_PRIVATE static size_t recvWrapper(void * data, size_t sz, size_t nm, void * css);
-			DLL_PRIVATE std::streamsize recv(void * data, std::streamsize datalen);
+		DLL_PRIVATE static size_t recvWrapper(void * data, size_t sz, size_t nm, void * css);
+		DLL_PRIVATE std::streamsize recv(void * data, std::streamsize datalen);
 
-			std::streamsize buflen;
-			char * buf;
-			CURLcode res;
-		};
+		std::streamsize buflen;
+		char * buf;
+		CURLcode res;
+	};
 
-		using CurlStream = boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>>;
-	}
+	using CurlStream = boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>>;
 }
 
 #endif
