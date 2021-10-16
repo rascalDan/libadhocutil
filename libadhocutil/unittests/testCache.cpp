@@ -4,6 +4,7 @@
 #include "cache.impl.h"
 #include <ctime>
 #include <memory>
+#include <mutex> // IWYU pragma: keep
 #include <ostream>
 #include <string>
 #include <unistd.h>

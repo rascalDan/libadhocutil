@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <exception>
 #include <memory>
+#include <mutex> // IWYU pragma: keep
 #include <thread>
 #include <typeinfo>
 

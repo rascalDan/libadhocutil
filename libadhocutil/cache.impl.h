@@ -6,6 +6,7 @@
 #include <boost/lambda/lambda.hpp>
 #include <ctime>
 #include <memory>
+#include <mutex> // IWYU pragma: keep
 #include <variant>
 // IWYU pragma: no_include <boost/multi_index/detail/unbounded.hpp>
 
