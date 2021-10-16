@@ -39,6 +39,7 @@ project
 			<toolset>tidy:<checkxx>boost-*
 			<toolset>tidy:<checkxx>bugprone-*
 			<toolset>tidy:<xcheckxx>bugprone-macro-parentheses
+			<toolset>tidy:<xcheckxx>bugprone-easily-swappable-parameters
 			<toolset>tidy:<checkxx>clang-*
 			<toolset>tidy:<checkxx>misc-*
 			<toolset>tidy:<xcheckxx>misc-non-private-member-variables-in-classes
