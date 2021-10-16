@@ -219,7 +219,7 @@ namespace AdHoc {
 		else if (content.size() == 1) {
 			return content.front()->str();
 		}
-		return std::string();
+		return {};
 	}
 
 	Buffer::operator const char *() const
