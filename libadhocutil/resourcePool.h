@@ -5,10 +5,9 @@
 #include "exception.h"
 #ifdef __cpp_lib_semaphore
 #	include <semaphore>
-#else
-#	include "polyfill-semaphore.h"
 #endif
 #include "visibility.h"
+#include <chrono>
 #include <cstddef>
 #include <list>
 #include <map>
@@ -17,13 +16,9 @@
 #include <string>
 #include <thread>
 #include <tuple>
+// IWYU pragma: no_include "polyfill-semaphore.h"
 
 namespace AdHoc {
-#ifdef __cpp_lib_semaphore
-	using SemaphoreType = std::counting_semaphore<>;
-#else
-	using SemaphoreType = Semaphore;
-#endif
 	template<typename Resource> class ResourcePool;
 
 	/// A handle to a resource allocated from a ResourcePool.
@@ -59,20 +54,45 @@ namespace AdHoc {
 		std::shared_ptr<Object> resource;
 	};
 
-	/// A fully featured resource pool for sharing and reusing a finite set of
-	/// resources, possibly across multiple threads.
-	template<typename Resource> class DLL_PUBLIC ResourcePool {
+	class DLL_PUBLIC ResourcePoolBase {
 	public:
-		friend class ResourceHandle<Resource>;
-
 		/// Create a new resource pool.
 		/// @param maxSize The upper limit of how many concurrent active resources there can be.
 		/// @param keep The number of resources to cache for reuse.
-		ResourcePool(std::ptrdiff_t maxSize, std::size_t keep);
-		virtual ~ResourcePool();
+		ResourcePoolBase(std::ptrdiff_t maxSize, std::size_t keep);
+		virtual ~ResourcePoolBase();
 
 		/// Standard move/copy support
-		SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(ResourcePool);
+		SPECIAL_MEMBERS_DELETE(ResourcePoolBase);
+
+		void acquire();
+		bool try_acquire_for(std::chrono::milliseconds);
+		void release();
+
+#ifdef __cpp_lib_semaphore
+		using SemaphoreType = std::counting_semaphore<>;
+#else
+		using SemaphoreType = class Semaphore;
+#endif
+	protected:
+		mutable std::shared_mutex lock;
+		std::size_t keep;
+
+	private:
+		std::unique_ptr<SemaphoreType> poolSize;
+	};
+
+	/// A fully featured resource pool for sharing and reusing a finite set of
+	/// resources, possibly across multiple threads.
+	template<typename Resource> class DLL_PUBLIC ResourcePool : ResourcePoolBase {
+	public:
+		friend class ResourceHandle<Resource>;
+
+		using ResourcePoolBase::ResourcePoolBase;
+		~ResourcePool() override;
+
+		/// Standard move/copy support
+		SPECIAL_MEMBERS_DELETE(ResourcePool);
 
 		/// Get a resource from the pool (maybe cached, maybe constructed afresh)
 		ResourceHandle<Resource> get();
@@ -91,10 +111,6 @@ namespace AdHoc {
 		std::size_t inUseCount() const;
 		/// Get number of available cached resources.
 		std::size_t availableCount() const;
-#ifndef __cpp_lib_semaphore
-		/// Get number of free slots.
-		std::ptrdiff_t freeCount() const;
-#endif
 
 	protected:
 		/// Create a new resource instance to add to the pool.
@@ -114,9 +130,6 @@ namespace AdHoc {
 		DLL_PRIVATE static void removeFrom(const std::shared_ptr<Resource> &, InUse &);
 		DLL_PRIVATE ResourceHandle<Resource> getOne();
 
-		mutable std::shared_mutex lock;
-		SemaphoreType poolSize;
-		std::size_t keep;
 		Available available;
 		InUse inUse;
 	};

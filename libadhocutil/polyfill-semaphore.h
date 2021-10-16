@@ -5,6 +5,7 @@
 // http://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
 
 #include "visibility.h"
+#include <chrono>
 #include <condition_variable>
 #include <cstddef>
 #include <mutex>

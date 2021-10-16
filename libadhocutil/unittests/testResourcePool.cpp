@@ -7,7 +7,7 @@
 #ifdef __cpp_lib_semaphore
 #	include <semaphore>
 #else
-#	include "polyfill-semaphore.h"
+#	include "polyfill-semaphore.h" // IWYU pragma: keep
 #endif
 #include <atomic>
 #include <list>
@@ -334,7 +334,7 @@ BOOST_AUTO_TEST_CASE(threading1, *boost::unit_test::timeout(10))
 }
 
 static void
-acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::SemaphoreType & s)
+acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::ResourcePoolBase::SemaphoreType & s)
 {
 	auto r = pool->get();
 	static std::mutex m;
@@ -348,7 +348,7 @@ acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::SemaphoreType & s)
 BOOST_AUTO_TEST_CASE(threading2)
 {
 	TRPSmall pool;
-	AdHoc::SemaphoreType s {0};
+	AdHoc::ResourcePoolBase::SemaphoreType s {0};
 	std::thread t1([&pool, &s]() {
 		acquireAndKeepFor1Second(&pool, s);
 	});
@@ -420,32 +420,14 @@ BOOST_AUTO_TEST_CASE(createFail)
 	BOOST_REQUIRE_EQUAL(0, MockResource::count);
 	BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
-#ifndef __cpp_lib_semaphore
-	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
-#endif
 	BOOST_REQUIRE_THROW(pool.get(), std::exception);
-#ifndef __cpp_lib_semaphore
-	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
-#endif
 	BOOST_REQUIRE_THROW(pool.get(0), std::exception);
-#ifndef __cpp_lib_semaphore
-	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
-#endif
 	BOOST_REQUIRE_THROW(pool.get(100), std::exception);
-#ifndef __cpp_lib_semaphore
-	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
-#endif
 	BOOST_REQUIRE_EQUAL(0, MockResource::count);
 	BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
 	BOOST_REQUIRE_THROW(pool.get(), std::exception);
-#ifndef __cpp_lib_semaphore
-	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
-#endif
 	BOOST_REQUIRE_THROW(pool.get(), std::exception);
-#ifndef __cpp_lib_semaphore
-	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
-#endif
 }
 
 BOOST_AUTO_TEST_CASE(returnFail)
@@ -456,15 +438,9 @@ BOOST_AUTO_TEST_CASE(returnFail)
 		BOOST_CHECK(rh);
 		BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 		BOOST_REQUIRE_EQUAL(1, pool.inUseCount());
-#ifndef __cpp_lib_semaphore
-		BOOST_REQUIRE_EQUAL(2, pool.freeCount());
-#endif
 	}
 	BOOST_REQUIRE_EQUAL(0, pool.availableCount());
 	BOOST_REQUIRE_EQUAL(0, pool.inUseCount());
-#ifndef __cpp_lib_semaphore
-	BOOST_REQUIRE_EQUAL(3, pool.freeCount());
-#endif
 }
 
 BOOST_AUTO_TEST_CASE(exception_msgs)

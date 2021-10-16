@@ -4,12 +4,8 @@
 #include "lockHelpers.h"
 #include "resourcePool.h" // IWYU pragma: export
 #include "safeMapFind.h"
-#ifdef __cpp_lib_semaphore
-#	include <semaphore>
-#else
-#	include "polyfill-semaphore.h"
-#endif
 #include <boost/assert.hpp>
+#include <chrono>
 #include <cstddef>
 #include <exception>
 #include <memory>
@@ -118,9 +114,6 @@ namespace AdHoc {
 	//
 	// ResourcePool
 	//
-
-	template<typename R> ResourcePool<R>::ResourcePool(std::ptrdiff_t max, std::size_t k) : poolSize(max), keep(k) { }
-
 	template<typename R> ResourcePool<R>::~ResourcePool()
 	{
 		for (auto & r : inUse) {
@@ -156,16 +149,6 @@ namespace AdHoc {
 		return available.size();
 	}
 
-#ifndef __cpp_lib_semaphore
-	template<typename R>
-	std::ptrdiff_t
-	ResourcePool<R>::freeCount() const
-	{
-		SharedLock(lock);
-		return poolSize.freeCount();
-	}
-#endif
-
 	template<typename R>
 	ResourceHandle<R>
 	ResourcePool<R>::getMine()
@@ -186,12 +169,12 @@ namespace AdHoc {
 	ResourceHandle<R>
 	ResourcePool<R>::get()
 	{
-		poolSize.acquire();
+		acquire();
 		try {
 			return ResourceHandle(getOne());
 		}
 		catch (...) {
-			poolSize.release();
+			release();
 			throw;
 		}
 	}
@@ -200,14 +183,14 @@ namespace AdHoc {
 	ResourceHandle<R>
 	ResourcePool<R>::get(const std::chrono::milliseconds timeout)
 	{
-		if (!poolSize.try_acquire_for(timeout)) {
+		if (!try_acquire_for(timeout)) {
 			throw TimeOutOnResourcePoolT<R>();
 		}
 		try {
 			return getOne();
 		}
 		catch (...) {
-			poolSize.release();
+			release();
 			throw;
 		}
 	}
@@ -256,7 +239,7 @@ namespace AdHoc {
 		}
 		catch (...) {
 		}
-		poolSize.release();
+		release();
 	}
 
 	template<typename R>
@@ -265,7 +248,7 @@ namespace AdHoc {
 	{
 		Lock(lock);
 		removeFrom(r, inUse);
-		poolSize.release();
+		release();
 	}
 
 	template<typename R>

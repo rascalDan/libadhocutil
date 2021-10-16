@@ -1,7 +1,37 @@
 #include "resourcePool.h"
 #include "compileTimeFormatter.h"
+#ifdef __cpp_lib_semaphore
+#	include <semaphore>
+#else
+#	include "polyfill-semaphore.h"
+#endif
 
 namespace AdHoc {
+	ResourcePoolBase::ResourcePoolBase(std::ptrdiff_t maxSize, std::size_t keep_) :
+		keep {keep_}, poolSize {std::make_unique<SemaphoreType>(maxSize)}
+	{
+	}
+
+	void
+	ResourcePoolBase::release()
+	{
+		poolSize->release();
+	}
+
+	void
+	ResourcePoolBase::acquire()
+	{
+		poolSize->acquire();
+	}
+
+	bool
+	ResourcePoolBase::try_acquire_for(std::chrono::milliseconds timeout)
+	{
+		return poolSize->try_acquire_for(timeout);
+	}
+
+	ResourcePoolBase::~ResourcePoolBase() = default;
+
 	TimeOutOnResourcePool::TimeOutOnResourcePool(const char * const n) : name(n) { }
 
 	AdHocFormatter(TimeOutOnResourcePoolMsg, "Timeout getting a resource from pool of %?");
