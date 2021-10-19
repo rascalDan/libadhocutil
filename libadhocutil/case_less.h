@@ -1,7 +1,7 @@
 #ifndef ADHOCUTIL_CASELESS_H
 #define ADHOCUTIL_CASELESS_H
 
-#include <algorithm> // IWYU pragma: keep std::min
+#include <algorithm> // IWYU pragma: keep
 #include <cstring>
 
 namespace AdHoc {
