@@ -41,5 +41,5 @@ explicit install-lib ;
 explicit install-slice ;
 package.install install-lib : : : adhocutil : [ glob-tree *.h : ctf-impl ] ;
 package.install install-sub : <install-source-root>. : : adhocutil : [ glob ctf-impl/*.h ] ;
-package.install-data install-slice : adhocutil/ice : [ glob *.ice ] ;
+package.install-data install-slice : ice/adhocutil : [ glob *.ice ] ;
 
