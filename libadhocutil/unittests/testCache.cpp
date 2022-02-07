@@ -2,6 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "cache.impl.h"
+#include <boost/multi_index_container.hpp>
 #include <ctime>
 #include <memory>
 #include <mutex> // IWYU pragma: keep

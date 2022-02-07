@@ -5,6 +5,7 @@
 #include <optional>
 #include <optionalUtils.h>
 #include <string>
+#include <type_traits>
 
 using namespace AdHoc;
 

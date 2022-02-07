@@ -5,7 +5,6 @@
 #include <boost/iostreams/stream.hpp>
 #include <map>
 #include <sys/select.h>
-#include <sys/time.h>
 #include <utility>
 
 namespace AdHoc::Net {
