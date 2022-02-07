@@ -10,9 +10,9 @@
 #include <cxxabi.h>
 #include <definedDirs.h>
 #include <fileUtils.h>
+#include <iostream>
 #include <locale>
 #include <memory>
-#include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -92,45 +92,6 @@ namespace AdHoc {
 		}
 	};
 }
-
-#ifndef __cpp_nontype_template_parameter_class
-// Compile string util assertions
-static_assert(strlen<formatEdgeCaseEmpty>() == 0);
-static_assert(strlen<formatEdgeCaseSingle>() == 1);
-static_assert(strlen<formatEdgeCaseFormatLonely>() == 2);
-static_assert(strlen<formatStringLiteral>() == 7);
-static_assert(strlen<formatStringLong>() == 246);
-
-static_assert(!strchr<formatEdgeCaseEmpty, 't'>());
-static_assert(!strchr<formatEdgeCaseSingle, 't'>());
-static_assert(*strchr<formatEdgeCaseSingle, '1'>() == 0);
-static_assert(*strchr<formatEdgeCaseFormatLonely, '%'>() == 0);
-static_assert(*strchr<formatEdgeCaseFormatLonely, '?'>() == 1);
-static_assert(*strchr<formatStringLiteral, 'e'>() == 3);
-static_assert(!strchr<formatStringLiteral, 'f'>());
-static_assert(*strchr<formatStringLiteral, 'e', 3U>() == 3);
-static_assert(!strchr<formatStringLiteral, 'e', 4U>());
-static_assert(!strchr<formatStringLiteral, 'f', 3U>());
-
-static_assert(strchrnul<formatEdgeCaseEmpty, 't'>() == 0);
-static_assert(strchrnul<formatEdgeCaseSingle, 't'>() == 1);
-static_assert(strchrnul<formatEdgeCaseSingle, '1'>() == 0);
-static_assert(strchrnul<formatEdgeCaseFormatLonely, '%'>() == 0);
-static_assert(strchrnul<formatEdgeCaseFormatLonely, '?'>() == 1);
-static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
-static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
-static_assert(strchrnul<formatStringLiteral, 'e', 3U>() == 3);
-static_assert(strchrnul<formatStringLiteral, 'e', 4U>() == 7);
-static_assert(strchrnul<formatStringLiteral, 'f', 3U>() == 7);
-
-static_assert(strchrnul<formatEdgeCaseEmpty, 't'>() == 0);
-static_assert(strchrnul<formatEdgeCaseSingle, 't'>() == 1);
-static_assert(strchrnul<formatEdgeCaseSingle, '1'>() == 0);
-static_assert(strchrnul<formatEdgeCaseFormatLonely, '%'>() == 0);
-static_assert(strchrnul<formatEdgeCaseFormatLonely, '?'>() == 1);
-static_assert(strchrnul<formatStringLiteral, 'e'>() == 3);
-static_assert(strchrnul<formatStringLiteral, 'f'>() == 7);
-#endif
 
 BOOST_FIXTURE_TEST_SUITE(TestStreamWrite, std::stringstream)
 
@@ -464,7 +425,6 @@ BOOST_AUTO_TEST_CASE(smartptr)
 	smartptr_fmt::get(shrd);
 }
 
-#ifdef __cpp_nontype_template_parameter_class
 BOOST_AUTO_TEST_CASE(literal_format_string)
 {
 	std::stringstream str;
@@ -511,7 +471,6 @@ BOOST_AUTO_TEST_CASE(scprintf_get_no_args)
 	auto stng = scprintf<"Some literal format string.">();
 	BOOST_CHECK_EQUAL(stng, "Some literal format string.");
 }
-#endif
 
 using namespace AdHoc::literals;
 

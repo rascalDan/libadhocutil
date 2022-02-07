@@ -1,25 +1,17 @@
 #ifndef ADHOCUTIL_COMPILE_TIME_FORMATTER_H
 #define ADHOCUTIL_COMPILE_TIME_FORMATTER_H
 
+#include <array>
 #include <boost/preprocessor/control/iif.hpp> // IWYU pragma: keep
 #include <boost/preprocessor/variadic/size.hpp> // IWYU pragma: keep
+#include <cstddef>
+#include <iostream>
 #include <optional>
 #include <sstream> // IWYU pragma: export
 #include <type_traits>
 // Mapped for for BOOST_PP_VARIADIC_SIZE, BOOST_PP... in tests
 // IWYU pragma: no_include <boost/test/unit_test.hpp>
 
-#ifdef __cpp_nontype_template_parameter_class
-#	define USE_FIXED_STRING
-#endif
-
-#ifdef USE_FIXED_STRING
-#	define CtfString const auto
-#	include <array>
-#	include <iostream>
-#else
-#	define CtfString const auto &
-#endif
 namespace AdHoc {
 	// Template char utils
 	template<typename char_type>
@@ -37,7 +29,7 @@ namespace AdHoc {
 	}
 
 	// Template string utils
-	template<CtfString S>
+	template<const auto S>
 	static constexpr auto
 	strlen()
 	{
@@ -59,7 +51,7 @@ namespace AdHoc {
 		return off;
 	}
 
-	template<CtfString S, auto n, auto start = 0U, auto L = strlen<S>()>
+	template<const auto S, auto n, auto start = 0U, auto L = strlen<S>()>
 	static constexpr std::optional<decltype(start)>
 	strchr()
 	{
@@ -74,7 +66,7 @@ namespace AdHoc {
 		return off;
 	}
 
-	template<CtfString S, auto n, auto start = 0U, auto L = strlen<S>()>
+	template<const auto S, auto n, auto start = 0U, auto L = strlen<S>()>
 	static constexpr decltype(L)
 	strchrnul()
 	{
@@ -85,10 +77,10 @@ namespace AdHoc {
 		return off;
 	}
 
-	template<CtfString S, const auto L> class FormatterDetail;
+	template<const auto S, const auto L> class FormatterDetail;
 
 	/// Template used to apply parameters to a stream.
-	template<CtfString S, auto L, auto pos, typename stream, typename, auto...> struct StreamWriter {
+	template<const auto S, auto L, auto pos, typename stream, typename, auto...> struct StreamWriter {
 		/// Write parameters to stream.
 		template<typename... Pn>
 		static void
@@ -99,7 +91,7 @@ namespace AdHoc {
 	};
 
 	/// Helper to simplify implementations of StreamWriter.
-	template<CtfString S, auto L, auto pos, typename stream> struct StreamWriterBase {
+	template<const auto S, auto L, auto pos, typename stream> struct StreamWriterBase {
 		/// Continue processing parameters.
 		template<typename... Pn>
 		static inline void
@@ -110,12 +102,12 @@ namespace AdHoc {
 	};
 
 #define StreamWriterT(...) \
-	template<CtfString S, auto L, auto pos, typename stream, auto... sn> \
+	template<const auto S, auto L, auto pos, typename stream, auto... sn> \
 	struct StreamWriter<S, L, pos, stream, void, '%', __VA_ARGS__, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(__VA_ARGS__) + pos, stream>
 
 #define StreamWriterTP(P, ...) \
-	template<CtfString S, auto L, auto pos, typename stream, auto P, auto... sn> \
+	template<const auto S, auto L, auto pos, typename stream, auto P, auto... sn> \
 	struct StreamWriter<S, L, pos, stream, void, '%', __VA_ARGS__, sn...> : \
 		public StreamWriterBase<S, L, BOOST_PP_VARIADIC_SIZE(__VA_ARGS__) + pos, stream>
 
@@ -159,10 +151,10 @@ namespace AdHoc {
 	 * Compile time string formatter.
 	 * @param S the format string.
 	 */
-	template<CtfString S, const auto L> class FormatterDetail {
+	template<const auto S, const auto L> class FormatterDetail {
 	private:
 		using strlen_t = decltype(strlen<S>());
-		template<CtfString, auto, auto, typename> friend struct StreamWriterBase;
+		template<const auto, auto, auto, typename> friend struct StreamWriterBase;
 
 	public:
 		/// The derived charater type of the format string.
@@ -246,18 +238,18 @@ namespace AdHoc {
 		};
 	};
 
-#ifdef USE_FIXED_STRING
-	// New C++20 implementation
 	namespace support {
 		template<typename CharT, std::size_t N> class basic_fixed_string : public std::array<CharT, N> {
 		public:
 			// cppcheck-suppress noExplicitConstructor
+			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays,hicpp-explicit-conversions)
 			constexpr basic_fixed_string(const CharT (&str)[N + 1])
 			{
 				for (decltype(N) x = 0; x < N; x++) {
 					this->at(x) = str[x];
 				}
 			}
+			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
 			constexpr basic_fixed_string(const CharT * str, decltype(N) len)
 			{
 				for (decltype(N) x = 0; x < len; x++) {
@@ -267,7 +259,8 @@ namespace AdHoc {
 		};
 
 		template<typename CharT, std::size_t N>
-		basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
+		// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
+		basic_fixed_string(const CharT (&str)[N])->basic_fixed_string<CharT, N - 1>;
 	}
 
 	template<const support::basic_fixed_string Str> class LiteralFormatter : public FormatterDetail<Str, Str.size()> {
@@ -278,7 +271,7 @@ namespace AdHoc {
 		public FormatterDetail<support::basic_fixed_string<typename std::decay<decltype(S[0])>::type, L>(S, L), L> {
 	};
 
-#	define AdHocFormatter(name, str) using name = ::AdHoc::LiteralFormatter<str>
+#define AdHocFormatter(name, str) using name = ::AdHoc::LiteralFormatter<str>
 
 	template<const support::basic_fixed_string Str, typename... Pn>
 	inline auto
@@ -301,47 +294,11 @@ namespace AdHoc {
 		return scprintf<Str>(std::cout, pn...);
 	}
 
-#else
-	// Classic pre-C++20 implementation
-#	include "unique.h"
-	template<const auto & S, decltype(strlen<S>()) L = strlen<S>()> class Formatter : public FormatterDetail<S, L> {
-	};
-
-#	define AdHocFormatterTypedef(name, str, id) \
-		inline constexpr auto id = str; \
-		using name = ::AdHoc::Formatter<id>
-#	define AdHocFormatter(name, str) AdHocFormatterTypedef(name, str, MAKE_UNIQUE(name))
-
-#endif
-
 	namespace literals {
-#ifdef USE_FIXED_STRING
 		template<const support::basic_fixed_string Str> constexpr inline auto operator""_fmt() noexcept
 		{
 			return AdHoc::FormatterDetail<Str, Str.size()>();
 		}
-#else
-#	pragma GCC diagnostic push
-#	pragma GCC diagnostic ignored "-Wpedantic"
-#	ifdef __clang__
-#		pragma clang diagnostic push
-#		pragma clang diagnostic ignored "-Wgnu-string-literal-operator-template"
-#	endif
-		/// CTF format string holder
-		template<typename T, T... t> struct FMT {
-			/// CTF format string
-			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
-			static constexpr char fmtstr[] = {t...};
-		};
-		template<typename T, T... t> inline auto operator""_fmt() noexcept
-		{
-			return AdHoc::FormatterDetail<FMT<T, t...>::fmtstr, sizeof...(t)>();
-		}
-#	ifdef __clang__
-#		pragma clang diagnostic pop
-#	endif
-#	pragma GCC diagnostic pop
-#endif
 	}
 }
 

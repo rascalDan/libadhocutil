@@ -131,7 +131,7 @@ namespace AdHoc {
 	BOOST_PP_CAT(data, n)
 #define ISDIGIT(z, n, data) &&isdigit(BOOST_PP_CAT(data, BOOST_PP_ADD(n, 1)))
 #define FMTWIDTH(unused, d, data) \
-	template<CtfString S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, \
+	template<const auto S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, \
 			auto... sn> \
 	struct StreamWriter<S, L, pos, stream, \
 			typename std::enable_if<ispositivedigit(n0) BOOST_PP_REPEAT(d, ISDIGIT, n) && !isdigit(nn)>::type, '%', \
@@ -147,7 +147,7 @@ namespace AdHoc {
 	};
 	BOOST_PP_REPEAT(6, FMTWIDTH, void)
 #define FMTPRECISION(unused, d, data) \
-	template<CtfString S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, \
+	template<const auto S, auto L, auto pos, typename stream, BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), AUTON, n), auto nn, \
 			auto... sn> \
 	struct StreamWriter<S, L, pos, stream, \
 			typename std::enable_if<isdigit(n0) BOOST_PP_REPEAT(d, ISDIGIT, n) && !isdigit(nn)>::type, '%', '.', \
