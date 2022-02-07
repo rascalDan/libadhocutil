@@ -39,21 +39,6 @@ run
 	;
 
 run
-	testCompileTimeFormatter.cpp
-	: : :
-	<define>ROOT=\"$(me)\"
-	<define>BOOST_TEST_DYN_LINK
-	<library>..//adhocutil
-	<library>stdc++fs
-	<library>boost_utf
-	<cxxstd>17
-	-<cxxstd>20
-	<implicit-dependency>lorem-ipsum
-	:
-	testCompileTimeFormatter17
-	;
-
-run
 	testUriParse.cpp
 	: : :
 	<define>ROOT=\"$(me)\"
@@ -159,18 +144,6 @@ run
 	<library>boost_utf
 	:
 	testLazyPointer
-	;
-
-run
-	testLazyPointer.cpp
-	: : :
-	<define>BOOST_TEST_DYN_LINK
-	<library>..//adhocutil
-	<library>boost_utf
-	<cxxstd>17
-	-<cxxstd>20
-	:
-	testLazyPointer17
 	;
 
 run
