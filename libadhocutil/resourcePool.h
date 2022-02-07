@@ -1,15 +1,14 @@
-#ifndef ADHOCUTIL_RESOURCEPOOL_H
-#define ADHOCUTIL_RESOURCEPOOL_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "exception.h"
-#include <semaphore>
 #include "visibility.h"
 #include <chrono>
 #include <cstddef>
 #include <list>
 #include <map>
 #include <memory>
+#include <semaphore>
 #include <shared_mutex>
 #include <string>
 #include <thread>
@@ -172,5 +171,3 @@ namespace AdHoc {
 	};
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef LIBADHOC_MEMSTREAM_H
-#define LIBADHOC_MEMSTREAM_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include <cstdio>
@@ -47,5 +46,3 @@ namespace AdHoc {
 		FILE * strm;
 	};
 }
-
-#endif

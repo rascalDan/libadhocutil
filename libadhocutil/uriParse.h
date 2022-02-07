@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_URIPARSE_H
-#define ADHOCUTIL_URIPARSE_H
+#pragma once
 
 #include "exception.h"
 #include "visibility.h"
@@ -55,5 +54,3 @@ namespace AdHoc {
 		const std::string uri;
 	};
 }
-
-#endif

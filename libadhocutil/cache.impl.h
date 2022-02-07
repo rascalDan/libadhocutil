@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_CACHE_IMPL_H
-#define ADHOCUTIL_CACHE_IMPL_H
+#pragma once
 
 #include "cache.h" // IWYU pragma: export
 #include "lockHelpers.h"
@@ -175,5 +174,3 @@ namespace AdHoc {
 	/// @endcond
 
 }
-
-#endif

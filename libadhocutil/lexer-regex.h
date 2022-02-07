@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_LEXER_REGEX_H
-#define ADHOCUTIL_LEXER_REGEX_H
+#pragma once
 
 #include "lexer.h" // IWYU pragma: export
 #include "visibility.h"
@@ -24,5 +23,3 @@ namespace AdHoc::LexerMatchers {
 	DLL_PUBLIC Lexer::PatternPtr regex(
 			const Glib::ustring & regex, GRegexCompileFlags compile = {}, GRegexMatchFlags match = {});
 }
-
-#endif

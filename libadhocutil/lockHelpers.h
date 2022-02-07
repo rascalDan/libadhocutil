@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_LOCKHELPERS_H
-#define ADHOCUTIL_LOCKHELPERS_H
+#pragma once
 
 #define LIBADHOC_LOCK_CONCAT2(a, b) a##b
 #define LIBADHOC_LOCK_CONCAT(a, b) LIBADHOC_LOCK_CONCAT2(a, b)
@@ -13,5 +12,3 @@
 
 #define ScopeLock(l) BaseScopeLock(l, std::unique_lock)
 #define SharedScopeLock(l) BaseScopeLock(l, std::shared_lock)
-
-#endif

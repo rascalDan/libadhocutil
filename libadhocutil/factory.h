@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_FACTORY_H
-#define ADHOCUTIL_FACTORY_H
+#pragma once
 
 #include "plugins.h"
 #include "visibility.h"
@@ -51,5 +50,3 @@ namespace AdHoc {
 #define NAMEDFACTORY(Name, Implementation, BaseFactory) NAMEDPLUGIN(Name, BaseFactory::For<Implementation>, BaseFactory)
 
 #define FACTORY(Implementation, BaseFactory) NAMEDFACTORY(#Implementation, Implementation, BaseFactory)
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_PROCESSPIPES_H
-#define ADHOCUTIL_PROCESSPIPES_H
+#pragma once
 
 #include "handle.h"
 #include "visibility.h"
@@ -53,5 +52,3 @@ namespace AdHoc::System {
 		const OFHandle out, error;
 	};
 }
-
-#endif

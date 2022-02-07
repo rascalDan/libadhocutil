@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_FACTORY_IMPL_H
-#define ADHOCUTIL_FACTORY_IMPL_H
+#pragma once
 
 #include "factory.h" // IWYU pragma: export
 #include "plugins.impl.h" // IWYU pragma: export
@@ -29,5 +28,3 @@ namespace AdHoc {
 #define INSTANTIATEFACTORY(Base, ...) \
 	template class AdHoc::Factory<Base, __VA_ARGS__>; \
 	INSTANTIATEPLUGINOF(AdHoc::Factory<Base, __VA_ARGS__>)
-
-#endif

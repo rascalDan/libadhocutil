@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_LAZYPOINTER_H
-#define ADHOCUTIL_LAZYPOINTER_H
+#pragma once
 
 #include <functional>
 #include <memory>
@@ -139,5 +138,3 @@ namespace boost {
 		return dynamic_cast<R *>(p.get());
 	}
 }
-
-#endif

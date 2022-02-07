@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_FILEUTILS_H
-#define ADHOCUTIL_FILEUTILS_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "visibility.h"
@@ -179,5 +178,3 @@ namespace AdHoc::FileUtils {
 		[[nodiscard]] DLL_PRIVATE void * setupMap(const std::filesystem::path & path, int flags) const;
 	};
 }
-
-#endif

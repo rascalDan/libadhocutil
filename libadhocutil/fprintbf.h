@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_FPRINTBF_H
-#define ADHOCUTIL_FPRINTBF_H
+#pragma once
 
 #include "buffer.h"
 #include "visibility.h"
@@ -27,5 +26,3 @@ size_t inline fprintbf(FILE * f, boost::format & fmt, const Param & p, const Par
 	fmt % p;
 	return fprintbf(f, fmt, ps...);
 }
-
-#endif

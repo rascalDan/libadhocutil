@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_CPP11_HELPERS
-#define ADHOCUTIL_CPP11_HELPERS
+#pragma once
 
 #define SPECIAL_MEMBERS_CONS(T, type) \
 	T(const T &) = type; \
@@ -29,5 +28,3 @@
 #define SPECIAL_MEMBERS_DEFAULT_MOVE_NO_COPY(T) \
 	SPECIAL_MEMBERS_COPY(T, delete); \
 	SPECIAL_MEMBERS_MOVE(T, default)
-
-#endif

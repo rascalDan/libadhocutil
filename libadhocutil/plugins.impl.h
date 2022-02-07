@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_PLUGINS_IMPL_H
-#define ADHOCUTIL_PLUGINS_IMPL_H
+#pragma once
 
 #include "plugins.h" // IWYU pragma: export
 #include "unique.h"
@@ -124,5 +123,3 @@ namespace AdHoc {
 			::AdHoc::PluginManager::getDefault()->removeResolver<T>(); \
 		} \
 	}
-
-#endif

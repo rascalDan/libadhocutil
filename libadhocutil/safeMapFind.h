@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_SAFEMAPFIND_H
-#define ADHOCUTIL_SAFEMAPFIND_H
+#pragma once
 
 #include <algorithm>
 
@@ -59,5 +58,3 @@ namespace AdHoc {
 	}
 
 }
-
-#endif

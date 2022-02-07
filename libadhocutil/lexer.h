@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_LEXER_H
-#define ADHOCUTIL_LEXER_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "visibility.h"
@@ -102,5 +101,3 @@ namespace AdHoc {
 		void extract(const gchar * string, size_t length) const;
 	};
 }
-
-#endif

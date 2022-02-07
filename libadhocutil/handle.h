@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_HANDLE_H
-#define ADHOCUTIL_HANDLE_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include <utility>
@@ -107,5 +106,3 @@ namespace AdHoc {
 		return {T(std::forward<Args>(args)...), std::forward<D>(d)};
 	}
 }
-
-#endif

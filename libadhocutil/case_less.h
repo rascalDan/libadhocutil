@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_CASELESS_H
-#define ADHOCUTIL_CASELESS_H
+#pragma once
 
 #include <algorithm> // IWYU pragma: keep
 #include <cstring>
@@ -17,5 +16,3 @@ namespace AdHoc {
 		}
 	};
 }
-
-#endif

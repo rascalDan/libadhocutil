@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_CURLHANDLE_H
-#define ADHOCUTIL_CURLHANDLE_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "visibility.h"
@@ -59,5 +58,3 @@ namespace AdHoc::Net {
 	};
 	using CurlHandlePtr = std::shared_ptr<CurlHandle>;
 }
-
-#endif

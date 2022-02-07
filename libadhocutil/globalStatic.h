@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_GLOBALSTATIC_H
-#define ADHOCUTIL_GLOBALSTATIC_H
+#pragma once
 
 namespace AdHoc {
 	/**
@@ -24,5 +23,3 @@ namespace AdHoc {
 		inline static Ptr & instance();
 	};
 }
-
-#endif

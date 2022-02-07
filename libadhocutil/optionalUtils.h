@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_OPTIONALS_H
-#define ADHOCUTIL_OPTIONALS_H
+#pragma once
 
 #include <type_traits>
 
@@ -22,5 +21,3 @@ namespace AdHoc {
 		return (a ? &*a : b);
 	}
 }
-
-#endif

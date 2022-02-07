@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_EXCEPTION_H
-#define ADHOCUTIL_EXCEPTION_H
+#pragma once
 
 #include <exception> // IWYU pragma: export
 #include <optional>
@@ -30,5 +29,3 @@ namespace AdHoc {
 	};
 	using StdException = Exception<std::exception>;
 }
-
-#endif

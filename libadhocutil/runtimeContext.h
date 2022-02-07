@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_RUNTIMECONTEXT_H
-#define ADHOCUTIL_RUNTIMECONTEXT_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "visibility.h"
@@ -45,5 +44,3 @@ namespace AdHoc::System {
 	};
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef LIBADHOCUTIL_UNITTESTS_UTILTESTCLASSES_H
-#define LIBADHOCUTIL_UNITTESTS_UTILTESTCLASSES_H
+#pragma once
 
 #include <plugins.h>
 
@@ -17,5 +16,3 @@ class OtherBase : public AdHoc::AbstractPluginImplementation {
 
 class OtherImpl : public OtherBase {
 };
-
-#endif

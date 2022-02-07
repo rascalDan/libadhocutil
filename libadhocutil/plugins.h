@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_PLUGINS_H
-#define ADHOCUTIL_PLUGINS_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "unique.h"
@@ -240,5 +239,3 @@ namespace AdHoc {
 		} \
 	}
 #define PLUGIN(Implementation, Base) NAMEDPLUGIN(#Implementation, Implementation, Base)
-
-#endif

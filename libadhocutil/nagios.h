@@ -1,5 +1,4 @@
-#ifndef NAGIOS_H
-#define NAGIOS_H
+#pragma once
 
 #include "visibility.h"
 #include <cstdint>
@@ -19,5 +18,3 @@ namespace AdHoc {
 	DLL_PUBLIC bool submitNagiosPassiveServiceCheck(
 			std::ostream &, const std::string_view &, NagiosStatusCode, const std::string_view &);
 }
-
-#endif

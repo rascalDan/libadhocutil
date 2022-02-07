@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_REFLECTION_H
-#define ADHOCUTIL_REFLECTION_H
+#pragma once
 
 #include <boost/lexical_cast.hpp>
 #include <functional>
@@ -97,5 +96,3 @@ namespace AdHoc {
 	};
 
 }
-
-#endif

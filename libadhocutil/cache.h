@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_CACHE_H
-#define ADHOCUTIL_CACHE_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "visibility.h"
@@ -147,5 +146,3 @@ namespace AdHoc {
 	};
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_RESOURCEPOOL_IMPL_H
-#define ADHOCUTIL_RESOURCEPOOL_IMPL_H
+#pragma once
 
 #include "lockHelpers.h"
 #include "resourcePool.h" // IWYU pragma: export
@@ -17,7 +16,6 @@ namespace AdHoc {
 	//
 	// ResourceHandle
 	//
-
 	template<typename R> ResourceHandle<R>::ResourceHandle(std::shared_ptr<Object> o) noexcept : resource(std::move(o))
 	{
 	}
@@ -273,5 +271,3 @@ namespace AdHoc {
 	{
 	}
 }
-
-#endif

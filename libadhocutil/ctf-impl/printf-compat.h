@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_COMPILE_TIME_FORMATTER_PRINTF_H
-#define ADHOCUTIL_COMPILE_TIME_FORMATTER_PRINTF_H
+#pragma once
 
 #include "../compileTimeFormatter.h"
 #include <boost/assert.hpp>
@@ -211,5 +210,3 @@ namespace AdHoc {
 	FLAGCONV(s << std::setfill(' '), ' ');
 #undef FLAGCONV
 }
-
-#endif

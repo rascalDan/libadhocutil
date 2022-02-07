@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_CURLMULTIHANDLE_H
-#define ADHOCUTIL_CURLMULTIHANDLE_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "curlHandle.h"
@@ -42,5 +41,3 @@ namespace AdHoc::Net {
 	};
 	using CurlMultiHandlePtr = std::shared_ptr<CurlMultiHandle>;
 }
-
-#endif

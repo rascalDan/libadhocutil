@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_BUFFER_H
-#define ADHOCUTIL_BUFFER_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "visibility.h"
@@ -180,5 +179,3 @@ namespace AdHoc {
 #define vstringf(...) AdHoc::Buffer().vappendf(__VA_ARGS__).str()
 #define stringf(...) AdHoc::Buffer().appendf(__VA_ARGS__).str()
 #define stringbf(...) AdHoc::Buffer().appendbf(__VA_ARGS__).str()
-
-#endif

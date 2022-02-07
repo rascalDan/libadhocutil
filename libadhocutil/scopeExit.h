@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_SCOPEEXIT_H
-#define ADHOCUTIL_SCOPEEXIT_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "visibility.h"
@@ -40,5 +39,3 @@ namespace AdHoc {
 	};
 
 }
-
-#endif

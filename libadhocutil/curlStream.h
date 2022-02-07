@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_CURLSTREAM_H
-#define ADHOCUTIL_CURLSTREAM_H
+#pragma once
 
 #include "c++11Helpers.h"
 #include "curlHandle.h"
@@ -45,5 +44,3 @@ namespace AdHoc::Net {
 
 	using CurlStream = boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>>;
 }
-
-#endif

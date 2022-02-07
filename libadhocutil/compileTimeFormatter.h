@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_COMPILE_TIME_FORMATTER_H
-#define ADHOCUTIL_COMPILE_TIME_FORMATTER_H
+#pragma once
 
 #include <array>
 #include <boost/preprocessor/control/iif.hpp> // IWYU pragma: keep
@@ -301,5 +300,3 @@ namespace AdHoc {
 		}
 	}
 }
-
-#endif

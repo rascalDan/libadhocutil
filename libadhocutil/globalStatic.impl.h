@@ -1,5 +1,4 @@
-#ifndef ADHOCUTIL_GLOBALSTATIC_IMPL_H
-#define ADHOCUTIL_GLOBALSTATIC_IMPL_H
+#pragma once
 
 #include "globalStatic.h" // IWYU pragma: export
 
@@ -34,5 +33,3 @@ namespace AdHoc {
 		return _instance;
 	}
 }
-
-#endif
