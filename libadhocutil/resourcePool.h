@@ -3,9 +3,7 @@
 
 #include "c++11Helpers.h"
 #include "exception.h"
-#ifdef __cpp_lib_semaphore
-#	include <semaphore>
-#endif
+#include <semaphore>
 #include "visibility.h"
 #include <chrono>
 #include <cstddef>
@@ -16,7 +14,6 @@
 #include <string>
 #include <thread>
 #include <tuple>
-// IWYU pragma: no_include "polyfill-semaphore.h"
 
 namespace AdHoc {
 	template<typename Resource> class ResourcePool;

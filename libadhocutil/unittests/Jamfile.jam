@@ -252,17 +252,6 @@ run
 	;
 
 run
-	testSemaphore.cpp
-	: : :
-	<define>BOOST_TEST_DYN_LINK
-	<library>..//adhocutil
-	<library>boost_utf
-	<library>pthread
-	:
-	testSemaphore
-	;
-
-run
 	testException.cpp
 	: : :
 	<define>BOOST_TEST_DYN_LINK

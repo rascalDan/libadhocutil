@@ -1,10 +1,6 @@
 #include "resourcePool.h"
 #include "compileTimeFormatter.h"
-#ifdef __cpp_lib_semaphore
-#	include <semaphore>
-#else
-#	include "polyfill-semaphore.h"
-#endif
+#include <semaphore>
 
 namespace AdHoc {
 	ResourcePoolBase::ResourcePoolBase(std::ptrdiff_t maxSize, std::size_t keep_) :

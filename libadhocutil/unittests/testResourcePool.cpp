@@ -4,11 +4,6 @@
 #include "c++11Helpers.h"
 #include "lockHelpers.h"
 #include "resourcePool.impl.h"
-#ifdef __cpp_lib_semaphore
-#	include <semaphore>
-#else
-#	include "polyfill-semaphore.h" // IWYU pragma: keep
-#endif
 #include <atomic>
 #include <list>
 #include <map>
