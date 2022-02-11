@@ -238,6 +238,7 @@ namespace AdHoc {
 	};
 
 	namespace support {
+		/// \private
 		template<typename CharT, std::size_t N> class basic_fixed_string : public std::array<CharT, N> {
 		public:
 			// cppcheck-suppress noExplicitConstructor

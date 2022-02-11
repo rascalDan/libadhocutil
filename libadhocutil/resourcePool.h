@@ -50,6 +50,7 @@ namespace AdHoc {
 		std::shared_ptr<Object> resource;
 	};
 
+	/// \private
 	class DLL_PUBLIC ResourcePoolBase {
 	public:
 		/// Create a new resource pool.
