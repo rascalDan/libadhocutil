@@ -3,27 +3,24 @@
 #include <semaphore>
 
 namespace AdHoc {
-	ResourcePoolBase::ResourcePoolBase(std::ptrdiff_t maxSize, std::size_t keep_) :
-		keep {keep_}, poolSize {std::make_unique<SemaphoreType>(maxSize)}
-	{
-	}
+	ResourcePoolBase::ResourcePoolBase(std::ptrdiff_t maxSize, std::size_t keep_) : keep {keep_}, poolSize {maxSize} { }
 
 	void
 	ResourcePoolBase::release()
 	{
-		poolSize->release();
+		poolSize.release();
 	}
 
 	void
 	ResourcePoolBase::acquire()
 	{
-		poolSize->acquire();
+		poolSize.acquire();
 	}
 
 	bool
 	ResourcePoolBase::try_acquire_for(std::chrono::milliseconds timeout)
 	{
-		return poolSize->try_acquire_for(timeout);
+		return poolSize.try_acquire_for(timeout);
 	}
 
 	ResourcePoolBase::~ResourcePoolBase() = default;

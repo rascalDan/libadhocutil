@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <semaphore>
 #include <stdexcept>
 #include <thread>
 #include <unistd.h>
@@ -329,7 +330,7 @@ BOOST_AUTO_TEST_CASE(threading1, *boost::unit_test::timeout(10))
 }
 
 static void
-acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::ResourcePoolBase::SemaphoreType & s)
+acquireAndKeepFor1Second(TRPSmall * pool, std::counting_semaphore<> & s)
 {
 	auto r = pool->get();
 	static std::mutex m;
@@ -343,7 +344,7 @@ acquireAndKeepFor1Second(TRPSmall * pool, AdHoc::ResourcePoolBase::SemaphoreType
 BOOST_AUTO_TEST_CASE(threading2)
 {
 	TRPSmall pool;
-	AdHoc::ResourcePoolBase::SemaphoreType s {0};
+	std::counting_semaphore<> s {0};
 	std::thread t1([&pool, &s]() {
 		acquireAndKeepFor1Second(&pool, s);
 	});

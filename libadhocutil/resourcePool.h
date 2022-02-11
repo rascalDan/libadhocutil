@@ -65,17 +65,12 @@ namespace AdHoc {
 		bool try_acquire_for(std::chrono::milliseconds);
 		void release();
 
-#ifdef __cpp_lib_semaphore
-		using SemaphoreType = std::counting_semaphore<>;
-#else
-		using SemaphoreType = class Semaphore;
-#endif
 	protected:
 		mutable std::shared_mutex lock;
 		std::size_t keep;
 
 	private:
-		std::unique_ptr<SemaphoreType> poolSize;
+		std::counting_semaphore<> poolSize;
 	};
 
 	/// A fully featured resource pool for sharing and reusing a finite set of
