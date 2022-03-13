@@ -23,9 +23,9 @@ struct GetLibPath {
 };
 BOOST_TEST_GLOBAL_FIXTURE(GetLibPath);
 
-static std::optional<std::string> nullResolver(const std::type_info &, const std::string_view &);
-static std::optional<std::string> badResolver(const std::type_info &, const std::string_view &);
-static std::optional<std::string> goodResolver(const std::type_info &, const std::string_view &);
+static std::optional<std::string> nullResolver(const std::type_info &, const std::string_view);
+static std::optional<std::string> badResolver(const std::type_info &, const std::string_view);
+static std::optional<std::string> goodResolver(const std::type_info &, const std::string_view);
 
 BOOST_AUTO_TEST_CASE(ready)
 {
@@ -48,19 +48,19 @@ BOOST_AUTO_TEST_CASE(loadAndUnloadlib)
 }
 
 std::optional<std::string>
-nullResolver(const std::type_info &, const std::string_view &)
+nullResolver(const std::type_info &, const std::string_view)
 {
 	return {};
 }
 
 std::optional<std::string>
-badResolver(const std::type_info &, const std::string_view &)
+badResolver(const std::type_info &, const std::string_view)
 {
 	return std::string("dontexist");
 }
 
 std::optional<std::string>
-goodResolver(const std::type_info & t, const std::string_view & n)
+goodResolver(const std::type_info & t, const std::string_view n)
 {
 	BOOST_REQUIRE_EQUAL(typeid(BaseThing), t);
 	BOOST_REQUIRE_EQUAL("ImplOfThing", n);

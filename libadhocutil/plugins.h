@@ -24,7 +24,7 @@ namespace AdHoc {
 	class NoSuchPluginException : public std::runtime_error {
 	public:
 		/// Constructor taking name and type of plugin requested.
-		NoSuchPluginException(const std::string_view &, const std::type_info &);
+		NoSuchPluginException(const std::string_view, const std::type_info &);
 	};
 
 	/// Base class for all plugin implementations.
@@ -40,7 +40,7 @@ namespace AdHoc {
 	class DLL_PUBLIC Plugin {
 	public:
 		/// Constructor taking name, filename and line of install.
-		Plugin(const std::string_view &, const std::string_view &, int);
+		Plugin(const std::string_view, const std::string_view, int);
 		/// Standard move/copy support
 		SPECIAL_MEMBERS_DELETE(Plugin);
 		virtual ~Plugin() = default;
@@ -78,7 +78,7 @@ namespace AdHoc {
 	class LoadLibraryException : public std::runtime_error {
 	public:
 		/// Constuctor taking syscall error details.
-		LoadLibraryException(const std::string_view & f, const std::string_view & msg);
+		LoadLibraryException(const std::string_view f, const std::string_view msg);
 	};
 
 	template<typename T>
@@ -86,7 +86,7 @@ namespace AdHoc {
 	class DLL_PUBLIC PluginOf : public Plugin {
 	public:
 		/// Constructor taking an instance and name, filename and line of install for Plugin.
-		PluginOf(std::shared_ptr<T> t, const std::string_view & n, const std::string_view & f, int l);
+		PluginOf(std::shared_ptr<T> t, const std::string_view n, const std::string_view f, int l);
 
 		/// Get the type of this plugin.
 		[[nodiscard]] const std::type_info & type() const override;
@@ -105,7 +105,7 @@ namespace AdHoc {
 		/// Callback definition to resolve a plugin type and name to a potential library
 		/// containing an implementation.
 		using PluginResolver
-				= std::function<std::optional<std::string>(const std::type_info &, const std::string_view &)>;
+				= std::function<std::optional<std::string>(const std::type_info &, const std::string_view)>;
 
 		PluginManager();
 		virtual ~PluginManager();
@@ -116,9 +116,9 @@ namespace AdHoc {
 		/// Install a plugin.
 		void add(const PluginPtr &);
 		/// Uninstall a plugin.
-		void remove(const std::string_view &, const std::type_info &);
+		void remove(const std::string_view, const std::type_info &);
 		/// Get a specific plugin.
-		[[nodiscard]] PluginPtr get(const std::string_view &, const std::type_info &) const;
+		[[nodiscard]] PluginPtr get(const std::string_view, const std::type_info &) const;
 		/// Get all plugins.
 		[[nodiscard]] std::set<PluginPtr> getAll() const;
 		/// Get all plugins of a specific type.
@@ -132,7 +132,7 @@ namespace AdHoc {
 		 * @param l Line number.
 		 */
 		template<typename T>
-		void add(const std::shared_ptr<T> & i, const std::string_view & n, const std::string_view & f, int l);
+		void add(const std::shared_ptr<T> & i, const std::string_view n, const std::string_view f, int l);
 
 		/**
 		 * Create and install a plugin
@@ -146,7 +146,7 @@ namespace AdHoc {
 		 */
 		template<typename T, typename I, typename... Args>
 		void
-		create(const std::string_view & n, const std::string_view & f, int l, const Args &... args)
+		create(const std::string_view n, const std::string_view f, int l, const Args &... args)
 		{
 			add<T>(std::make_shared<I>(args...), n, f, l);
 		}
@@ -155,19 +155,19 @@ namespace AdHoc {
 		 * Uninstall a plugin.
 		 * @param n Name of plugin.
 		 */
-		template<typename T> void remove(const std::string_view & n);
+		template<typename T> void remove(const std::string_view n);
 
 		/**
 		 * Get a specific plugin.
 		 * @param n Name of plugin.
 		 */
-		template<typename T> [[nodiscard]] std::shared_ptr<const PluginOf<T>> get(const std::string_view & n) const;
+		template<typename T> [[nodiscard]] std::shared_ptr<const PluginOf<T>> get(const std::string_view n) const;
 
 		/**
 		 * Get the implementation from specific plugin.
 		 * @param n Name of plugin.
 		 */
-		template<typename T> [[nodiscard]] std::shared_ptr<T> getImplementation(const std::string_view & n) const;
+		template<typename T> [[nodiscard]] std::shared_ptr<T> getImplementation(const std::string_view n) const;
 
 		/**
 		 * Get all plugins of a given time.

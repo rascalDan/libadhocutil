@@ -11,8 +11,7 @@ namespace AdHoc {
 
 	/// LCOV_EXCL_START (calls real Nagios)
 	bool
-	submitNagiosPassiveServiceCheck(
-			const std::string_view & svc, NagiosStatusCode code, const std::string_view & output)
+	submitNagiosPassiveServiceCheck(const std::string_view svc, NagiosStatusCode code, const std::string_view output)
 	{
 		std::ofstream command_file("/var/nagios/rw/nagios.cmd");
 		return submitNagiosPassiveServiceCheck(command_file, svc, code, output);
@@ -20,8 +19,8 @@ namespace AdHoc {
 	/// LCOV_EXCL_STOP
 
 	bool
-	submitNagiosPassiveServiceCheck(std::ostream & command_file, const std::string_view & svc, NagiosStatusCode code,
-			const std::string_view & output)
+	submitNagiosPassiveServiceCheck(std::ostream & command_file, const std::string_view svc, NagiosStatusCode code,
+			const std::string_view output)
 	{
 		if (command_file.good()) {
 			struct utsname buf {

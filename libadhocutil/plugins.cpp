@@ -38,10 +38,10 @@ namespace AdHoc {
 
 	AbstractPluginImplementation::~AbstractPluginImplementation() = default;
 
-	Plugin::Plugin(const std::string_view & n, const std::string_view & f, int l) : name(n), filename(f), lineno(l) { }
+	Plugin::Plugin(const std::string_view n, const std::string_view f, int l) : name(n), filename(f), lineno(l) { }
 
 	AdHocFormatter(NoSuchPluginExceptionMsg, "No such plugin: %? of type %?");
-	NoSuchPluginException::NoSuchPluginException(const std::string_view & n, const std::type_info & t) :
+	NoSuchPluginException::NoSuchPluginException(const std::string_view n, const std::type_info & t) :
 		std::runtime_error(NoSuchPluginExceptionMsg::get(n, t))
 	{
 	}
@@ -60,7 +60,7 @@ namespace AdHoc {
 	}
 
 	AdHocFormatter(LoadLibraryExceptionMsg, "Failed to load library [%?]; %?");
-	LoadLibraryException::LoadLibraryException(const std::string_view & f, const std::string_view & msg) :
+	LoadLibraryException::LoadLibraryException(const std::string_view f, const std::string_view msg) :
 		std::runtime_error(LoadLibraryExceptionMsg::get(f, msg))
 	{
 	}
@@ -106,14 +106,14 @@ namespace AdHoc {
 	}
 
 	void
-	PluginManager::remove(const std::string_view & n, const std::type_info & t)
+	PluginManager::remove(const std::string_view n, const std::type_info & t)
 	{
 		auto r = plugins->get<2>().equal_range(std::make_tuple(n, std::cref(t)));
 		plugins->get<2>().erase(r.first, r.second);
 	}
 
 	PluginPtr
-	PluginManager::get(const std::string_view & n, const std::type_info & t) const
+	PluginManager::get(const std::string_view n, const std::type_info & t) const
 	{
 		auto r = plugins->get<2>().equal_range(std::make_tuple(n, std::cref(t)));
 		if (r.first == r.second) {

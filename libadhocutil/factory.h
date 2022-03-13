@@ -37,13 +37,13 @@ namespace AdHoc {
 		 * Helper to get the factory for a specific implementation.
 		 * @param name The name of the implementation.
 		 */
-		[[nodiscard]] static std::shared_ptr<const Factory> get(const std::string_view & name);
+		[[nodiscard]] static std::shared_ptr<const Factory> get(const std::string_view name);
 		/**
 		 * Helper to create a new instance from a specific factory.
 		 * @param name The name of the implementation.
 		 * @param p The parameters to pass to the constructor.
 		 */
-		[[nodiscard]] static std::shared_ptr<Base> createNew(const std::string_view & name, const Params &... p);
+		[[nodiscard]] static std::shared_ptr<Base> createNew(const std::string_view name, const Params &... p);
 	};
 }
 

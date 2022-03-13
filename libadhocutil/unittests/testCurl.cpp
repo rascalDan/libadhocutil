@@ -26,7 +26,7 @@ discard(void *, size_t sz, size_t nm, void *)
 }
 
 AdHocFormatter(FileUrl, "file://%?/%?");
-const auto urlGen = [](const std::string_view & url) {
+const auto urlGen = [](const std::string_view url) {
 	return FileUrl::get(rootDir.string(), url);
 };
 
