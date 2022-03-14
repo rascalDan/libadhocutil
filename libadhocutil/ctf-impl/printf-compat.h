@@ -16,11 +16,11 @@ namespace AdHoc {
 	StreamWriterT(__VA_ARGS__) { \
 		template<typename... Pn> \
 		static inline void \
-		write(stream & s, const PARAMTYPE & p, const Pn &... pn) \
+		write(stream & s, const PARAMTYPE & p, Pn &&... pn) \
 		{ \
 			OP; \
 			s.copyfmt(std::ios(nullptr)); \
-			StreamWriter::next(s, pn...); \
+			StreamWriter::next(s, std::forward<Pn>(pn)...); \
 		} \
 	}
 
@@ -71,39 +71,39 @@ namespace AdHoc {
 	StreamWriterT('p') {
 		template<typename Obj, typename... Pn>
 		static inline void
-		write(stream & s, Obj * const ptr, const Pn &... pn)
+		write(stream & s, Obj * const ptr, Pn &&... pn)
 		{
 			s << std::showbase << std::hex << reinterpret_cast<long unsigned int>(ptr);
 			s.copyfmt(std::ios(nullptr));
-			StreamWriter::next(s, pn...);
+			StreamWriter::next(s, std::forward<Pn>(pn)...);
 		}
 		template<typename Ptr, typename... Pn>
 		static inline void
-		write(stream & s, const Ptr & ptr, const Pn &... pn)
+		write(stream & s, const Ptr & ptr, Pn &&... pn)
 		{
-			write(s, ptr.get(), pn...);
+			write(s, ptr.get(), std::forward<Pn>(pn)...);
 		}
 	};
 
 	StreamWriterT('m') {
 		template<typename... Pn>
 		static inline void
-		write(stream & s, const Pn &... pn)
+		write(stream & s, Pn &&... pn)
 		{
 			s << strerror(errno);
 			s.copyfmt(std::ios(nullptr));
-			StreamWriter::next(s, pn...);
+			StreamWriter::next(s, std::forward<Pn>(pn)...);
 		}
 	};
 	StreamWriterT('n') {
 		template<typename... Pn>
 		static inline void
-		write(stream & s, std::streamoff * n, const Pn &... pn)
+		write(stream & s, std::streamoff * n, Pn &&... pn)
 		{
 			BOOST_ASSERT_MSG(n, "%n conversion requires non-null parameter");
 			*n = streamLength(s);
 			s.copyfmt(std::ios(nullptr));
-			StreamWriter::next(s, pn...);
+			StreamWriter::next(s, std::forward<Pn>(pn)...);
 		}
 	};
 
@@ -137,11 +137,12 @@ namespace AdHoc {
 			BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n), nn, sn...> { \
 		template<typename... Pn> \
 		static inline void \
-		write(stream & s, const Pn &... pn) \
+		write(stream & s, Pn &&... pn) \
 		{ \
 			constexpr auto p = decdigits<BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n)>(); \
 			s << std::setw(p); \
-			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 1), stream, void, '%', nn, sn...>::write(s, pn...); \
+			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 1), stream, void, '%', nn, sn...>::write( \
+					s, std::forward<Pn>(pn)...); \
 		} \
 	};
 	BOOST_PP_REPEAT(6, FMTWIDTH, void)
@@ -153,11 +154,12 @@ namespace AdHoc {
 			BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n), nn, sn...> { \
 		template<typename... Pn> \
 		static inline void \
-		write(stream & s, const Pn &... pn) \
+		write(stream & s, Pn &&... pn) \
 		{ \
 			constexpr auto p = decdigits<BOOST_PP_REPEAT(BOOST_PP_ADD(d, 1), NS, n)>(); \
 			s << std::setprecision(p); \
-			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 2), stream, void, '%', nn, sn...>::write(s, pn...); \
+			StreamWriter<S, L, pos + BOOST_PP_ADD(d, 2), stream, void, '%', nn, sn...>::write( \
+					s, std::forward<Pn>(pn)...); \
 		} \
 	};
 	BOOST_PP_REPEAT(6, FMTPRECISION, void)
@@ -169,26 +171,26 @@ namespace AdHoc {
 	StreamWriterT('.', '*') {
 		template<typename... Pn>
 		static inline void
-		write(stream & s, int l, const Pn &... pn)
+		write(stream & s, int l, Pn &&... pn)
 		{
 			s << std::setw(l);
-			StreamWriter<S, L, pos + 2, stream, void, '%', sn...>::write(s, pn...);
+			StreamWriter<S, L, pos + 2, stream, void, '%', sn...>::write(s, std::forward<Pn>(pn)...);
 		}
 	};
 	StreamWriterT('.', '*', 's') {
 		template<typename... Pn>
 		static inline void
-		write(stream & s, int l, const std::string_view p, const Pn &... pn)
+		write(stream & s, int l, const std::string_view p, Pn &&... pn)
 		{
-			return write(s, static_cast<size_t>(l), p, pn...);
+			return write(s, static_cast<size_t>(l), p, std::forward<Pn>(pn)...);
 		}
 		template<typename... Pn>
 		static inline void
-		write(stream & s, size_t l, const std::string_view p, const Pn &... pn)
+		write(stream & s, size_t l, const std::string_view p, Pn &&... pn)
 		{
 			s << p.substr(0, l);
 			s.copyfmt(std::ios(nullptr));
-			StreamWriter::next(s, pn...);
+			StreamWriter::next(s, std::forward<Pn>(pn)...);
 		}
 	};
 
@@ -197,10 +199,10 @@ namespace AdHoc {
 	StreamWriterT(__VA_ARGS__) { \
 		template<typename... Pn> \
 		static inline void \
-		write(stream & s, const Pn &... pn) \
+		write(stream & s, Pn &&... pn) \
 		{ \
 			OP; \
-			StreamWriter<S, L, pos + 1, stream, void, '%', sn...>::write(s, pn...); \
+			StreamWriter<S, L, pos + 1, stream, void, '%', sn...>::write(s, std::forward<Pn>(pn)...); \
 		} \
 	}
 	FLAGCONV(s << std::showbase, '#');

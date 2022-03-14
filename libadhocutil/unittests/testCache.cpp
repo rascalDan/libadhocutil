@@ -15,7 +15,7 @@ public:
 	// cppcheck-suppress noExplicitConstructor; NOLINTNEXTLINE(hicpp-explicit-conversions)
 	Obj(int i) : v(i) { }
 	bool
-	operator==(const int & i) const
+	operator==(const int i) const
 	{
 		return v == i;
 	}
@@ -23,7 +23,7 @@ public:
 };
 
 bool
-operator==(const int & i, const Obj & o)
+operator==(const int i, const Obj & o)
 {
 	return i == o.v;
 }

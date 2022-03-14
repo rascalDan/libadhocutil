@@ -149,7 +149,7 @@ namespace AdHoc {
 	class DLL_PUBLIC NoCurrentResource : public AdHoc::StdException {
 	public:
 		/// Construct for a specific thread and resource type.
-		NoCurrentResource(const std::thread::id &, const char * const type);
+		NoCurrentResource(const std::thread::id, const char * const type);
 
 		std::string message() const noexcept override;
 
@@ -163,7 +163,7 @@ namespace AdHoc {
 	template<typename R> class DLL_PUBLIC NoCurrentResourceT : public NoCurrentResource {
 	public:
 		/// Construct for a specific thread and resource type R.
-		explicit NoCurrentResourceT(const std::thread::id &);
+		explicit NoCurrentResourceT(const std::thread::id);
 	};
 
 }

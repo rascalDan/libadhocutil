@@ -34,7 +34,7 @@ namespace AdHoc {
 		return TimeOutOnResourcePoolMsg::get(name);
 	}
 
-	NoCurrentResource::NoCurrentResource(const std::thread::id & id, const char * const n) : threadId(id), name(n) { }
+	NoCurrentResource::NoCurrentResource(const std::thread::id id, const char * const n) : threadId(id), name(n) { }
 
 	AdHocFormatter(NoCurrentResourceMsg, "Thread %? has no current resource handle of type %?");
 	std::string

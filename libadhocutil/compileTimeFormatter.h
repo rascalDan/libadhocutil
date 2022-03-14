@@ -8,6 +8,7 @@
 #include <optional>
 #include <sstream> // IWYU pragma: export
 #include <type_traits>
+#include <utility>
 // Mapped for for BOOST_PP_VARIADIC_SIZE, BOOST_PP... in tests
 // IWYU pragma: no_include <boost/test/unit_test.hpp>
 
@@ -15,14 +16,14 @@ namespace AdHoc {
 	// Template char utils
 	template<typename char_type>
 	constexpr bool
-	isdigit(const char_type & ch)
+	isdigit(const char_type ch)
 	{
 		return (ch >= '0' && ch <= '9');
 	}
 
 	template<typename char_type>
 	constexpr bool
-	ispositivedigit(const char_type & ch)
+	ispositivedigit(const char_type ch)
 	{
 		return (ch >= '1' && ch <= '9');
 	}
@@ -83,7 +84,7 @@ namespace AdHoc {
 		/// Write parameters to stream.
 		template<typename... Pn>
 		static void
-		write(stream &, const Pn &...)
+		write(stream &, Pn &&...)
 		{
 			static_assert(!L, "invalid format string/arguments");
 		}
@@ -94,9 +95,9 @@ namespace AdHoc {
 		/// Continue processing parameters.
 		template<typename... Pn>
 		static inline void
-		next(stream & s, const Pn &... pn)
+		next(stream & s, Pn &&... pn)
 		{
-			FormatterDetail<S, L>::template Parser<stream, pos + 1, Pn...>::run(s, pn...);
+			FormatterDetail<S, L>::template Parser<stream, pos + 1, Pn...>::run(s, std::forward<Pn>(pn)...);
 		}
 	};
 
@@ -114,10 +115,10 @@ namespace AdHoc {
 	StreamWriterT('?') {
 		template<typename P, typename... Pn>
 		static inline void
-		write(stream & s, const P & p, const Pn &... pn)
+		write(stream & s, P && p, Pn &&... pn)
 		{
-			s << p;
-			StreamWriter::next(s, pn...);
+			s << std::forward<P>(p);
+			StreamWriter::next(s, std::forward<Pn>(pn)...);
 		}
 	};
 
@@ -125,10 +126,10 @@ namespace AdHoc {
 	StreamWriterT('%') {
 		template<typename... Pn>
 		static inline void
-		write(stream & s, const Pn &... pn)
+		write(stream & s, Pn &&... pn)
 		{
 			s << '%';
-			StreamWriter::next(s, pn...);
+			StreamWriter::next(s, std::forward<Pn>(pn)...);
 		}
 	};
 
@@ -165,10 +166,10 @@ namespace AdHoc {
 		 */
 		template<typename... Pn>
 		static inline auto
-		get(const Pn &... pn)
+		get(Pn &&... pn)
 		{
 			std::basic_stringstream<char_type> s;
-			return write(s, pn...).str();
+			return write(s, std::forward<Pn>(pn)...).str();
 		}
 		/**
 		 * Get a string containing the result of formatting.
@@ -177,9 +178,9 @@ namespace AdHoc {
 		 */
 		template<typename... Pn>
 		inline auto
-		operator()(const Pn &... pn) const
+		operator()(Pn &&... pn) const
 		{
-			return get(pn...);
+			return get(std::forward<Pn>(pn)...);
 		}
 
 		/**
@@ -190,9 +191,9 @@ namespace AdHoc {
 		 */
 		template<typename stream, typename... Pn>
 		static inline stream &
-		write(stream & s, const Pn &... pn)
+		write(stream & s, Pn &&... pn)
 		{
-			return Parser<stream, 0U, Pn...>::run(s, pn...);
+			return Parser<stream, 0U, Pn...>::run(s, std::forward<Pn>(pn)...);
 		}
 		/**
 		 * Write the result of formatting to the given stream.
@@ -202,15 +203,15 @@ namespace AdHoc {
 		 */
 		template<typename stream, typename... Pn>
 		inline typename std::enable_if<std::is_base_of_v<std::basic_ostream<char_type>, stream>, stream>::type &
-		operator()(stream & s, const Pn &... pn) const
+		operator()(stream & s, Pn &&... pn) const
 		{
-			return write(s, pn...);
+			return write(s, std::forward<Pn>(pn)...);
 		}
 
 	private:
 		template<typename stream, auto pos, typename... Pn> struct Parser {
 			static inline stream &
-			run(stream & s, const Pn &... pn)
+			run(stream & s, Pn &&... pn)
 			{
 				if (pos != L) {
 					constexpr auto ph = strchrnul<S, '%', pos, L>();
@@ -218,20 +219,20 @@ namespace AdHoc {
 						appendStream(s, &S[pos], ph - pos);
 					}
 					if constexpr (ph != L) {
-						packAndWrite<ph>(s, pn...);
+						packAndWrite<ph>(s, std::forward<Pn>(pn)...);
 					}
 				}
 				return s;
 			}
 			template<strlen_t ph, strlen_t off = 0U, auto... Pck>
 			static inline void
-			packAndWrite(stream & s, const Pn &... pn)
+			packAndWrite(stream & s, Pn &&... pn)
 			{
 				if constexpr (ph + off == L || sizeof...(Pck) == 32) {
 					StreamWriter<S, L, ph, stream, void, Pck...>::write(s, pn...);
 				}
 				else if constexpr (ph + off < L) {
-					packAndWrite<ph, off + 1, Pck..., S[ph + off]>(s, pn...);
+					packAndWrite<ph, off + 1, Pck..., S[ph + off]>(s, std::forward<Pn>(pn)...);
 				}
 			}
 		};
@@ -243,12 +244,7 @@ namespace AdHoc {
 		public:
 			// cppcheck-suppress noExplicitConstructor
 			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays,hicpp-explicit-conversions)
-			constexpr basic_fixed_string(const CharT (&str)[N + 1])
-			{
-				for (decltype(N) x = 0; x < N; x++) {
-					this->at(x) = str[x];
-				}
-			}
+			constexpr basic_fixed_string(const CharT (&str)[N + 1]) : basic_fixed_string {str, N} { }
 			// NOLINTNEXTLINE(hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
 			constexpr basic_fixed_string(const CharT * str, decltype(N) len)
 			{
@@ -275,23 +271,23 @@ namespace AdHoc {
 
 	template<const support::basic_fixed_string Str, typename... Pn>
 	inline auto
-	scprintf(const Pn &... pn)
+	scprintf(Pn &&... pn)
 	{
-		return FormatterDetail<Str, Str.size()>::get(pn...);
+		return FormatterDetail<Str, Str.size()>::get(std::forward<Pn>(pn)...);
 	}
 
 	template<const support::basic_fixed_string Str, typename stream, typename... Pn>
 	inline auto &
-	scprintf(stream & strm, const Pn &... pn)
+	scprintf(stream & strm, Pn &&... pn)
 	{
-		return FormatterDetail<Str, Str.size()>::write(strm, pn...);
+		return FormatterDetail<Str, Str.size()>::write(strm, std::forward<Pn>(pn)...);
 	}
 
 	template<const support::basic_fixed_string Str, typename... Pn>
 	inline auto &
-	cprintf(const Pn &... pn)
+	cprintf(Pn &&... pn)
 	{
-		return scprintf<Str>(std::cout, pn...);
+		return scprintf<Str>(std::cout, std::forward<Pn>(pn)...);
 	}
 
 	namespace literals {

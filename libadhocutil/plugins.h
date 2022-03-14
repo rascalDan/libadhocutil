@@ -13,6 +13,7 @@
 #include <string>
 #include <string_view>
 #include <typeinfo>
+#include <utility>
 
 namespace std {
 	DLL_PUBLIC
@@ -146,9 +147,9 @@ namespace AdHoc {
 		 */
 		template<typename T, typename I, typename... Args>
 		void
-		create(const std::string_view n, const std::string_view f, int l, const Args &... args)
+		create(const std::string_view n, const std::string_view f, int l, Args &&... args)
 		{
-			add<T>(std::make_shared<I>(args...), n, f, l);
+			add<T>(std::make_shared<I>(std::forward<Args>(args)...), n, f, l);
 		}
 
 		/**

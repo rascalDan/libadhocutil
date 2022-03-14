@@ -267,7 +267,7 @@ namespace AdHoc {
 	}
 
 	template<typename R>
-	NoCurrentResourceT<R>::NoCurrentResourceT(const std::thread::id & id) : NoCurrentResource(id, typeid(R).name())
+	NoCurrentResourceT<R>::NoCurrentResourceT(const std::thread::id id) : NoCurrentResource(id, typeid(R).name())
 	{
 	}
 }
