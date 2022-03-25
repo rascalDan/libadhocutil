@@ -52,8 +52,8 @@ namespace AdHoc::Net {
 		void checkCurlCode(CURLcode res) const;
 
 		CURL * curl_handle;
-		curl_slist * curl_headers;
-		curl_httppost *postS, *postE;
+		curl_slist * curl_headers {nullptr};
+		curl_httppost *postS {nullptr}, *postE {nullptr};
 		/// @endcond
 	};
 	using CurlHandlePtr = std::shared_ptr<CurlHandle>;

@@ -14,7 +14,7 @@ namespace AdHoc::LexerMatchers {
 	class Regex : public Lexer::Pattern {
 	public:
 		Regex(const Glib::ustring & pattern, GRegexCompileFlags compile, GRegexMatchFlags match) :
-			err(nullptr), regex(g_regex_new(pattern.c_str(), compile, match, &err)), info(nullptr), str(nullptr)
+			regex(g_regex_new(pattern.c_str(), compile, match, &err))
 		{
 			if (!regex) {
 				auto msg = std::string("Failed to create GRegex: ") + err->message;
@@ -75,10 +75,10 @@ namespace AdHoc::LexerMatchers {
 		}
 
 	private:
-		mutable GError * err;
+		mutable GError * err {nullptr};
 		GRegex * regex;
-		mutable GMatchInfo * info;
-		mutable const gchar * str;
+		mutable GMatchInfo * info {nullptr};
+		mutable const gchar * str {nullptr};
 	};
 
 	Lexer::PatternPtr

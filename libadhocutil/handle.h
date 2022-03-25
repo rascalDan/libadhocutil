@@ -9,7 +9,7 @@ namespace AdHoc {
 	template<typename T, typename D> class Handle {
 	public:
 		/// Constructs a Handle that owns t, to be tidied with d
-		Handle(T t, D d) noexcept : inst(std::move(t)), deleter(std::move(d)), owning(true) { }
+		Handle(T t, D d) noexcept : inst(std::move(t)), deleter(std::move(d)) { }
 
 		/// Constructs a Handle that takes over ownership of h
 		Handle(Handle && h) noexcept : inst(std::move(h.inst)), deleter(std::move(h.deleter)), owning(h.owning)
@@ -96,7 +96,7 @@ namespace AdHoc {
 	private:
 		T inst;
 		D deleter;
-		bool owning;
+		bool owning {true};
 	};
 
 	template<typename T, typename D, typename... Args>

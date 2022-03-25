@@ -13,8 +13,7 @@ namespace AdHoc::Net {
 		curl_global_cleanup();
 	}
 
-	CurlHandle::CurlHandle(const std::string & url) :
-		curl_handle(curl_easy_init()), curl_headers(nullptr), postS(nullptr), postE(nullptr)
+	CurlHandle::CurlHandle(const std::string & url) : curl_handle(curl_easy_init())
 	{
 		curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);

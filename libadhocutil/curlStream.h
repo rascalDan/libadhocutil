@@ -37,9 +37,9 @@ namespace AdHoc::Net {
 		DLL_PRIVATE static size_t recvWrapper(void * data, size_t sz, size_t nm, void * css);
 		DLL_PRIVATE std::streamsize recv(void * data, std::streamsize datalen);
 
-		std::streamsize buflen;
-		char * buf;
-		CURLcode res;
+		std::streamsize buflen {0};
+		char * buf {nullptr};
+		CURLcode res {CURLE_OK};
 	};
 
 	using CurlStream = boost::iostreams::stream<boost::reference_wrapper<CurlStreamSource>>;

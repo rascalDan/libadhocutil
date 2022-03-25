@@ -4,8 +4,7 @@
 
 namespace AdHoc::Net {
 
-	CurlStreamSource::CurlStreamSource(const std::string & url) :
-		CurlHandle(url), buflen(0), buf(nullptr), res(CURLE_OK)
+	CurlStreamSource::CurlStreamSource(const std::string & url) : CurlHandle(url)
 	{
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &CurlStreamSource::recvWrapper);
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, this);
