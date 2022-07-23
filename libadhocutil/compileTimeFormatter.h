@@ -169,7 +169,7 @@ namespace AdHoc {
 		get(Pn &&... pn)
 		{
 			std::basic_stringstream<char_type> s;
-			return std::move(write(s, std::forward<Pn>(pn)...).str());
+			return std::move(write(s, std::forward<Pn>(pn)...)).str();
 		}
 		/**
 		 * Get a string containing the result of formatting.
