@@ -20,6 +20,8 @@ namespace AdHoc {
 	const std::type_info &
 	PluginOf<T>::type() const
 	{
+		static_assert(std::is_reference_v<decltype(typeid(T))>);
+		// cppcheck-suppress returnTempReference; (typeid returns a reference)
 		return typeid(T);
 	}
 

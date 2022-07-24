@@ -29,7 +29,7 @@ namespace AdHoc {
 	typename GlobalStatic<Object>::Ptr &
 	GlobalStatic<Object>::instance()
 	{
-		static Ptr _instance;
+		static Ptr _instance {};
 		return _instance;
 	}
 }

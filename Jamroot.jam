@@ -33,9 +33,10 @@ project
 			<toolset>gcc,<variant>debug:<cflags>-Wlogical-op
 			<toolset>gcc,<variant>debug:<cflags>-Wuseless-cast
 			<variant>coverage:<coverage>on
-			<toolset>tidy:<exclude>bin/sys.h
-			<toolset>tidy:<exclude>bin/net.h
-			<toolset>tidy:<exclude>unittests/bin/lorem-ipsum.h
+			<toolset>tidy:<enable>all
+			<toolset>tidy:<exclude>libadhocutil/bin/sys.h
+			<toolset>tidy:<exclude>libadhocutil/bin/net.h
+			<toolset>tidy:<exclude>libadhocutil/unittests/bin/lorem-ipsum.h
 			<toolset>tidy:<checkxx>boost-*
 			<toolset>tidy:<checkxx>bugprone-*
 			<toolset>tidy:<xcheckxx>bugprone-macro-parentheses
