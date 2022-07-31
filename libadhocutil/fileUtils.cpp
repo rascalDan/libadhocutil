@@ -133,22 +133,22 @@ namespace AdHoc::FileUtils {
 	void *
 	MemMap::setupMap(int flags) const
 	{
-		auto data = setupMapInt(flags);
+		auto newData = setupMapInt(flags);
 		// NOLINTNEXTLINE(performance-no-int-to-ptr)
-		if (data == MAP_FAILED) {
+		if (newData == MAP_FAILED) {
 			throw SystemExceptionOn("mmap(2) failed", strerror(errno), errno, FD::get(fh));
 		}
-		return data;
+		return newData;
 	}
 
 	void *
 	MemMap::setupMap(const std::filesystem::path & path, int flags) const
 	{
-		auto data = setupMapInt(flags);
+		auto newData = setupMapInt(flags);
 		// NOLINTNEXTLINE(performance-no-int-to-ptr)
-		if (data == MAP_FAILED) {
+		if (newData == MAP_FAILED) {
 			throw SystemExceptionOn("mmap(2) failed", strerror(errno), errno, path);
 		}
-		return data;
+		return newData;
 	}
 }
