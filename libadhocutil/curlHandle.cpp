@@ -24,8 +24,8 @@ namespace AdHoc::Net {
 		if (curl_headers) {
 			curl_slist_free_all(curl_headers);
 		}
-		if (postS) {
-			curl_formfree(postS);
+		if (mime) {
+			curl_mime_free(mime);
 		}
 		curl_easy_cleanup(curl_handle);
 	}
@@ -65,10 +65,10 @@ namespace AdHoc::Net {
 	void
 	CurlHandle::appendPost(const char * name, const char * value)
 	{
-		CURLFORMcode r
-				= curl_formadd(&postS, &postE, CURLFORM_PTRNAME, name, CURLFORM_PTRCONTENTS, value, CURLFORM_END);
-		if (r == 0) {
-			curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, postS);
+		if (auto part = curl_mime_addpart(mime)) {
+			curl_mime_name(part, name);
+			curl_mime_data(part, value, CURL_ZERO_TERMINATED);
+			curl_easy_setopt(curl_handle, CURLOPT_MIMEPOST, mime);
 		}
 	}
 

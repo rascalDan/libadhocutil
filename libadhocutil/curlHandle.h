@@ -53,7 +53,7 @@ namespace AdHoc::Net {
 
 		CURL * curl_handle;
 		curl_slist * curl_headers {nullptr};
-		curl_httppost *postS {nullptr}, *postE {nullptr};
+		curl_mime *mime{nullptr};
 		/// @endcond
 	};
 	using CurlHandlePtr = std::shared_ptr<CurlHandle>;
